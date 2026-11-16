@@ -352,6 +352,8 @@ details.sub>.stack{margin-top:10px}
 .fcnum{text-align:right;white-space:nowrap;font-family:var(--mono,monospace)}.fcnum b{display:block;font:800 26px/1 var(--display,Georgia,serif);color:var(--ink)}.fcnum span{display:block;font-size:11px;color:var(--muted);margin:3px 0}
 .fcnum em{font-style:normal;font-size:12px;font-weight:700;padding:1px 6px;border-radius:9px}.fcnum em.dn{background:#f6d5d7;color:#a3121f}.fcnum em.up{background:#d3efdf;color:#146b3a}.fcnum em.eq{background:var(--line);color:var(--muted)}
 @media(max-width:560px){.fcrow{grid-template-columns:1fr auto}}
+.cengrp{margin:6px 0}.cengrp summary{cursor:pointer;font:600 12px var(--mono,monospace);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:4px 0}
+.simseats{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}.simseats b{font-size:13px;margin-right:4px}.simbtn{font:600 12px var(--mono,monospace);padding:3px 9px;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:12px;cursor:pointer}.simbtn:hover{border-color:var(--accent);color:var(--accent)}.simseats .status{flex-basis:100%;margin:2px 0 0}
 .rbtns{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.rbtns button{margin:0!important}
 .newsload{display:grid;justify-items:center;gap:8px;text-align:center;padding:60px 20px;border:1px solid var(--line);background:var(--panel);min-height:260px;align-content:center}
 .newsload b{font:900 22px var(--display)}.newsload span:not(.spin){color:var(--muted);font:italic 15px var(--body)}.newsload small{font:600 12px var(--mono);letter-spacing:.06em}

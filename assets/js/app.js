@@ -103,7 +103,10 @@ const phOf=n=>PHOTO[n]||(n&&n!=='—'&&!/^(No |Collective|N\/A)/.test(n)?(isFem(
 const CF = DATA.census.f.map(f=>f.replace(/ \(.*$/,'').replace(' - ESTIMATE',''));
 const DP = {'None':[], 'Graduates swing to the Greens and Labor':[{f:7,party:2,amt:1.2},{f:7,party:0,amt:0.8}], 'Mortgage-belt revolt':[{f:2,party:3,amt:2},{f:2,party:0,amt:-1.5}],
   'Older voters return to the Coalition':[{f:10,party:1,amt:1.5},{f:10,party:3,amt:-1}], 'Multicultural seats swing away from Labor':[{f:13,party:0,amt:-2},{f:13,party:4,amt:1.2}],
-  'Farm seats swing to One Nation':[{f:15,party:3,amt:2},{f:15,party:1,amt:-1.5}], 'Renters swing to the Greens':[{f:5,party:2,amt:1.5},{f:5,party:0,amt:-0.7}], 'Custom':null};
+  'Farm seats swing to One Nation':[{f:15,party:3,amt:2},{f:15,party:1,amt:-1.5}], 'Renters swing to the Greens':[{f:5,party:2,amt:1.5},{f:5,party:0,amt:-0.7}],
+  'Muslim communities protest against Labor':[{f:17,party:0,amt:-2},{f:17,party:4,amt:1.5}], 'Tradies swing to One Nation':[{f:23,party:3,amt:1.8},{f:23,party:0,amt:-1}],
+  'Mining seats back One Nation':[{f:26,party:3,amt:2},{f:26,party:0,amt:-1}], 'Chinese-Australian voters return to the Liberals':[{f:20,party:1,amt:1.5},{f:20,party:0,amt:-1}],
+  'Apartment renters go Green':[{f:30,party:2,amt:1.5},{f:30,party:0,amt:-0.8}], 'Custom':null};
 // minor parties that stood in only a few seats in 2025 can be set to contest more: [share of the independent vote they take, extra starting share]
 const TEALS=['Goldstein','Wannon','Cowper','Monash','Flinders','Groom','Farrer','Forrest','Grey','Fisher','McPherson','Fairfax','Berowra','Casey','Moncrieff','Bean','Fremantle','Franklin'];
 const CONT={CSA:{opts:['Current: 2 seats','Teal-style seats (20)','Every seat (150)'],seed:(lv,s)=>{if(s.inc==='IND'&&!['Wentworth','Warringah'].includes(s.n))return null;if(['Wentworth','Warringah'].includes(s.n))return null;
@@ -143,21 +146,22 @@ EV.forEach((e,i)=>{const d=document.createElement('div');d.className='ctl';d.inn
 $('coa').addEventListener('input',e=>{S.coaON=+e.target.value;sync();schedule();});
 [['pfOn','onCoa'],['pfGrn','grnAlp'],['pfLg','lg'],['pfMin','minorOn']].forEach(([id,k])=>$(id).addEventListener('input',e=>{S.pf[k]=+e.target.value;sync();schedule();}));
 const GI=ab=>P.findIndex(g=>g.ab===ab);
+const DFS=(s,k,v)=>{const i=DATA.dfac.findIndex(f=>f.k===k);if(i>=0)s.dfac[i]=v;};
 const PRESETS={'Current polls (baseline)':s=>{},
-  'Coalition recovers':s=>{s.d[1]+=4;s.d[3]-=4;},
-  "Turnbull's teal revolt":s=>{s.cind=1;[-6.5,-4,0,-11.5].forEach((v,j)=>s.d[j]+=v);s.d[GI('CSA')]+=12.9;s.ev['Coalition']=EV.find(e=>e.name==='Coalition').opts.find(o=>o.startsWith('Coalition splits'));s.ldr['Community Strong']='Malcolm Turnbull';},
-  'One Nation surge':s=>{s.d[3]+=5;s.d[1]-=3;s.d[0]-=2;},
-  'Labor slumps':s=>{s.d[0]-=5;s.d[2]+=2;s.d[3]+=2;s.d[1]+=1;},
-  'Greens breakthrough':s=>{s.d[2]+=4;s.d[0]-=4;},
-  'Teal wave 2.0':s=>{s.d[4]+=4;s.d[1]-=3;s.d[0]-=1;},
+  'Coalition recovers':s=>{s.d[1]+=4;s.d[3]-=4;DFS(s,'chinese',-1);DFS(s,'age',1);},
+  "Turnbull's teal revolt":s=>{DFS(s,'edu',1.5);DFS(s,'rich',1);s.cind=1;[-6.5,-4,0,-11.5].forEach((v,j)=>s.d[j]+=v);s.d[GI('CSA')]+=12.9;s.ev['Coalition']=EV.find(e=>e.name==='Coalition').opts.find(o=>o.startsWith('Coalition splits'));s.ldr['Community Strong']='Malcolm Turnbull';},
+  'One Nation surge':s=>{s.d[3]+=5;s.d[1]-=3;s.d[0]-=2;DFS(s,'tradie',1.5);DFS(s,'mining',1.5);DFS(s,'bluec',1);},
+  'Labor slumps':s=>{s.d[0]-=5;s.d[2]+=2;s.d[3]+=2;s.d[1]+=1;DFS(s,'bluec',1);DFS(s,'muslim',-1.5);DFS(s,'mort',1);},
+  'Greens breakthrough':s=>{s.d[2]+=4;s.d[0]-=4;DFS(s,'flats',1.5);DFS(s,'rent',1);},
+  'Teal wave 2.0':s=>{s.d[4]+=4;s.d[1]-=3;s.d[0]-=1;DFS(s,'edu',1);DFS(s,'rich',1);},
   'Minor-party spring':s=>{[['CYA',3],['FFP',2],['HMP',2],['LTP',1],['GRPF',1]].forEach(([a,v])=>s.d[GI(a)]+=v);s.d[0]-=3;s.d[1]-=2;s.d[3]-=4;},
   'Coalition splits':s=>{s.split=1;s.d[1]-=1.5;s.d[3]+=1.5;},
   'One Nation and Coalition swap preferences':s=>{s.coaON=Math.min(0.9,s.coaON+0.1);s.pf.onCoa=Math.min(0.95,s.pf.onCoa+0.08);},
   'Polls badly wrong':s=>{s.err=1.5;s.big=0.3;},
   'Labor leadership spill mid-2027':s=>{s.ldr['Labor']='Jim Chalmers';s.ev['Government']='Long-term government fatigue';s.d[0]-=1.5;s.d[3]+=1;},
-  'Coalition reunites under Hastie':s=>{s.ldr['Coalition']='Andrew Hastie';s.ev['Coalition']='Unites behind a strong campaign';s.d[1]+=2;s.d[3]-=3;s.pf.onCoa=Math.min(0.95,s.pf.onCoa+0.05);},
-  'Greens–teal alliance':s=>{s.d[2]+=2.5;s.d[4]+=2;s.d[GI('CSA')]+=1;s.d[0]-=3;s.d[1]-=1.5;s.ev['Greens and independents']='Teal / community independent wave';s.pf.grnAlp=Math.max(0.5,s.pf.grnAlp-0.12);},
-  'Minor party chaos':s=>{[['CYA',6],['FFP',4],['HMP',4],['LTP',3],['GRPF',4],['KAP',5],['XEN',3],['AJP',1.5],['CSA',4],['SAL',1],['VNS',1.5]].forEach(([a,v])=>{const k=GI(a);if(k>=0)s.d[k]+=v;});s.d[4]+=7;s.d[0]-=9;s.d[1]-=8;s.d[3]-=7;s.d[2]-=2;s.cont={CSA:1,XEN:1,KAP:1};
+  'Coalition reunites under Hastie':s=>{DFS(s,'tradie',1);DFS(s,'mining',1);s.ldr['Coalition']='Andrew Hastie';s.ev['Coalition']='Unites behind a strong campaign';s.d[1]+=2;s.d[3]-=3;s.pf.onCoa=Math.min(0.95,s.pf.onCoa+0.05);},
+  'Greens–teal alliance':s=>{DFS(s,'flats',1);DFS(s,'edu',1);s.d[2]+=2.5;s.d[4]+=2;s.d[GI('CSA')]+=1;s.d[0]-=3;s.d[1]-=1.5;s.ev['Greens and independents']='Teal / community independent wave';s.pf.grnAlp=Math.max(0.5,s.pf.grnAlp-0.12);},
+  'Minor party chaos':s=>{DFS(s,'bluec',1);DFS(s,'muslim',-1.5);[['CYA',6],['FFP',4],['HMP',4],['LTP',3],['GRPF',4],['KAP',5],['XEN',3],['AJP',1.5],['CSA',4],['SAL',1],['VNS',1.5]].forEach(([a,v])=>{const k=GI(a);if(k>=0)s.d[k]+=v;});s.d[4]+=7;s.d[0]-=9;s.d[1]-=8;s.d[3]-=7;s.d[2]-=2;s.cont={CSA:1,XEN:1,KAP:1};
     // minor parties break through where they are already strongest: their best few seats get a local surge
     [['CYA',4,22],['FFP',3,22],['HMP',3,14],['LTP',2,20],['GRPF',3,22],['AJP',1,18],['SAL',1,16],['VNS',1,20]].forEach(([ab,n,amt])=>{const g=GI(ab);if(g<0)return;
       D.seats.map((x,i)=>[x.p.reduce((t,v,j)=>t+(DATA.colG[j]===g?v:0),0),i]).sort((a,b)=>b[0]-a[0]).slice(0,n).forEach(([v,i])=>{if(v>0)s.seatAdj.push({i,g,amt});});});s.cont={...s.cont,CSA:1,XEN:1,KAP:1};s.ev['Greens and independents']='Minor-party fragmentation';s.ev['Preference climate']='Preferences scatter (less predictable)';},
@@ -182,7 +186,16 @@ const ldrChg=l=>{if(l.sel)return '(current)';const N=['Labor','Coalition','Green
   d2.querySelector('select').addEventListener('change',e=>{S.cind=+e.target.value;sync();schedule();});}
 LP.forEach((p,i)=>{const d=document.createElement('div');d.className='ctl';d.innerHTML=`<label for="l${i}">${p} leader</label><select id="l${i}">${DATA.leaders.filter(l=>l.party===p).map(l=>`<option value="${l.name}">${l.name} ${ldrChg(l)}</option>`).join('')}</select>`;$('leaders').appendChild(d);
   d.querySelector('select').addEventListener('change',e=>{S.ldr[p]=e.target.value;sync();schedule();});});
-const DFD={edu:['Graduate seats move further to the Greens and Labor; low-degree seats to One Nation and the Coalition.','The education gap narrows.'],
+const DFD={muslim:['Seats with large Muslim communities move further towards Labor.','Muslim communities turn away from Labor, towards independents and the Greens.'],
+  chinese:['Seats with large Chinese-Australian communities move further to Labor and the Greens.','Chinese-Australian voters drift back to the Liberals.'],
+  sasia:['South Asian communities move further to Labor.','South Asian communities swing to the Coalition and independents.'],
+  first:['Seats with large First Nations populations follow their 2025 pattern more strongly.','First Nations seats swing towards Labor and the Greens.'],
+  tradie:['Tradie-heavy seats move further to One Nation and the Coalition.','Tradies drift back to Labor and the Greens.'],
+  mining:['Mining seats move further to One Nation and the Coalition.','Mining seats swing back to Labor.'],
+  bluec:['Blue-collar seats move further to One Nation.','Blue-collar workers return to Labor.'],
+  pubserv:['Public-service seats move further to Labor.','Public servants turn on Labor.'],
+  flats:['Apartment-heavy seats move further to the Greens and Labor.','Apartment dwellers drift to the Coalition and One Nation.'],
+  edu:['Graduate seats move further to the Greens and Labor; low-degree seats to One Nation and the Coalition.','The education gap narrows.'],
   age:['Young seats move further to Labor and the Greens; older seats to the Coalition and independents.','The age gap narrows.'],
   rent:['Renter-heavy seats move further to Labor and the Greens; owner-occupier seats to the Coalition.','The renter–owner gap narrows.'],
   mort:['Mortgage-belt seats (high repayments, families with mortgages) swing against Labor, mostly to One Nation. Only seats above average are affected.','Mortgage-belt seats swing to Labor.'],
@@ -312,7 +325,7 @@ let CMP=-1;
 function cmpHTML(a,b){const S_=[a,b].map(i=>{const s=D.seats[i],M=seatMargin(i),g=grpV(R.base[i],s),w=R.likely[i];return {i,s,M,g,w,mem:HELDBY[s.n]||s.mem||'—'};});
   const cell=f=>S_.map(x=>`<td>${f(x)}</td>`).join('');
   const parties=[0,1,2,3,4,...MINOR].filter(j=>S_.some(x=>x.g[j]>=3));
-  const cen=[[0,'Median age',v=>v.toFixed(0)],[1,'Weekly household income',v=>'$'+nf(Math.round(v))],[5,'Renting',v=>v.toFixed(1)+'%'],[7,'Bachelor degree+',v=>v.toFixed(1)+'%'],[11,'Born overseas',v=>v.toFixed(1)+'%']];
+  const pc=v=>v.toFixed(1)+'%',cen=[[0,'Median age',v=>v.toFixed(0)],[1,'Weekly household income',v=>'$'+nf(Math.round(v))],[5,'Renting',pc],[30,'Apartments',pc],[7,'Bachelor degree+',pc],[23,'Tradies',pc],[26,'Mining',pc],[12,'Born overseas',pc],[13,'Other language at home',pc],[14,'No religion',pc],[16,'Christian',pc],[19,'First Nations',pc]];
   return `<div class="tablewrap"><table class="cmpt"><thead><tr><th></th>${S_.map(x=>`<th>${x.s.n}<small>${stN(x.s.st)} · ${rgN(x.s.rg)}</small></th>`).join('')}</tr></thead><tbody>
   <tr><th>Member</th>${cell(x=>x.mem)}</tr>
   <tr><th>Forecast</th>${cell(x=>`<b style="color:${mapCol(x.s,x.w,R.base[x.i])}">${mapName(x.s,x.w,R.base[x.i])}</b> ${pct(R.prob[x.i][x.w])}`)}</tr>
@@ -337,8 +350,15 @@ function seat(){
    <div class="bars"><strong>Chance of winning</strong>${ORD.filter(j=>pr[j]>0.004||j<2).map(j=>`<div class="bar"><span>${P[j].n}</span><span class="tr"><i style="width:${pr[j]*100}%;background:${col(j)}"></i></span><span class="num">${pct(pr[j])}</span></div>`).join('')}</div>
    <div class="bars"><strong>Primary vote: now v 2025</strong>${prim.map(r=>{const was=g25[r[2]]||0,dv=r[1]-was;return `<div class="bar pv"><span>${r[0]}</span><span class="tr pvt"><i style="width:${Math.min(100,r[1]*2)}%;background:${col(r[2])}"></i><i class="was" style="width:${Math.min(100,was*2)}%"></i></span><span class="num">${r[1].toFixed(1)}% <small class="${dv>=0?'up':'dn'}">${dv>=0?'+':'−'}${Math.abs(dv).toFixed(1)}</small></span></div>`;}).join('')}<span class="status">Thin grey bar = 2025 result. Figures are the central estimate.</span></div>
    ${countHTML(sel)}
-   <div class="bars"><strong>Who lives here (2021 Census)</strong><div class="cen">${[0,1,2,5,7,8,11,12,13,15].map(j=>{const z=Math.max(-3,Math.min(3,s.cz[j]));const v=s.cr[j];const avg=DATA.census.mean[j];
-     return `<span>${CF[j]}</span><span class="z" title="vs average seat"><i style="${z>=0?'left:50%':'right:50%'};width:${Math.abs(z)/3*50}%"></i></span><span class="num">${j===1?'$'+nf(Math.round(v)):(j===0?v.toFixed(0):v.toFixed(1)+'%')}</span>`;}).join('')}</div><span class="status">Bar = how far above or below the average seat (centre line).</span></div>`;
+   ${(()=>{// who lives here: the seat's 2021 Census profile, grouped, each bar showing how far it sits from the average seat
+     const fmt=j=>{const v=s.cr[j];return j===1?'$'+nf(Math.round(v)):j===0?v.toFixed(0):v.toFixed(1)+'%';};
+     const row=j=>{const z=Math.max(-3,Math.min(3,s.cz[j]));return `<span>${CF[j].replace(/ \(.*$/,'')}</span><span class="z" title="vs average seat"><i style="${z>=0?'left:50%':'right:50%'};width:${Math.abs(z)/3*50}%"></i></span><span class="num">${fmt(j)}</span>`;};
+     const G=[['People',[0,9,10,6,19]],['Money and housing',[1,33,32,5,2,3,30,31]],['Work and education',[7,34,25,23,24,27,26,28,29,8]],['Background and belief',[12,13,20,21,22,14,16,17,18]]];
+     // the most similar seats across every Census measure
+     const sim=D.seats.map((x,k)=>{if(k===sel)return null;let d=0;for(let j=0;j<s.cz.length;j++){const a=Math.max(-3,Math.min(3,s.cz[j])),b=Math.max(-3,Math.min(3,x.cz[j]));d+=(a-b)*(a-b);}return [k,d];}).filter(Boolean).sort((a,b)=>a[1]-b[1]).slice(0,5);
+     return `<div class="bars"><strong>Who lives here (2021 Census)</strong>${G.map(([h,js],gi)=>`<details class="cengrp"${gi<2?' open':''}><summary>${h}</summary><div class="cen">${js.filter(j=>s.cr[j]!=null).map(row).join('')}</div></details>`).join('')}
+       <span class="status">Bar = how far above or below the average seat (centre line).</span>
+       <div class="simseats"><b>Most similar seats</b> ${sim.map(([k])=>`<button type="button" class="simbtn" data-k="${k}">${D.seats[k].n}</button>`).join('')}<span class="status">Closest match across all ${s.cz.length} Census measures. Select one to compare.</span></div></div>`;})()}`;
   const held=gOf(s);
   c.insertAdjacentHTML('beforeend',`<div class="bars"><strong>Candidates</strong><div class="cands"><span><i style="background:${col(held)}"></i>${HELDBY[s.n]||s.mem||'Sitting member'}</span><span>${P[held].n} · sitting member</span></div><span class="status">Other candidates for the next election haven't been listed yet; parties are still preselecting.</span></div>`);
   const mine=S.seatAdj.filter(a=>a.i===sel), opts=[0,1,2,3,4,...MINOR].filter(j=>j<5||gv[j]>0.3);
@@ -351,6 +371,7 @@ function seat(){
   // compare with another seat
   c.insertAdjacentHTML('beforeend',`<div class="bars"><strong>Compare with another seat</strong><div class="ovr"><select id="cmpSel" aria-label="Seat to compare"><option value="-1">Choose a seat…</option>${D.seats.map((x,k)=>k===sel?'':`<option value="${k}"${k===CMP?' selected':''}>${x.n} (${stN(x.st)})</option>`).join('')}</select></div><div id="cmpOut">${CMP>=0&&CMP!==sel?cmpHTML(sel,CMP):''}</div></div>`);
   $('cmpSel').addEventListener('change',e=>{CMP=+e.target.value;$('cmpOut').innerHTML=CMP>=0?cmpHTML(sel,CMP):'';});
+  c.querySelectorAll('.simbtn').forEach(b=>b.addEventListener('click',()=>{CMP=+b.dataset.k;$('cmpSel').value=CMP;$('cmpOut').innerHTML=cmpHTML(sel,CMP);$('cmpSel').scrollIntoView({behavior:'smooth',block:'nearest'});}));
   // retirements and candidate quality
   const cq=(S.cand||{})[s.n]||{g:opts[0],q:''}, ret=!!(S.retire||{})[s.n];
   c.insertAdjacentHTML('beforeend',`<div class="bars"><strong>Candidates and incumbency</strong>
@@ -1171,6 +1192,23 @@ function article(){
       :sec===3&&maj?`One Nation has won more seats than the Coalition, putting ${O} in line to lead the official Opposition.`
       :on>=15&&top!==3?`One Nation has surged to ${on} seats, up from ${DATA.current[3]} before the election.`:'';
     // ---- the campaign: what shaped this result, written from the sandbox settings (events, presets, leaders, rules)
+    // ---- who swung: for the parties that moved most, the Census measure their seat-by-seat swing tracks most closely
+    const demoP=(()=>{const PH={0:['the oldest electorates','the youngest electorates'],1:['the wealthiest seats','the poorest seats'],5:['seats full of renters','seats dominated by home owners'],
+        7:['seats with the most university graduates','seats with the fewest university graduates'],12:['seats with the most overseas-born voters','seats where most voters were born in Australia'],
+        14:['the most secular seats','the most religious seats'],15:['farming communities','the big cities'],17:['seats with large Muslim communities',null],19:['seats with large First Nations populations',null],
+        20:['Chinese-Australian communities',null],21:['South Asian communities',null],23:['seats with the most tradies','seats with the fewest tradies'],26:['mining communities',null],
+        28:['public-service seats',null],30:['apartment-heavy inner suburbs','detached-house suburbs'],32:['low-income seats','high-income seats']};
+      const ks=Object.keys(PH).map(Number).filter(k=>D.seats[0].cz.length>k),corr=(xs,ys)=>{const n=xs.length,mx=xs.reduce((a,b)=>a+b,0)/n,my=ys.reduce((a,b)=>a+b,0)/n;let sxy=0,sxx=0,syy=0;for(let i=0;i<n;i++){sxy+=(xs[i]-mx)*(ys[i]-my);sxx+=(xs[i]-mx)**2;syy+=(ys[i]-my)**2;}return sxx&&syy?sxy/Math.sqrt(sxx*syy):0;};
+      const out=[];[[3,'One Nation'],[0,'Labor'],[1,'the Coalition'],[2,'the Greens']].forEach(([j,nm])=>{if(out.length>=2)return;
+        const idx=D.seats.map((s,i)=>i).filter(i=>{const o=grpV(D.seats[i].b,D.seats[i])[j],n=grpV(R.base[i],D.seats[i])[j];return o>2||n>2;});if(idx.length<40)return;
+        const sw=idx.map(i=>grpV(R.base[i],D.seats[i])[j]-grpV(D.seats[i].b,D.seats[i])[j]),avg=sw.reduce((a,b)=>a+b,0)/sw.length;if(Math.abs(avg)<2)return;
+        const r=ks.map(k=>[k,corr(idx.map(i=>D.seats[i].cz[k]),sw)]).sort((a,b)=>Math.abs(b[1])-Math.abs(a[1]));
+        // phrase for where the swing was biggest in the party's direction
+        const pick=r.map(([k,c])=>{const hi=(c>0)===(avg>0);const t=hi?PH[k][0]:PH[k][1];return t&&Math.abs(c)>0.3?[k,t,Math.abs(c)]:null;}).filter(Boolean);if(!pick.length)return;
+        const a1=pick[0],a2=pick.find(x=>x[0]!==a1[0]&&!(([7,23].includes(x[0])&&[7,23].includes(a1[0]))));
+        const top=idx.map((i,x)=>[i,sw[x]]).sort((a,b)=>avg>0?b[1]-a[1]:a[1]-b[1])[0],tp=top[1];
+        out.push(`${cap(nm)}'s ${avg>0?'biggest gains':'heaviest losses'} came in ${a1[1]}${a2?` and ${a2[1]}`:''}, ${avg>0?'peaking':'worst of all'} in ${D.seats[top[0]].n}, where its primary vote ${tp>0?'rose':'fell'} ${Math.abs(tp).toFixed(1)} points.`);});
+      return out;})();
     const campP=(()=>{const E=S.ev||{},ps=[],ev=(k)=>E[k]&&E[k]!=='Default'?E[k]:null,g0=(v,d)=>v>=0?d[0]:d[1];
       const EVT={
         'Recession':`The economy did the government no favours. A recession arrived in the final months of the term, and every quarterly figure became a Coalition attack ad.`,
@@ -1255,7 +1293,7 @@ function article(){
       <p class="news-by">By ${r1} <b>${n1}</b> and ${r2} <b>${n2}</b></p>
       <span class="news-tag">Federal Election 2028</span>
       <p class="news-time">Posted <b>${dfmt(next)} at ${posted} AEST</b>, updated <b>${dfmt(next)} at ${updated} AEST</b></p>
-      <figure class="news-fig"><img src="${PHOTO._hero}" alt="Illustration of the House of Representatives chamber"><figcaption>The new Parliament will sit in the House of Representatives chamber at Parliament House, Canberra. <i>(Illustration)</i></figcaption></figure>
+      <figure class="news-fig"><img src="${PHOTO._hero}" alt="The House of Representatives chamber at Parliament House, Canberra"><figcaption>The new Parliament will sit in the House of Representatives chamber at Parliament House, Canberra. <i>(Photo: Wikimedia Commons)</i></figcaption></figure>
       <div class="news-short"><p class="ns-h">In short:</p>${inShort.map(s=>`<p>${s}</p>`).join('')}<p class="ns-h">What's next?</p><p>${whatsNext}</p></div>
       ${paras.map(p=>`<p class="news-p">${p}</p>`).join('')}
       ${wipe.map(p=>`<p class="news-p">${p}</p>`).join('')}
@@ -1266,6 +1304,7 @@ function article(){
         <div class="cnames"><span style="color:${wc}">${mapName(x.s,x.w,b)} ${wv.toFixed(2)}</span><span style="color:${rc}">${(100-wv).toFixed(2)} ${mapName(x.s,x.r,b)}</span></div>
         <div class="cmeta">Declared ${dc.when}${dc.rc?` <span class="crc">${dc.rc.replace(' · ',', ')}</span>`:''}</div></div></div>`;}).join('')}</div>
       ${campP.length?SUB('How the campaign was won'.replace('won',maj?'won':'fought'))+campP.map(p=>`<p class="news-p">${p}</p>`).join(''):''}
+      ${demoP.length?SUB('Who swung')+demoP.map(p=>`<p class="news-p">${p}</p>`).join(''):''}
       ${leadSub?SUB(leadSub):''}${pparas.map(p=>`<p class="news-p">${p}</p>`).join('')}
       <div class="mcard tlcard"><div class="mkick">The days ahead</div><div class="mh">What happens next</div><ol class="tl">${tl}</ol></div>
       ${kmSub?SUB(kmSub)+kmIntro:''}${kparas.map(p=>`<p class="news-p">${p}</p>`).join('')}
@@ -1977,7 +2016,7 @@ function how(){
   <p>The simulator plays out the next federal election thousands of times, seat by seat, and adds up the winners. How often each result comes up tells you how likely it is.</p>
   <h3 class="art">Each simulated election</h3>
   <ol><li><b>Starting point.</b> Every seat starts from its 2025 result, blended with the DemosAU seat-by-seat poll (August–September 2026) and moved to match the current average of national polls.</li>
-  <li><b>Your changes.</b> Anything you set in the sandbox (vote shifts, leaders, events, demographic swings, local factors) is added on top.</li>
+  <li><b>Your changes.</b> Anything you set in the sandbox (vote shifts, leaders, events, demographic swings, local factors) is added on top. Demographic swings use each seat's 2021 Census profile (${DATA.census.f.length} measures, from age and income to religion, ancestry and jobs) and move each party in line with how its 2025 vote varied across those communities.</li>
   <li><b>Random error.</b> Polls miss, and they miss in patterns, so each run adds a national error plus state, regional and seat-level errors.</li>
   <li><b>The count.</b> Each seat is counted the way the AEC does it: the lowest candidates drop out and their preferences flow on, based on 2025 flows, until someone has a majority.</li></ol>
   <h3 class="art">Reading the results</h3>
