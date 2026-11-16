@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>How it works · Australia 2028 Election Simulator</title>
+<meta name="description" content="How the simulator models first preferences, preference flows, uncertainty and the Senate.">
+<meta property="og:title" content="How it works · Australia 2028 Election Simulator">
+<meta property="og:description" content="How the simulator models first preferences, preference flows, uncertainty and the Senate.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#f3eee3">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<nav class="sitebar" aria-label="Site"><a class="sb-home" href="index.html">Election Simulator <span>2028</span></a><span class="sb-links"><a href="index.html">Simulator</a><a href="how-it-works.html" aria-current="page">How it works</a><a href="data.html">Polls and data</a><a href="about.html">About</a></span></nav>
+<main class="page article"><h1 class="art">How it works</h1>
+  <p>The simulator plays out the next federal election thousands of times. Each run is a full election: every one of the 150 seats gets its own first-preference result and its own preference count, and the winners are added up. Running it many times with realistic random error gives the chances and ranges shown on this page.</p>
+  <h3 class="art">1. Where each seat starts</h3>
+  <p>Every seat starts from its 2025 result (Australian Electoral Commission first preferences for every party that stood). That is blended with the DemosAU seat-by-seat poll (MRP) from August–September 2026, then moved so the national totals match the current average of published polls. The <i>Weight on the MRP seat poll</i> setting controls the blend.</p>
+  <h3 class="art">2. Your changes</h3>
+  <p>Sandbox changes are applied on top: national vote shifts (spread across seats in proportion to each party's existing vote, so a party gains most where it's already strong), leader changes, events, demographic swings tied to 2021 Census profiles, and any local factors you add to individual seats.</p>
+  <h3 class="art">Demographic swings</h3>
+  <p>Each seat has a 2021 Census profile (16 measures such as median age, renting, degree holders, born overseas, farming jobs), plus ATO HELP-debt figures. A rule like <i>“where Bachelor degrees are higher, Greens +1.2”</i> adds 1.2 points for every standard deviation a seat sits above the average seat, and takes the same amount off where it sits below. Effects are capped at three standard deviations and the other parties shrink to keep the seat at 100%. It's best for testing the big known divides (education, age, housing tenure, cultural diversity, farm seats) and seeing which seats are exposed to them.</p>
+  <p>The six divide sliders combine related measures into one score per seat (for example, degree holders and HELP debt for education) so they don't double-count the same voters. How much each party moves comes from how its 2025 vote actually varied along that score; one step moves the most-affected party one point for each standard deviation a seat sits from average. The mortgage-belt slider is the exception: it swings those seats against the government rather than along the 2025 pattern.</p>
+  <h3 class="art">3. Random error</h3>
+  <p>Polls miss, and they miss in patterns. Each run draws a national error, state errors (partly shared), errors by seat type (inner city, outer suburbs, provincial, rural), a One Nation-specific error, and a small error in every seat. Occasionally (the <i>2019-style miss</i> setting) the errors are doubled. Errors grow the further away the election is.</p>
+  <h3 class="art">4. The preference count</h3>
+  <p>Each seat is counted the way the AEC does it. Minor-party votes are distributed first, using each party's own 2025 preference behaviour; then the lowest of the main contenders (Labor, Coalition, Greens, One Nation, the leading independent and the strongest minor party) are excluded one by one until two remain. How Coalition, One Nation, Labor and Greens voters number the other parties can be changed under <i>Preferences</i>. Each seat is also calibrated so the starting count matches the full spreadsheet model.</p>
+  <h3 class="art">Preferences by region</h3>
+  <p>Preference flows are not the same everywhere. With <i>Regional preference flows</i> on (the default), Coalition voters in rural and provincial seats send more of their preferences to One Nation, and Greens voters in inner-city seats send fewer to Labor and more to independents, than the national average. The shifts are a few points either way, chosen so the model reproduces the 2025 seat results more closely (144 of 150 seats with them, 142 without). Turning them off uses one national set of flows.</p>
+  <h3 class="art">5. Reading the results</h3>
+  <ul><li><b>Chance of each outcome</b>: the share of simulations ending in a Labor majority (76+ seats), a Coalition majority, or a hung parliament.</li>
+  <li><b>Central forecast</b> and the map: each seat given to the party that wins it most often. Real results will scatter around this: seats that are 60–40 will often go the other way.</li>
+  <li><b>Range</b>: the middle 90% of runs.</li></ul>
+  <h3 class="art">6. The Senate</h3>
+  <p>Each state's six Senate seats (and the territories' two) are counted with a party-level quota count: votes go to party groups, surplus and excluded votes move by estimated preference flows, and seats go to groups as they reach a quota (one-seventh of the vote plus one in a half-Senate election). Senators elected in 2025 keep their seats. If the Coalition splits, the Nationals stand their own Senate tickets in the states where they normally run joint tickets.</p>
+  <h3 class="art">7. Leaders and events</h3>
+  <p>Leader changes and events are judgement calls, not measurements. Each alternative leader moves the parties' votes by a small, stated amount (shown next to their name). For Labor and the Coalition the effect fades the further away the election is, because honeymoons wear off. Events work the same way. Leaders with no supplied photo are shown with initials.</p>
+  <h3 class="art">8. Hung parliaments</h3>
+  <p>When no party wins 76 seats in the central forecast, the page treats the largest party as the government unless you choose otherwise under <i>Who forms government?</i>: pick the Prime Minister's party, the arrangement (minority government, a confidence-and-supply deal, or a formal coalition) and the partner. The chamber, infobox and news report follow your choice and say whether the numbers reach 76.</p>
+  <h3 class="art">9. Maps and the results-night replay</h3>
+  <p>The geographic map uses AEC boundaries. The hex map gives every seat the same-sized hexagon, grouped by state and placed close to its real position, so small city seats count visually as much as large rural ones. The replay calls seats in the order the count would come in: polls close at 6pm in the eastern states, 6:30pm AEST in South Australia and the Northern Territory and 8pm AEST in Western Australia. Safe seats are called first, close seats later, and anything within about half a point is left in doubt. Seats are hatched grey until counting starts, then hatched in the colour of whoever is ahead; early leads wander and can change hands before settling on the final result, and a seat turns solid when it is called.</p>
+  <h3 class="art">Data sources</h3>
+  <ul><li>2025 House and Senate results: Australian Electoral Commission (first preferences, two-candidate preferred and preference distributions).</li>
+  <li>Seat poll: DemosAU MRP, August–September 2026.</li>
+  <li>National vote: the average of published national polls listed under <i>Polls and data</i>.</li>
+  <li>Seat profiles: ABS 2021 Census (General Community Profile) and ATO HELP-debt statistics.</li>
+  <li>Boundaries: AEC electoral divisions in force for the 2025 election.</li></ul>
+  <h3 class="art">What it can't do</h3>
+  <p>It doesn't know about candidates who haven't been announced, local campaigns, or redistributions after 2025. Seat polls and preference flows for a much larger One Nation are uncertain. The Senate is a simplified party-level count. Treat the numbers as a guide to what's plausible, not a prediction.</p><h3 class="art">Checked against 2025</h3>
+  <p>A forecast is only as good as its counting. This test feeds the model the actual 2025 national first preferences (and nothing from the 2026 seat poll), runs it, and compares each seat's most likely winner with who actually won in 2025. It checks the preference flows and the seat-by-seat count, not the polls.</p>
+  
+  <h3 class="art">Known weaknesses</h3>
+  <ul>
+  <li><b>Polls move together.</b> Each run shares a national polling error across seats, but real polling misses can be bigger and more lopsided than any one run allows (2019 is the reminder).</li>
+  <li><b>Preference flows are estimates.</b> They are fitted to 2025 and vary by seat type, but a party's voters can behave very differently when it becomes a contender, as One Nation now is.</li>
+  <li><b>New parties have no history.</b> Community Strong and any party standing in new seats start from judgement-based figures, not results.</li>
+  <li><b>Candidates matter and are not modelled.</b> Retirements, scandals and star recruits can move a seat by many points.</li>
+  <li><b>The Coalition is one vote.</b> Liberal, National, LNP and CLP seats are shown separately, but the model treats the Coalition vote as a single bloc unless you split it.</li>
+  <li><b>The Senate is simpler than the real count.</b> It counts parties, not individual candidates, and uses estimated flows. It reproduces all 40 seats won in 2025, but only after a one-point calibration in New South Wales; Lidia Thorpe's and Tammy Tyrrell's starting votes are judgement, as neither was on the 2025 ballot.</li>
+  </ul><p><a href="index.html">Run the 2025 check in the simulator</a> (About → How it works).</p></main>
+<footer class="sitefoot"><p><b>Australia 2028 Election Simulator</b> is an independent hobby project. It is not affiliated with the Australian Electoral Commission, any party or any media organisation. XYZ News and its reporters are fictional, and every result shown is a simulation, not a prediction.</p><p><a href="how-it-works.html">How it works</a> · <a href="data.html">Polls and data</a> · <a href="about.html">About and credits</a></p></footer>
+</body>
+</html>
