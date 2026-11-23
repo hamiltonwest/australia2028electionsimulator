@@ -103,7 +103,7 @@
     else if ((e.key === 'Enter' && !onCtl) || e.key === 'n' || e.key === 'N') { const b = inn.querySelector('[data-a="next"]'); if (b) { e.preventDefault(); b.click(); } } });
   const refocus = a => { const b = inn.querySelector(`[data-a="${a}"]`); if (b) b.focus(); };
   const keepFocus = (attr, v) => { const b = inn.querySelector(`[data-${attr}="${v}"]`); if (b) b.focus(); };
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && open) { e.preventDefault(); if (achOpen) { achOpen = null; render(); } else if (view === 'ach') { view = st ? viewFor() : 'select'; render(); } else hide(); } });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && open) { e.preventDefault(); if (window.CAMPAIGN_COLL && window.CAMPAIGN_COLL.state.bOpen) { window.CAMPAIGN_COLL.state.bOpen = null; const y = root.scrollTop; render(); root.scrollTop = y; } else if (achOpen) { achOpen = null; render(); } else if (view === 'ach' || view === 'binder' || view === 'compare' || view === 'hall') { view = st ? viewFor() : 'select'; render(); } else hide(); } });
   const viewFor = () => !st ? 'select' : st.phase === 'FAILED' ? 'failed' : st.phase === 'ENDED' ? 'verdict' : st.phase === 'HUNG' ? 'hung' : st.phase === 'ELECTION' ? 'night' : st.phase === 'CAMPAIGN' && st.needTour && !st.queue.length ? 'tour' : 'game';
 
   function toast(a) { setTimeout(() => sfx('chime'), 400); const box = $('cmptoasts'); while (box.children.length >= 2) box.firstChild.remove(); const t = document.createElement('div'); t.className = 'cmp-toast'; t.innerHTML = `<span class="medal sm">${mIcon(a, false)}</span><span><small>Honour earned</small><b>${esc(a.title)}</b></span>`;
@@ -137,12 +137,15 @@
   const mIcon = (a, hid) => hid || !a.svg ? `<b class="mq">${hid ? '?' : ICON('medal')}</b>` : `<svg class="mi" viewBox="0 0 24 24" aria-hidden="true">${a.svg}</svg>`;
   const achCount = () => Object.keys(A.get()).filter(k => A.list.some(a => a.id === k)).length;
   // campaign settings and the trophy cabinet, as switches and chips in the site bar's type
-  const toolbar = () => { const n = achCount(), N = A.list.length;
-    return `<div class="cmp-tools"><span class="ct-grp" role="group" aria-label="Settings"><span class="ct-k">Settings</span>`
+  const toolbar = () => { const n = achCount(), N = A.list.length, ownN = C.leaders.filter(L => owns(L.id)).length;
+    return `<div class="cmp-tools"><span class="ct-grp ct-set" role="group" aria-label="Settings"><span class="ct-k">Settings</span>`
     + `<button type="button" class="ct-tog" data-a="sound" aria-pressed="${!!prefs.sound}"><span>Sound</span><i aria-hidden="true"></i></button>`
     + `<button type="button" class="ct-tog" data-a="motion" aria-pressed="${!!prefs.motion}"><span>Motion</span><i aria-hidden="true"></i></button></span>`
-    + `<span class="ct-grp"><button type="button" class="ct-btn" data-a="board" title="Best scores by leader, difficulty, today’s challenge and Ironman">${ICON('medal', 'ct-ic')}Leaderboards</button><button type="button" class="ct-btn" data-a="hall" title="Your past campaigns, and moving your profile to another device">${ICON('star', 'ct-ic')}Hall of Fame and Your Profile</button>${SiteBar.ib('hall', 'the Hall of fame')}`
-    + `<button type="button" class="ct-btn ct-hon" data-a="ach" aria-label="Honours: ${n} of ${N} earned">${ICON('medal', 'ct-ic')}Honours <b class="num">${n}<small>/${N}</small></b><span class="ct-bar" aria-hidden="true"><i style="width:${(n / N * 100).toFixed(1)}%"></i></span></button></span></div>`; };
+    + `<span class="ct-grp ct-nav"><button type="button" class="ct-btn" data-a="board" title="Best scores by leader, difficulty, today’s challenge and Ironman">${ICON('medal', 'ct-ic')}Leaderboards</button>`
+    + `<button type="button" class="ct-btn ct-bind${view === 'binder' ? ' on' : ''}" data-a="binder" title="Browse your 65-card leader album, rarity odds and personal dossiers">${ICON('diamond', 'ct-ic')}Binder <b class="num">${ownN}<small>/${C.leaders.length}</small></b></button>`
+    + `<button type="button" class="ct-btn ct-cmp${view === 'compare' ? ' on' : ''}" data-a="compare" title="Compare any two leader cards side by side">${ICON('flip', 'ct-ic')}Compare</button>`
+    + `<span class="ct-hallwrap"><button type="button" class="ct-btn ct-hall${view === 'hall' ? ' on' : ''}" data-a="hall" title="Your past campaigns, and moving your profile to another device">${ICON('star', 'ct-ic')}<span class="ct-full">Hall of Fame and Your Profile</span><span class="ct-short">Hall &amp; Profile</span></button>${SiteBar.ib('hall', 'the Hall of fame')}</span>`
+    + `<button type="button" class="ct-btn ct-hon${view === 'ach' ? ' on' : ''}" data-a="ach" aria-label="Honours: ${n} of ${N} earned">${ICON('medal', 'ct-ic')}Honours <b class="num">${n}<small>/${N}</small></b><span class="ct-bar" aria-hidden="true"><i style="width:${(n / N * 100).toFixed(1)}%"></i></span></button></span></div>`; };
   const mast = (flag, title, dek) => `<header class="cmp-mast"><div class="cm-flag">${flag}</div><h2 id="cmp-title" tabindex="-1">${title}</h2>${dek ? `<p class="cm-dek">${dek}</p>` : ''}</header>`;
   const fig = (n, t, sub) => `<div class="cmp-fighead">${n ? `<span class="fig">Fig. ${n}</span>` : ''}<strong>${t}</strong>${sub ? `<small>${sub}</small>` : ''}</div>`;
   function medal(a, opts) { const got = A.get()[a.id], hid = a.secret && !got && !(opts && opts.run);
@@ -167,46 +170,55 @@
         <div class="cd-scen"><span class="kick">The opening</span><h3>${esc(S.n)}</h3><p>${esc(S.d)}</p></div></div>
       <ul class="cd-rules"><li>${start}</li><li>Standard difficulty</li><li>Same opening, cards and luck for everyone, until your choices differ</li><li>Same election-night count</li></ul>
       <div class="cd-go"><button type="button" class="cmp-go" data-lead="${L.id}">Start today’s challenge as ${esc(surname(L.name))} →</button><span class="cd-best">${dd ? `Your best today: <b class="num">${dd.score}</b> points` : 'No score yet today'}</span></div></section>`; }
+  const MR_TITLES = ['Top tier reached', 'Second tier reached', 'Third tier reached', 'Played'];
+  function buildTCard(L, opts) {
+    opts = opts || {};
+    const p = L.party, P = C.PARTIES[p], mast = opts.mast || E.mastery();
+    const tr = siteTraits(L), seat = ((APP.DATA.leaders.find(x => x.name === L.name && x.party === (L.sb || P.ldr)) || {}).seat || '').replace(' (candidate)', ' (running)');
+    const mk = mast[L.id], pg = ldrProg(L);
+    const g = ((window.TIERLIST || {}).leaders || []).find(x => x.id === L.id), rar = g ? g.grade : 'N', no = C.leaders.indexOf(L) + 1;
+    const badge = L.inc ? (P.cross && p !== 'ONP' ? (p === 'IND' ? (L.fresh ? 'Fresh face' : L.cb ? 'Comeback' : L.more ? 'Teal' : 'Convenor') : 'Leader') : 'Leader') : exMP(L) ? 'Comeback' : L.sb === 'Nationals' ? 'Nationals' : 'Challenger';
+    const fac = (L.party === 'ALP' || (L.party === 'LNP' && L.sb !== 'Nationals')) && facOf(L.name) ? facOf(L.name) : '';
+    const route = (C.byElect || {})[L.id] ? `By-election in ${esc(C.byElect[L.id][0])}${L.inc ? ', then the campaign' : ', then the spill'}` : L.inc ? 'Straight to the campaign' : 'Five-question spill first';
+    const art = (window.CARD_ART || {})[L.name], cred = art ? art.credit : (APP.phCred ? APP.phCred(L.name) : '');
+    const logo = { ALP: 'alp', LNP: 'lnp', GRN: 'grn', ONP: 'onp' }[L.party], RN = { A: 'Holo rare', B: 'Gold', C: 'Silver', D: 'Bronze', E: 'Common', F: 'Common', N: 'Common' };
+    const q = esc((L.name + ' ' + seat + ' ' + C.PARTIES[L.party].n + (L.sb ? ' ' + L.sb : '') + ' ' + (((C.byElect || {})[L.id] || [])[0] || '')).toLowerCase().replace(/\((nsw|vic|qld|wa|sa|tas|act|nt)\)/g, (m, k) => m + ' ' + { nsw: 'new south wales', vic: 'victoria', qld: 'queensland', wa: 'western australia', sa: 'south australia', tas: 'tasmania', act: 'canberra', nt: 'northern territory' }[k]));
+    const isOwned = owns(L.id);
+    const lockedCls = !isOwned && !opts.forceUnlocked ? ' locked' : '';
+    const noHoldCls = opts.inModal ? ' no-hold' : '';
+    return `<div class="cmp-ltile tcard r-${rar}${lockedCls}${noHoldCls}" data-lead="${L.id}" data-tags="${ldrTags(L)}${isOwned ? ' owned' : ''}" data-q="${q}" style="--pc:${PC(L.party)}" tabindex="0" role="button" aria-label="${esc(L.name)}, ${esc(C.PARTIES[L.party].n)}. ${opts.inModal ? 'Press to flip the card.' : `Press to flip the card; press and hold for three seconds to play as ${esc(surname(L.name))}.`}">
+      <div class="tc-3d"><div class="tc-flip">
+      <section class="tc-face tc-front" aria-label="${esc(L.name)}, front of card">
+        <header class="tc-top"><b class="lt-name">${esc(L.name)}</b>${g ? `${gradeTag(L, g)}` : ''}</header>
+        <div class="tc-art lt-pic${mk != null ? ' mast m' + mk : ''}${art ? ' has-art' : ''}">${art ? `<img class="lt-ph" src="${esc(art.src)}" alt="" loading="lazy" style="object-position:${esc(art.pos || '50% 20%')}">` : (() => { const src = APP.phOf(L.name); return src && !/^data:/.test(src) ? `<img class="tc-bgph" src="${esc(src)}" alt="" aria-hidden="true" loading="lazy"><img class="lt-ph tc-fit" src="${esc(src)}" alt="" loading="lazy">` : photo(L.name, 'lt-ph'); })()}<i class="tc-holo" aria-hidden="true"></i><i class="tc-glare" aria-hidden="true"></i><span class="tc-lock" aria-hidden="true"><b>Not collected</b><small>Find this leader in a pack</small></span><em class="lt-badge ${L.inc ? 'inc' : 'ch'}">${badge}</em>${mk != null ? `<i class="lt-rib" title="${MR_TITLES[Math.min(3, mk)]}" aria-label="${MR_TITLES[Math.min(3, mk)]}">${mk <= 2 ? ['I', 'II', 'III'][mk] : '·'}</i>` : ''}</div>
+        <div class="tc-type"><span>${esc(C.PARTIES[L.party].n)}${L.sb === 'Nationals' ? ' · Nationals' : ''}${fac ? ' · ' + esc(fac) : ''}</span><small>${esc(seat)}</small></div>
+        <p class="tc-route">${route}</p>
+        <div class="tc-moves lt-perks"><p class="pk ${L.noGood ? 'bad' : 'good'}">${TM(L.noGood ? -1 : 1)}<span><b>${esc(L.plus[0])}</b> ${kw(esc(L.plus[1]))}</span></p><p class="pk bad">${TM(-1)}<span><b>${esc(L.minus[0])}</b> ${kw(esc(L.minus[1]))}</span></p></div>
+        ${tr.length ? `<p class="tc-more"><span>Character traits on back</span><span class="tc-mk" aria-hidden="true">${tr.map(t => TM(t.tier)).join('')}</span></p>` : ''}
+        <footer class="tc-foot"><span class="tc-no">No. ${String(no).padStart(3, '0')}/${String(C.leaders.length).padStart(3, '0')}</span><span class="tc-rar">${RN[rar]}</span></footer>
+      </section>
+      <section class="tc-face tc-back" aria-label="${esc(L.name)}, back of card">
+        <header class="tc-bhead">${logo ? `<img class="tc-logo" src="assets/img/logos/${logo}.png" alt="">` : `<b class="tc-plogo">${esc(C.PARTIES[L.party].n)}</b>`}<span><b>${esc(L.name)}</b><small>${esc(seat)}${fac ? ' · ' + esc(fac) : ''}</small></span></header>
+        <div class="tc-bsec"><span class="tc-bk">The ticket</span><div class="lt-mates">${L.mates.map((m, i) => `<span>${photo(m, 'mt-ph')}<span class="mt-who"><i>${esc(mateRole(L, i, m))}</i>${esc(m)}</span></span>`).join('')}</div></div>
+        ${tr.length ? `<div class="tc-bsec"><span class="tc-bk">Character traits</span><ul class="tc-traits">${tr.map(t => `<li class="t${t.tier}">${TM(t.tier)}<span><b>${esc(t.n)}</b>${esc(t.d)}<em class="tc-fx">${t.fx.map(esc).join(' · ')}</em></span></li>`).join('')}</ul></div>` : ''}
+        <div class="tc-bsec"><span class="tc-bk">Your collection</span><div class="lt-prog" title="Honours and leader-only answers"><i class="pb"><i style="width:${Math.round(pg.f * 100)}%"></i></i><small>Honours ${pg.a}/${pg.h} · answers ${pg.b}/${pg.o}</small></div></div>
+        ${cred ? `<p class="tc-cred">Photo: ${esc(cred)}</p>` : ''}
+        <footer class="tc-foot"><span class="tc-no">No. ${String(no).padStart(3, '0')}/${String(C.leaders.length).padStart(3, '0')}</span>${!opts.hideCompareBtn ? `<button type="button" class="tc-cmpbtn" data-cmpfrom="${L.id}">Compare →</button>` : ''}<span class="tc-rar">${RN[rar]}</span></footer>
+      </section>
+      </div></div>
+      ${opts.inModal ? '' : `<div class="tc-ring" aria-hidden="true"><svg viewBox="0 0 80 80"><circle class="tr-bg" cx="40" cy="40" r="34"/><circle class="tr-arc" cx="40" cy="40" r="34"/></svg><b>Play as<br>${esc(surname(L.name))}</b></div>
+      <div class="tc-hint" aria-hidden="true"><i class="tc-hbar"><i></i></i><span class="h-own"><b>Tap</b> to flip · <b>hold</b> to play as ${esc(surname(L.name))}</span><span class="h-lock"><b>Tap</b> to flip · open packs to collect ${esc(surname(L.name))}</span></div>`}
+    </div>`;
+  }
+  function collCtx() {
+    return { C, E, A, APP, ICON, esc, PC, PN, SX, TM, kw, photo, gradeTag, siteTraits, facOf, mateRole, exMP, ldrProg, coll, owns, packsLeft, nextPackAt, packBtn, collBar, achCount, toolbar, mast, buildTCard };
+  }
   function vSelect() {
     if (scenNeed(prefs.scen)) { prefs.scen = 'std'; savePrefs(); }
-    const saved = E.load();
+    const saved = E.load(), mastAll = E.mastery();
     const cols = Object.entries(C.PARTIES).map(([p, P]) => {
       const ls = C.leaders.filter(l => l.party === p);
-      const mast = E.mastery(), MR = ['Top tier reached', 'Second tier reached', 'Third tier reached', 'Played'];
-      const tile = L => {
-        const tr = siteTraits(L), seat = ((APP.DATA.leaders.find(x => x.name === L.name && x.party === (L.sb || P.ldr)) || {}).seat || '').replace(' (candidate)', ' (running)');
-        const mk = mast[L.id];
-        const pg = ldrProg(L);
-        const g = ((window.TIERLIST || {}).leaders || []).find(x => x.id === L.id), rar = g ? g.grade : 'N', no = C.leaders.indexOf(L) + 1;
-        const badge = L.inc ? (P.cross && p !== 'ONP' ? (p === 'IND' ? (L.fresh ? 'Fresh face' : L.cb ? 'Comeback' : L.more ? 'Teal' : 'Convenor') : 'Leader') : 'Leader') : exMP(L) ? 'Comeback' : L.sb === 'Nationals' ? 'Nationals' : 'Challenger';
-        const fac = (L.party === 'ALP' || (L.party === 'LNP' && L.sb !== 'Nationals')) && facOf(L.name) ? facOf(L.name) : '';
-        const route = (C.byElect || {})[L.id] ? `By-election in ${esc(C.byElect[L.id][0])}${L.inc ? ', then the campaign' : ', then the spill'}` : L.inc ? 'Straight to the campaign' : 'Five-question spill first';
-        const art = (window.CARD_ART || {})[L.name], cred = art ? art.credit : (APP.phCred ? APP.phCred(L.name) : '');
-        const logo = { ALP: 'alp', LNP: 'lnp', GRN: 'grn', ONP: 'onp' }[L.party], RN = { A: 'Holo rare', B: 'Gold', C: 'Silver', D: 'Bronze', E: 'Common', F: 'Common', N: 'Common' };
-        const q = esc((L.name + ' ' + seat + ' ' + C.PARTIES[L.party].n + (L.sb ? ' ' + L.sb : '') + ' ' + (((C.byElect || {})[L.id] || [])[0] || '')).toLowerCase().replace(/\((nsw|vic|qld|wa|sa|tas|act|nt)\)/g, (m, k) => m + ' ' + { nsw: 'new south wales', vic: 'victoria', qld: 'queensland', wa: 'western australia', sa: 'south australia', tas: 'tasmania', act: 'canberra', nt: 'northern territory' }[k]));
-        return `<div class="cmp-ltile tcard r-${rar}${owns(L.id) ? '' : ' locked'}" data-lead="${L.id}" data-tags="${ldrTags(L)}${owns(L.id) ? ' owned' : ''}" data-q="${q}" style="--pc:${PC(L.party)}" tabindex="0" role="button" aria-label="${esc(L.name)}, ${esc(C.PARTIES[L.party].n)}. Press to flip the card; press and hold for three seconds to play as ${esc(surname(L.name))}.">
-          <div class="tc-3d"><div class="tc-flip">
-          <section class="tc-face tc-front" aria-label="${esc(L.name)}, front of card">
-            <header class="tc-top"><b class="lt-name">${esc(L.name)}</b>${g ? `${gradeTag(L, g)}` : ''}</header>
-            <div class="tc-art lt-pic${mk != null ? ' mast m' + mk : ''}${art ? ' has-art' : ''}">${art ? `<img class="lt-ph" src="${esc(art.src)}" alt="" loading="lazy" style="object-position:${esc(art.pos || '50% 20%')}">` : (() => { const src = APP.phOf(L.name); return src && !/^data:/.test(src) ? `<img class="tc-bgph" src="${esc(src)}" alt="" aria-hidden="true" loading="lazy"><img class="lt-ph tc-fit" src="${esc(src)}" alt="" loading="lazy">` : photo(L.name, 'lt-ph'); })()}<i class="tc-holo" aria-hidden="true"></i><i class="tc-glare" aria-hidden="true"></i><span class="tc-lock" aria-hidden="true"><b>Not collected</b><small>Find this leader in a pack</small></span><em class="lt-badge ${L.inc ? 'inc' : 'ch'}">${badge}</em>${mk != null ? `<i class="lt-rib" title="${MR[Math.min(3, mk)]}" aria-label="${MR[Math.min(3, mk)]}">${mk <= 2 ? ['I', 'II', 'III'][mk] : '·'}</i>` : ''}</div>
-            <div class="tc-type"><span>${esc(C.PARTIES[L.party].n)}${L.sb === 'Nationals' ? ' · Nationals' : ''}${fac ? ' · ' + esc(fac) : ''}</span><small>${esc(seat)}</small></div>
-            <p class="tc-route">${route}</p>
-            <div class="tc-moves lt-perks"><p class="pk ${L.noGood ? 'bad' : 'good'}">${TM(L.noGood ? -1 : 1)}<span><b>${esc(L.plus[0])}</b> ${kw(esc(L.plus[1]))}</span></p><p class="pk bad">${TM(-1)}<span><b>${esc(L.minus[0])}</b> ${kw(esc(L.minus[1]))}</span></p></div>
-            ${tr.length ? `<p class="tc-more"><span>Character traits on back</span><span class="tc-mk" aria-hidden="true">${tr.map(t => TM(t.tier)).join('')}</span></p>` : ''}
-            <footer class="tc-foot"><span class="tc-no">No. ${String(no).padStart(3, '0')}/${String(C.leaders.length).padStart(3, '0')}</span><span class="tc-rar">${RN[rar]}</span></footer>
-          </section>
-          <section class="tc-face tc-back" aria-label="${esc(L.name)}, back of card">
-            <header class="tc-bhead">${logo ? `<img class="tc-logo" src="assets/img/logos/${logo}.png" alt="">` : `<b class="tc-plogo">${esc(C.PARTIES[L.party].n)}</b>`}<span><b>${esc(L.name)}</b><small>${esc(seat)}${fac ? ' · ' + esc(fac) : ''}</small></span></header>
-            <div class="tc-bsec"><span class="tc-bk">The ticket</span><div class="lt-mates">${L.mates.map((m, i) => `<span>${photo(m, 'mt-ph')}<span class="mt-who"><i>${esc(mateRole(L, i, m))}</i>${esc(m)}</span></span>`).join('')}</div></div>
-            ${tr.length ? `<div class="tc-bsec"><span class="tc-bk">Character traits</span><ul class="tc-traits">${tr.map(t => `<li class="t${t.tier}">${TM(t.tier)}<span><b>${esc(t.n)}</b>${esc(t.d)}<em class="tc-fx">${t.fx.map(esc).join(' · ')}</em></span></li>`).join('')}</ul></div>` : ''}
-            <div class="tc-bsec"><span class="tc-bk">Your collection</span><div class="lt-prog" title="Honours and leader-only answers"><i class="pb"><i style="width:${Math.round(pg.f * 100)}%"></i></i><small>Honours ${pg.a}/${pg.h} · answers ${pg.b}/${pg.o}</small></div></div>
-            ${cred ? `<p class="tc-cred">Photo: ${esc(cred)}</p>` : ''}
-            <footer class="tc-foot"><span class="tc-no">No. ${String(no).padStart(3, '0')}/${String(C.leaders.length).padStart(3, '0')}</span><span class="tc-rar">${RN[rar]}</span></footer>
-          </section>
-          </div></div>
-          <div class="tc-ring" aria-hidden="true"><svg viewBox="0 0 80 80"><circle class="tr-bg" cx="40" cy="40" r="34"/><circle class="tr-arc" cx="40" cy="40" r="34"/></svg><b>Play as<br>${esc(surname(L.name))}</b></div>
-          <div class="tc-hint" aria-hidden="true"><i class="tc-hbar"><i></i></i><span class="h-own"><b>Tap</b> to flip · <b>hold</b> to play as ${esc(surname(L.name))}</span><span class="h-lock"><b>Tap</b> to flip · open packs to collect ${esc(surname(L.name))}</span></div>
-        </div>`; };
+      const tile = L => buildTCard(L, { mast: mastAll });
       // sitting members of parliament show straight away; anyone who would need a by-election to get in sits behind one clear toggle
       const outP = L => !!((C.byElect || {})[L.id] || L.cb || L.fresh);
       const inn0 = ls.filter(L => !outP(L)), out = ls.filter(outP);
@@ -234,7 +246,7 @@
               : prefs.diff === 'easy' ? 'Easy: rivals answer back more softly, the polls are honest and Political Power comes faster.' : prefs.diff === 'hard' ? 'Hard: rivals hit back harder, the polls can be badly wrong, and Political Power is tight. Scores count for more.' : 'Standard: the campaign as designed.'}</p></div>`; })()
       + `<details class="cmp-howd"><summary>How a campaign plays</summary><div class="cmp-how"><span><b>${SX('pp', 'in')}Political Power</b> builds each turn; spend it on campaign decisions.</span><span><b>${SX('unity', 'in')}Caucus unity</b> below 40 leaks; below 20 means revolt.</span><span><b>${SX('mom', 'in')}Momentum</b> lifts your vote and fades a point a turn. Hold 6 or more while ahead to ride a wave.</span><span><b>Rivals answer back:</b> an average answer just holds ground. Beat the typical answer to build a lead.</span><span><b>The polls lie a little.</b> Several pollsters, each with a lean, and a hidden miss you only find out about on election night.</span><span><b>Every week</b> you pick two states to tour; in the final week pre-poll is open and each day counts for less.</span></div></details>`
       + `<details class="cmp-code"><summary>Continue a campaign from another device</summary><p class="cmp-note">Paste a run code from Copy a run code (in any campaign’s side column).</p><textarea id="cmpcode" rows="3" spellcheck="false" aria-label="Run code" placeholder="ES28-…"></textarea><div class="cmp-endbtns"><button type="button" data-a="loadcode">Load the run</button><span class="code-msg" role="status">${esc(codeMsg)}</span></div></details></aside><div class="sel-main">`
-      + (prefs.mode === 'daily' ? dailyCard() : `<div class="ldr-find" role="search"><div class="lf-tabs" role="tablist" aria-label="Party">${[...Object.entries(C.PARTIES).map(([k, P]) => [k, P.n]), ['all', 'All parties'], ['own', 'Unlocked']].map(([k, n]) => `<button type="button" role="tab" class="lf-tab${prefs.party === k ? ' on' : ''}" data-lp="${k}" aria-selected="${prefs.party === k}"${C.PARTIES[k] ? ` style="--pc:${PC(k)}"` : k === 'own' ? ' style="--pc:#c9962e"' : ''}>${esc(n)}<small>${k === 'all' ? C.leaders.length : k === 'own' ? C.leaders.filter(l => owns(l.id)).length : C.leaders.filter(l => l.party === k).length}</small></button>`).join('')}</div><label class="lf-q"><span class="kick">Find a leader</span><input id="ldrq" type="search" placeholder="Name, seat or party" autocomplete="off" value="${esc(ldrQ)}"></label><div class="lf-chips" role="group" aria-label="Show">${[['all', 'All'], ['owned', 'Unlocked'], ['main', 'Headliners'], ['comeback', 'Comebacks'], ['fresh', 'Fresh faces'], ['nationals', 'Nationals'], ['left', 'Labor Left'], ['right', 'Labor Right'], ['mod', 'Liberal Moderates'], ['natright', 'National Right'], ['centre', 'Centre Right']].map(([k, n]) => `<button type="button" class="seg${ldrF === k ? ' on' : ''}" data-lf="${k}" aria-pressed="${ldrF === k}">${n}</button>`).join('')}</div><div class="lf-acts"><a class="lf-tl" href="tier-list.html">Tier list: who is easiest to win with ${ICON('star')}</a><button type="button" data-a="randlead" title="Start a campaign as a random leader from your collection">${ICON('dice')} Random Leader</button>${packBtn()}</div><p class="coll-n">${collBar()}</p><p class="lf-n cmp-note" id="lfn" role="status"></p></div>`
+      + (prefs.mode === 'daily' ? dailyCard() : `<div class="ldr-find" role="search"><div class="lf-tabs" role="tablist" aria-label="Party">${[...Object.entries(C.PARTIES).map(([k, P]) => [k, P.n]), ['all', 'All parties'], ['own', 'Unlocked']].map(([k, n]) => `<button type="button" role="tab" class="lf-tab${prefs.party === k ? ' on' : ''}" data-lp="${k}" aria-selected="${prefs.party === k}"${C.PARTIES[k] ? ` style="--pc:${PC(k)}"` : k === 'own' ? ' style="--pc:#c9962e"' : ''}>${esc(n)}<small>${k === 'all' ? C.leaders.length : k === 'own' ? C.leaders.filter(l => owns(l.id)).length : C.leaders.filter(l => l.party === k).length}</small></button>`).join('')}</div><label class="lf-q"><span class="kick">Find a leader</span><input id="ldrq" type="search" placeholder="Name, seat or party" autocomplete="off" value="${esc(ldrQ)}"></label><div class="lf-chips" role="group" aria-label="Show">${[['all', 'All'], ['owned', 'Unlocked'], ['main', 'Headliners'], ['comeback', 'Comebacks'], ['fresh', 'Fresh faces'], ['nationals', 'Nationals'], ['left', 'Labor Left'], ['right', 'Labor Right'], ['mod', 'Liberal Moderates'], ['natright', 'National Right'], ['centre', 'Centre Right']].map(([k, n]) => `<button type="button" class="seg${ldrF === k ? ' on' : ''}" data-lf="${k}" aria-pressed="${ldrF === k}">${n}</button>`).join('')}</div><div class="lf-acts"><a class="lf-tl" href="tier-list.html">Tier list: who is easiest to win with ${ICON('star')}</a><button type="button" data-a="binder" title="Open the 65-card collection album">${ICON('diamond')} Collection Binder</button><button type="button" data-a="compare" title="Compare any two leaders side by side">${ICON('flip')} Compare Leaders</button><button type="button" data-a="randlead" title="Start a campaign as a random leader from your collection">${ICON('dice')} Random Leader</button>${packBtn()}</div><p class="coll-n">${collBar()}</p><p class="lf-n cmp-note" id="lfn" role="status"></p></div>`
       + `<div class="cmp-pcols${C.PARTIES[prefs.party] && prefs.mode !== 'daily' ? ' one' : ''}">${prefs.mode === 'daily' ? '' : cols}</div><p class="cmp-note">Vote effects come from each leader’s sandbox traits (++ to −−); the perks are campaign rules. XYZ News is fictional, and none of the choices are quotes from real people. Tier-list grades (A to F) measure how hard each leader is to win with in the current scenario, not a judgement of the people themselves.</p></div></div>`);
   }
 
@@ -960,14 +972,14 @@
     inn.querySelectorAll('.lf-tab').forEach(t => t.classList.toggle('dim', !!q));
     const el = $('lfn'); if (el) el.textContent = act ? `${n} leader${n === 1 ? '' : 's'} shown${q ? ' across all parties' : ''}` : ''; }
   function render() {
-    if (view !== 'select' && view !== 'ach' && view !== 'board' && view !== 'hall' && !st) view = 'select';
+    if (view !== 'select' && view !== 'ach' && view !== 'board' && view !== 'hall' && view !== 'binder' && view !== 'compare' && !st) view = 'select';
     if (MAPEL && MAPEL.parentNode) MAPEL.parentNode.removeChild(MAPEL);
     giveBack(); if (view !== 'count') stopCount();
     if (view === 'game' && !fb && viewFor() === 'tour') { view = 'tour'; if (!tourSel.length) { tourSel = (st.tour || []).slice(); tourHard = !!st.tourHard; } }
     hideTip(); const sameView = inn.classList.contains('v-' + view), prevV = sameView ? snapVals() : null, prevKey = inn.dataset.key || '';
     inn.className = 'cmp-in v-' + view;
     clearDoor();
-    inn.innerHTML = view === 'select' ? vSelect() : view === 'ach' ? vAch() : view === 'hall' ? vHall() : view === 'board' ? vBoard() : view === 'failed' ? vFailed() : view === 'night' ? vNight() : view === 'count' ? vCount() : view === 'tour' ? vTour() : view === 'hung' ? vHung() : view === 'verdict' ? vVerdict() : vGame();
+    inn.innerHTML = view === 'select' ? vSelect() : view === 'binder' && window.CAMPAIGN_COLL ? window.CAMPAIGN_COLL.renderBinder(collCtx()) : view === 'compare' && window.CAMPAIGN_COLL ? window.CAMPAIGN_COLL.renderCompare(collCtx()) : view === 'ach' ? vAch() : view === 'hall' ? vHall() : view === 'board' ? vBoard() : view === 'failed' ? vFailed() : view === 'night' ? vNight() : view === 'count' ? vCount() : view === 'tour' ? vTour() : view === 'hung' ? vHung() : view === 'verdict' ? vVerdict() : vGame();
     if (window.SiteBar) SiteBar.infoize(inn);
     root.dataset.rim = A.rim().cls; root.classList.toggle('nomotion', !prefs.motion);
     const key = view + '|' + (view === 'game' ? (fb ? 'fb' + (st.log || []).length : 'c' + st.turn + (st.cur || '')) : '');
@@ -1095,7 +1107,7 @@
   function collBar() { const c = coll(), n = C.leaders.filter(L => c.owned[L.id]).length, nx = nextPackAt(); return `<span class="coll-bar"><i style="width:${Math.round(n / C.leaders.length * 100)}%"></i></span><b>${n}/${C.leaders.length}</b> leaders collected${packsLeft() ? ` · <em>${packsLeft()} pack${packsLeft() === 1 ? '' : 's'} to open</em>` : nx != null ? ` · next pack at ${nx} honour${nx === 1 ? '' : 's'} (you have ${achCount()})` : ' · collection complete'}`; }
   // ---- a leader pack: tap to tear it open and pull one card. Rarer grades turn up less often.
   const PACKW = { A: 1, B: 2, C: 3, D: 3, E: 3, F: 3, N: 3 };
-  function closePack() { const ov = root.querySelector('.pk-ov'); if (ov) { const torn = ov.classList.contains('torn'); ov.remove(); if (torn && view === 'select') { const y = root.scrollTop; render(); root.scrollTop = y; } } document.removeEventListener('keydown', packKey); }
+  function closePack() { const ov = root.querySelector('.pk-ov'); if (ov) { const torn = ov.classList.contains('torn'); ov.remove(); if (torn && (view === 'select' || view === 'binder')) { const y = root.scrollTop; render(); root.scrollTop = y; } } document.removeEventListener('keydown', packKey); }
   function packKey(e) { if (e.key === 'Escape') closePack(); }
   function openPack() { closePack(); const c0 = coll(), rarOf = id => { const g = ((window.TIERLIST || {}).leaders || []).find(x => x.id === id); return g ? g.grade : 'N'; };
     // three leaders: ones you don't have first, rarer grades less often; duplicates only once the collection is nearly full
@@ -1117,7 +1129,7 @@
       <div class="pk-acts" hidden><button type="button" data-a="pkagain" class="ghost pk-again">${ICON('star')} Open another</button><button type="button" data-a="pkclose" class="ghost">Done</button></div></div>`;
     root.appendChild(ov); document.addEventListener('keydown', packKey); const pack = ov.querySelector('.pk-pack'), strip = ov.querySelector('.pk-strip'); pack.focus({ preventScroll: true });
     ov.addEventListener('click', e => { if (e.target === ov && ov.classList.contains('revealed')) closePack(); });
-    ids.forEach((id, k) => { const src = inn.querySelector(`.tcard[data-lead="${id}"]`); if (!src) return; const card = src.cloneNode(true); card.classList.remove('dealt', 'flipped', 'tilting', 'holding', 'chosen', 'locked'); card.hidden = false; ov.querySelectorAll('.pk-front')[k].appendChild(card); });
+    ids.forEach((id, k) => { let card = null; const src = inn.querySelector(`.tcard[data-lead="${id}"]`); if (src) { card = src.cloneNode(true); } else { const L = C.leaders.find(x => x.id === id); if (L) { const tmp = document.createElement('div'); tmp.innerHTML = buildTCard(L, { forceUnlocked: true }); card = tmp.firstElementChild; } } if (!card) return; card.classList.remove('dealt', 'flipped', 'tilting', 'holding', 'chosen', 'locked', 'no-hold'); card.hidden = false; ov.querySelectorAll('.pk-front')[k].appendChild(card); });
     const T = ms => prefs.motion && !ov.classList.contains('instant') ? ms : 0;
     // the pack is used up the moment it is torn, so the three leaders are yours even if you close early
     const claim = () => { const c = coll(); ids.forEach(id => { if (!c.owned[id]) c.owned[id] = Date.now(); }); c.opened = (c.opened || 0) + 1; collSave(c); };
@@ -1150,9 +1162,9 @@
   function flipCard(c) { c.classList.toggle('flipped'); if (prefs.sound) sfx('page'); }
   // tap a card to flip it; hold it for a second and a half to play as that leader (Enter or Space work the same way)
   const HOLD = 1500; let hold = null;
-  function holdStart(c, x, y) { holdEnd(); if (c.classList.contains('locked')) { hold = { c, t0: Date.now(), x, y, timer: setTimeout(() => { if (!hold || hold.c !== c) return; hold = null; c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake'); notice('Collection', 'Open packs to collect ' + ((c.querySelector('.lt-name') || {}).textContent || 'this leader')); }, 500) }; return; } hold = { c, t0: Date.now(), x, y, timer: setTimeout(() => { const h = hold; hold = null; if (!h) return; c.classList.remove('holding'); c.classList.add('chosen'); sfx('chime'); try { if (navigator.vibrate) navigator.vibrate(30); } catch (e) {} setTimeout(() => start(c.dataset.lead), prefs.motion ? 420 : 0); }, HOLD) };
+  function holdStart(c, x, y) { holdEnd(); if (c.classList.contains('no-hold')) { hold = { c, t0: Date.now(), x, y, timer: null }; return; } if (c.classList.contains('locked')) { hold = { c, t0: Date.now(), x, y, timer: setTimeout(() => { if (!hold || hold.c !== c) return; hold = null; c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake'); notice('Collection', 'Open packs to collect ' + ((c.querySelector('.lt-name') || {}).textContent || 'this leader')); }, 500) }; return; } hold = { c, t0: Date.now(), x, y, timer: setTimeout(() => { const h = hold; hold = null; if (!h) return; c.classList.remove('holding'); c.classList.add('chosen'); sfx('chime'); try { if (navigator.vibrate) navigator.vibrate(30); } catch (e) {} setTimeout(() => start(c.dataset.lead), prefs.motion ? 420 : 0); }, HOLD) };
     setTimeout(() => { if (hold && hold.c === c) c.classList.add('holding'); }, 160); }
-  function holdEnd(tap) { if (!hold) return false; const h = hold; hold = null; clearTimeout(h.timer); h.c.classList.remove('holding'); const quick = Date.now() - h.t0 < 300; if (tap && quick) flipCard(h.c); return quick; }
+  function holdEnd(tap) { if (!hold) return false; const h = hold; hold = null; if (h.timer) clearTimeout(h.timer); h.c.classList.remove('holding'); const quick = Date.now() - h.t0 < 300; if (tap && quick) flipCard(h.c); return quick; }
   root.addEventListener('pointerdown', e => { const c = e.target.closest('.tcard'); if (!c || e.button > 0 || e.target.closest('button, a, [data-info], .info-b')) return; holdStart(c, e.clientX, e.clientY); });
   root.addEventListener('pointerup', e => { if (hold) holdEnd(true); });
   root.addEventListener('pointercancel', () => holdEnd());
@@ -1172,12 +1184,18 @@
   // cards are dealt in, a few at a time, whenever the shown set changes
   function deal(scope) { if (!prefs.motion) return; let k = 0; (scope || inn).querySelectorAll('.tcard').forEach(c => { c.classList.remove('dealt'); if (c.offsetParent === null) return; c.style.setProperty('--di', Math.min(k++, 14)); void c.offsetWidth; c.classList.add('dealt'); }); }
   root.addEventListener('toggle', e => { if (e.target.classList && e.target.classList.contains('lt-more') && e.target.open) deal(e.target); }, true);
-  root.addEventListener('input', e => { if (e.target.id === 'ldrq') { ldrQ = e.target.value; applyLF(); } });
-  root.addEventListener('change', e => { if (e.target.id === 'achl') { achL = e.target.value; render(); const f = $('achl'); if (f) f.focus(); return; } if (e.target.id === 'cmpscen') { prefs.scen = e.target.value; savePrefs(); render(); const f = $('cmpscen'); if (f) f.focus(); } });
+  const collApi = {
+    rerender: keepY => { const y = root.scrollTop; render(); if (keepY) root.scrollTop = y; },
+    setView: v => { view = v; render(); root.scrollTop = 0; focusTitle(); }
+  };
+  root.addEventListener('input', e => { if (e.target.id === 'ldrq') { ldrQ = e.target.value; applyLF(); return; } if (window.CAMPAIGN_COLL && window.CAMPAIGN_COLL.handleInput(e.target, inn, collCtx())) return; });
+  root.addEventListener('change', e => { if (e.target.id === 'achl') { achL = e.target.value; render(); const f = $('achl'); if (f) f.focus(); return; } if (e.target.id === 'cmpscen') { prefs.scen = e.target.value; savePrefs(); render(); const f = $('cmpscen'); if (f) f.focus(); return; } if (window.CAMPAIGN_COLL && window.CAMPAIGN_COLL.handleChange(e.target, collCtx(), collApi)) return; });
   root.addEventListener('click', e => {
+    if (e.target && e.target.dataset && e.target.dataset.bdclose === 'bg' && window.CAMPAIGN_COLL && window.CAMPAIGN_COLL.state.bOpen) { window.CAMPAIGN_COLL.state.bOpen = null; collApi.rerender(true); return; }
     const b = e.target.closest('button'); if (!b || b.disabled) return;
+    if (window.CAMPAIGN_COLL && window.CAMPAIGN_COLL.handleClick(b, collCtx(), collApi)) return;
     if (b.hasAttribute('data-flip')) { const c = b.closest('.tcard'); if (c) flipCard(c); return; }
-    if (b.dataset.lead) { const c = b.closest('.tcard'); if (c && prefs.motion) { c.classList.add('chosen'); sfx(); setTimeout(() => start(b.dataset.lead), 380); return; } return start(b.dataset.lead); }
+    if (b.dataset.lead) { if (window.CAMPAIGN_COLL) window.CAMPAIGN_COLL.state.bOpen = null; const c = b.closest('.tcard'); if (c && prefs.motion) { c.classList.add('chosen'); sfx(); setTimeout(() => start(b.dataset.lead), 380); return; } return start(b.dataset.lead); }
     if (b.dataset.opt != null) { const k = +b.dataset.opt; if (!prefs.motion) return after(E.choose(st, k)); if (inn.querySelector('.cmp-opts.picking')) return; clearDoor();
       const box = b.closest('.cmp-opts'); if (box) box.classList.add('picking'); b.classList.add('picked'); sfx(); setTimeout(() => { if (st) after(E.choose(st, k)); }, 260); return; }
     if (b.dataset.dec) { const r = E.enact(st, b.dataset.dec); if (r) after(r); return; }
@@ -1208,6 +1226,8 @@
     else if (a === 'sound') { prefs.sound = prefs.sound ? 0 : 1; savePrefs(); render(); if (prefs.sound) sfx(); refocus('sound'); }
     else if (a === 'motion') { prefs.motion = prefs.motion ? 0 : 1; savePrefs(); render(); refocus('motion'); }
     else if (a === 'sandbox') toSandbox();
+    else if (a === 'binder') { cheatsOpen = false; if (window.CAMPAIGN_COLL) window.CAMPAIGN_COLL.state.bOpen = null; view = 'binder'; render(); root.scrollTop = 0; focusTitle(); }
+    else if (a === 'compare') { cheatsOpen = false; if (window.CAMPAIGN_COLL) window.CAMPAIGN_COLL.state.bOpen = null; view = 'compare'; render(); root.scrollTop = 0; focusTitle(); }
     else if (a === 'hall') { cheatsOpen = false; view = 'hall'; render(); root.scrollTop = 0; focusTitle(); }
     else if (a === 'board') { cheatsOpen = false; view = 'board'; render(); root.scrollTop = 0; focusTitle(); }
     else if (a === 'pfcheats') { cheatsOpen = !cheatsOpen; const y = root.scrollTop; render(); root.scrollTop = y; const box = $('pfcheats'); if (box) box.scrollIntoView({ block: 'nearest', behavior: prefs.motion ? 'smooth' : 'auto' }); }
