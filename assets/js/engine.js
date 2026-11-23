@@ -103,13 +103,19 @@
     return q.map(v => v * 100 / s);
   }
   // demographic rules: {f: factor index, party: 0 ALP 1 COA 2 GRN 3 ON 4 IND, amt: points per standard deviation}
-  function demo(p, cz, rules) {
+  // also: {rg: AEC seat type, amt} adds a flat amount in seats of that type (used by campaign mode)
+  // also: {st: state, amt} adds a flat amount in that state's seats; {col: vote column} targets one column (only where that party stands)
+  function demo(p, cz, rules, st, rg) {
     if (!rules.length || !cz) return p;
     const q = p.slice();
     rules.forEach(r => {
-      if (!r.amt || r.f == null || r.f < 0) return;
-      const z = Math.max(-3, Math.min(3, cz[r.f] || 0)), add = r.amt * z;
-      if (r.party === 1) { const c = q[1] + q[2]; if (c > 0) { q[1] = Math.max(0, q[1] + add * q[1] / c); q[2] = Math.max(0, q[2] + add * q[2] / c); } }
+      if (!r.amt) return;
+      let add;
+      if (r.rg) { if (r.rg !== rg) return; add = r.amt; }
+      else if (r.st) { if (r.st !== st) return; add = r.amt; }
+      else { if (r.f == null || r.f < 0) return; const z = Math.max(-3, Math.min(3, cz[r.f] || 0)); add = r.amt * z; }
+      if (r.col != null) { if (q[r.col] > 0) q[r.col] = Math.max(0, q[r.col] + add); }
+      else if (r.party === 1) { const c = q[1] + q[2]; if (c > 0) { q[1] = Math.max(0, q[1] + add * q[1] / c); q[2] = Math.max(0, q[2] + add * q[2] / c); } }
       else { const j = [0, -1, 3, 4, 8][r.party]; if (q[j] > 0 || add > 0) q[j] = Math.max(0, q[j] + add); }
     });
     const t = q.reduce((a, b) => a + b, 0); return q.map(v => v * 100 / t);
@@ -227,7 +233,7 @@
     { const gc = new Array(D.NG).fill(0); let Wt = 0;
       start.forEach((p, i) => { const fv = D.seats[i].fv; Wt += fv; const seen = {}; p.forEach((v, j) => { const g = D.colG[j]; if (j >= 5 && v > 0.05 && !seen[g]) { seen[g] = 1; gc[g] += fv; } }); });
       DS = Object.create(DS); DS.gCont = gc.map(v => v / Wt); }
-    const base = start.map((p, i) => demo(shiftSeat(p, S.d, DS.nat100, DS), D.seats[i].cz, S.demo || []));
+    const base = start.map((p, i) => demo(shiftSeat(p, S.d, DS.nat100, DS), D.seats[i].cz, S.demo || [], D.seats[i].st, D.seats[i].rg));
     if (S.dfac && S.dfac.length) for (let i = 0; i < base.length; i++) base[i] = demoF(base[i], D.seats[i], S.dfac, D);
     // Coalition split: separate Liberal and National primary-vote changes (points of the national vote), applied to each party's own columns
     if (S.split && (S.libD || S.natD)) {
@@ -257,7 +263,7 @@
     const margin = [];
     const cargs = [];
     const central = D.seats.map((s, i) => { cargs[i] = [Dof(s), { ...fl0, coaON: cl(fl0.coaON + dON(s)) }, split[i], lcOf(s)]; const c = count(base[i], s.lead, s.k, ...cargs[i]); const sh = c.key === s.key ? c.share + s.off : c.share; const cw = S.called && S.called[i] != null ? S.called[i] : null; margin[i] = { m: Math.abs(sh - 0.5) * 100, w: grp(s, c, sh > 0.5 ? c.hi : c.lo, base[i]), r: grp(s, c, sh > 0.5 ? c.lo : c.hi, base[i]) }; return cw != null ? cw : grp(s, c, sh > 0.5 ? c.hi : c.lo, base[i]); });
-    if (S.centralOnly) { const cc = new Array(NG).fill(0); central.forEach(w => cc[w]++); return { central, cenCount: cc, base }; }
+    if (S.centralOnly) { const cc = new Array(NG).fill(0); central.forEach(w => cc[w]++); return { central, cenCount: cc, base, margin }; }
     for (let t = 0; t < S.trials; t++) {
       const big = R.u() < S.bigP ? S.bigX : 1;
       const m = tf * big * S.errScale;

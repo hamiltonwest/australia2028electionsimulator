@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Campaign balance dashboard · Australia 2028 Election Simulator</title>
+<link rel="stylesheet" href="assets/css/site.css">
+<style>
+  body{max-width:1100px;margin:0 auto;padding:24px 20px 60px}
+  .bd-h{border-bottom:3px double var(--rule);padding-bottom:12px;margin-bottom:18px}
+  .bd-h h1{font-family:var(--display);font-size:40px;margin:4px 0}
+  .bd-h p{color:var(--muted);max-width:70ch}
+  .bd-k{font:600 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  .bd-ctl{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:flex-end;margin:0 0 16px}
+  .bd-ctl label{display:grid;gap:4px;font:600 12px var(--mono)}
+  .bd-ctl select,.bd-ctl input{font:14px var(--mono);padding:6px 8px;border:1px solid var(--ink);background:var(--panel);color:var(--ink)}
+  .bd-ctl button{font:600 14px var(--mono);padding:9px 16px;border:1px solid var(--ink);background:var(--ink);color:var(--bg);cursor:pointer}
+  .bd-ctl button:disabled{opacity:.5;cursor:default}
+  #bdstat{font:13px var(--mono);color:var(--muted);margin:0 0 12px;min-height:1.4em}
+  table{width:100%;border-collapse:collapse;font:14px var(--body)}
+  th,td{text-align:left;padding:7px 8px;border-bottom:1px dotted var(--line);vertical-align:top}
+  th{font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;border-bottom:2px solid var(--rule)}
+  td.num{font-family:var(--mono);white-space:nowrap}
+  td small{display:block;color:var(--muted);font:11px var(--mono)}
+  .bar{position:relative;height:10px;background:var(--soft,#e8e2d4);margin-top:4px}
+  .bar i{position:absolute;top:0;bottom:0;background:var(--pc,#16140f);opacity:.75}
+  .bar b{position:absolute;top:-3px;bottom:-3px;left:50.67%;border-left:2px solid var(--ink)}
+  iframe{position:absolute;width:1200px;height:900px;left:-9999px;top:0;border:0}
+</style>
+</head>
+<body>
+<header class="bd-h"><div class="bd-k">Australia 2028 · campaign mode · not linked from the site</div><h1>Balance dashboard</h1>
+<p>Plays full campaigns with three strategies and reports the seats each leader ends on in the seat projection (no polling error). <b>Best</b> greedily picks the answer and decisions that most improve the projection one step ahead; <b>random</b> picks at random; <b>worst</b> picks the most damaging answer. Best and worst can see how each gamble would land, so they overstate the range a real player can reach. Your saved campaign, honours and collection in this browser are put back when it finishes.</p></header>
+<div class="bd-ctl">
+  <label>Leaders<select id="bdlead" multiple size="7"></select></label>
+  <label>Opening<select id="bdscen"><option value="std">As it stands</option><option value="all">Every opening</option></select></label>
+  <label>Difficulty<select id="bddiff"><option value="std">Standard</option><option value="easy">Easy</option><option value="hard">Hard</option></select></label>
+  <label>Runs per strategy<input id="bdn" type="number" min="1" max="20" value="3"></label>
+  <button type="button" id="bdgo" disabled>Loading the simulator…</button>
+</div>
+<p id="bdstat" role="status"></p>
+<table><thead><tr><th scope="col">Leader</th><th scope="col">Opening</th><th scope="col">Best</th><th scope="col">Random</th><th scope="col">Worst</th></tr></thead><tbody id="bdbody"></tbody></table>
+<iframe id="bdsim" src="index.html" title="Simulator (hidden)" aria-hidden="true" tabindex="-1"></iframe>
+<script>
+(() => {
+  const $ = id => document.getElementById(id), fr = $('bdsim'), KEYS = ['es2028_campaign_run_v2', 'es2028_campaign_achievements_v1', 'es2028_campaign_lo_v1', 'es2028_campaign_hof_v1', 'es2028_campaign_daily_v1'];
+  let W = null, stop = false;
+  fr.addEventListener('load', () => { const t0 = Date.now(); const wait = () => { W = fr.contentWindow; if (W && W.CAMPAIGN && W.APP && W.APP.getR && W.APP.getR()) ready(); else if (Date.now() - t0 < 60000) setTimeout(wait, 300); else $('bdstat').textContent = 'The simulator did not load.'; }; wait(); });
+  function ready() { const C = W.CAMPAIGN_DATA, sel = $('bdlead');
+    sel.innerHTML = C.leaders.map(l => `<option value="${l.id}" selected>${l.name} (${C.PARTIES[l.party].n})</option>`).join('');
+    $('bdgo').disabled = false; $('bdgo').textContent = 'Run'; }
+  const sleep = () => new Promise(r => setTimeout(r, 0));
+  async function runOne(id, strat, opt) { const E = W.CAMPAIGN, cl = x => JSON.parse(JSON.stringify(x));
+    // each stage judged by what decides it: caucus votes in a spill, the local vote in a by-election, seats and the national vote in the campaign
+    const score = t => t.phase === 'FAILED' ? -999 : t.phase === 'SPILL' ? t.votes * 10 + t.unity * 0.1 : t.phase === 'BYELECTION' ? (t.by ? t.by.m : 0) * 10 + t.unity * 0.1 : t.seats[t.party] + t.nat[t.party] * 20 + (t.unity < 40 ? (t.unity - 40) * 0.5 : 0);
+    const st = E.newRun(id, opt); let g = 0;
+    while ((st.phase === 'SPILL' || st.phase === 'CAMPAIGN' || st.phase === 'BYELECTION') && g++ < 260) {
+      if (st.needTour && !st.queue.length) { E.setTour(st, ['NSW', 'QLD'], false); continue; }
+      if (strat === 'best') { const ds = E.decisionsFor(st).filter(d => d.can); let best = null, bv = score(st); for (const d of ds) { const t = cl(st); t.central = st.central; E.enact(t, d.id); const v = score(t); if (v > bv + 0.5) { bv = v; best = d.id; } } if (best) E.enact(st, best); }
+      if (strat === 'rand') { const ds = E.decisionsFor(st).filter(d => d.can); if (ds.length && Math.random() < 0.5) E.enact(st, ds[Math.floor(Math.random() * ds.length)].id); }
+      const c = E.cardFor(st), os = c.opts.filter(o => (!o.cost || st.pp >= o.cost) && !o.timeout); let pick = os[0].i;
+      if (strat === 'rand') pick = os[Math.floor(Math.random() * os.length)].i;
+      else if (strat === 'worst' && st.phase === 'SPILL') { let bb = -1e9; for (const o of os) { const t = cl(st); t.central = st.central; E.choose(t, o.i); const v = t.phase === 'FAILED' ? -1e9 : t.votes; if (v > bb) { bb = v; pick = o.i; } } }
+      else { let bv = strat === 'best' ? -1e9 : 1e9; for (const o of os) { const t = cl(st); t.central = st.central; E.choose(t, o.i); const v = score(t); if (strat === 'best' ? v > bv : v < bv) { bv = v; pick = o.i; } } }
+      E.choose(st, pick); if (g % 4 === 0) await sleep(); }
+    return st.phase === 'FAILED' ? null : st.seats[st.party]; }
+  const cell = (xs, pc) => { const ok = xs.filter(x => x != null); if (!ok.length) return '<td class="num">all failed</td>'; const lo = Math.min(...ok), hi = Math.max(...ok), m = ok.reduce((a, b) => a + b, 0) / ok.length;
+    return `<td class="num">${lo === hi ? lo : lo + '–' + hi} <small>mean ${m.toFixed(0)}${xs.length > ok.length ? ` · ${xs.length - ok.length} failed` : ''}</small><div class="bar" style="--pc:${pc}"><i style="left:${lo / 150 * 100}%;width:${Math.max(0.6, (hi - lo) / 150 * 100)}%"></i><b></b></div></td>`; };
+  $('bdgo').addEventListener('click', async () => {
+    if (!W) return; const btn = $('bdgo'); if (btn.dataset.busy) { stop = true; return; }
+    const C = W.CAMPAIGN_DATA, leaders = [...$('bdlead').selectedOptions].map(o => o.value), scens = $('bdscen').value === 'all' ? C.scenarios.map(s => s.id) : ['std'], N = Math.max(1, Math.min(20, +$('bdn').value || 3)), diff = $('bddiff').value;
+    const keep = {}; KEYS.forEach(k => { keep[k] = W.localStorage.getItem(k); });
+    btn.dataset.busy = 1; btn.textContent = 'Stop'; stop = false; $('bdbody').innerHTML = ''; const total = leaders.length * scens.length * 3 * N; let done = 0; const t0 = Date.now();
+    const PC = { ALP: 'var(--alp)', LNP: 'var(--coa)', ONP: 'var(--on)', GRN: 'var(--grn)', IND: 'var(--ind)' };
+    try {
+      for (const id of leaders) for (const sc of scens) { if (stop) break; const L = C.leaders.find(l => l.id === id), row = {};
+        for (const strat of ['best', 'rand', 'worst']) { row[strat] = []; for (let k = 0; k < N && !stop; k++) { row[strat].push(await runOne(id, strat, { scen: sc, diff })); done++; $('bdstat').textContent = `${done} of ${total} campaigns · ${Math.round((Date.now() - t0) / 1000)}s`; } }
+        if (stop) break; const tr = document.createElement('tr');
+        tr.innerHTML = `<th scope="row">${L.name}<small>${C.PARTIES[L.party].n}</small></th><td>${(C.scenarios.find(s => s.id === sc) || {}).n || sc}</td>${cell(row.best, PC[L.party])}${cell(row.rand, PC[L.party])}${cell(row.worst, PC[L.party])}`; $('bdbody').appendChild(tr); }
+    } finally { KEYS.forEach(k => { if (keep[k] == null) W.localStorage.removeItem(k); else W.localStorage.setItem(k, keep[k]); }); delete btn.dataset.busy; btn.textContent = 'Run';
+      $('bdstat').textContent = (stop ? 'Stopped. ' : 'Done. ') + `${done} campaigns in ${Math.round((Date.now() - t0) / 1000)}s. Seats are the projection after the last turn; the vertical line is 76.`; }
+  });
+})();
+</script>
+</body>
+</html>

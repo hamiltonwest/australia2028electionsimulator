@@ -1,4 +1,11 @@
 const DATA = window.SIM.DATA;
+const FAC_NEW={'Stephen Conroy':'LR','Kristina Keneally':'LR','Daniel Andrews':'LL','Bill Shorten':'LR','Stephen Smith':'LR','Kevin Rudd':'LR','Annastacia Palaszczuk':'LR','Mark McGowan':'LR',
+  'Scott Morrison':'CR','Tony Abbott':'NR','Dominic Perrottet':'NR','Julie Bishop':'LM','Gladys Berejiklian':'LM','Christopher Pyne':'LM','Steven Marshall':'LM','Sussan Ley':'LM',
+  'Warren Truss':'N_QLD','John Barilaro':'N_NSW'};
+// comeback and outsider leaders (catalogue v15): vote effect comes from their traits (traits.js); h = enters at a pre-election by-election in a seat their party holds, c = contests a seat held by someone else, j = Joyce rejoins the Nationals
+const NEWL={"Stephen Conroy": {"p": "Labor", "t": "h", "s": "Gellibrand", "st": "Vic", "inc": "Tim Watts"}, "Kristina Keneally": {"p": "Labor", "t": "h", "s": "Barton", "st": "NSW", "inc": "Ash Ambihaipahar"}, "Daniel Andrews": {"p": "Labor", "t": "h", "s": "Bruce", "st": "Vic", "inc": "Julian Hill"}, "Bill Shorten": {"p": "Labor", "t": "h", "s": "Maribyrnong", "st": "Vic", "inc": "Jo Briskey"}, "Stephen Smith": {"p": "Labor", "t": "h", "s": "Perth", "st": "WA", "inc": "Patrick Gorman"}, "Kevin Rudd": {"p": "Labor", "t": "h", "s": "Griffith", "st": "Qld", "inc": "Renee Coffey"}, "Annastacia Palaszczuk": {"p": "Labor", "t": "h", "s": "Oxley", "st": "Qld", "inc": "Milton Dick"}, "Mark McGowan": {"p": "Labor", "t": "h", "s": "Brand", "st": "WA", "inc": "Madeleine King"}, "Scott Morrison": {"p": "Coalition", "t": "h", "s": "Cook", "st": "NSW", "inc": "Simon Kennedy"}, "Tony Abbott": {"p": "Coalition", "t": "c", "s": "Warringah", "st": "NSW", "inc": ""}, "Dominic Perrottet": {"p": "Coalition", "t": "c", "s": "Bradfield", "st": "NSW", "inc": ""}, "Julie Bishop": {"p": "Coalition", "t": "c", "s": "Curtin", "st": "WA", "inc": ""}, "Gladys Berejiklian": {"p": "Coalition", "t": "c", "s": "Bennelong", "st": "NSW", "inc": ""}, "Christopher Pyne": {"p": "Coalition", "t": "c", "s": "Sturt", "st": "SA", "inc": ""}, "Steven Marshall": {"p": "Coalition", "t": "c", "s": "Boothby", "st": "SA", "inc": ""}, "Campbell Newman": {"p": "Coalition", "t": "c", "s": "Brisbane", "st": "Qld", "inc": ""}, "Warren Truss": {"p": "Nationals", "t": "h", "s": "Wide Bay", "st": "Qld", "inc": "Llew O'Brien"}, "John Barilaro": {"p": "Nationals", "t": "c", "s": "Eden-Monaro", "st": "NSW", "inc": ""}, "Barnaby Joyce": {"p": "Nationals", "t": "x", "s": "New England", "st": "NSW", "inc": ""}, "Cory Bernardi": {"p": "One Nation", "t": "c", "s": "Barker", "st": "SA", "inc": ""}, "Mark Latham": {"p": "One Nation", "t": "c", "s": "Hunter", "st": "NSW", "inc": ""}, "Bob Brown": {"p": "Greens", "t": "c", "s": "Franklin", "st": "Tas", "inc": ""}, "Adam Bandt": {"p": "Greens", "t": "c", "s": "Melbourne", "st": "Vic", "inc": ""}, "Cathy McGowan": {"p": "Community Strong", "t": "h", "s": "Indi", "st": "Vic", "inc": "Helen Haines"}, "Kerryn Phelps": {"p": "Community Strong", "t": "h", "s": "Wentworth", "st": "NSW", "inc": "Allegra Spender"}, "Simon Holmes à Court": {"p": "Community Strong", "t": "h", "s": "Kooyong", "st": "Vic", "inc": "Monique Ryan"}, "Sussan Ley": {"p": "Coalition", "t": "c", "s": "Farrer", "st": "NSW", "inc": ""}};
+DATA.leaders.forEach(l=>{if(l.name==='Matt Canavan')l.seat='Capricornia (Qld)';if(l.name==='Barnaby Joyce')l.seat='Senate candidate (NSW)';});
+DATA.leaders.push(...[{"party": "Labor", "name": "Stephen Conroy", "seat": "Gellibrand (Vic)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 60}, {"party": "Labor", "name": "Kristina Keneally", "seat": "Barton (NSW)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 61}, {"party": "Labor", "name": "Daniel Andrews", "seat": "Bruce (Vic)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 62}, {"party": "Labor", "name": "Bill Shorten", "seat": "Maribyrnong (Vic)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 63}, {"party": "Labor", "name": "Stephen Smith", "seat": "Perth (WA)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 64}, {"party": "Labor", "name": "Kevin Rudd", "seat": "Griffith (Qld)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 65}, {"party": "Labor", "name": "Annastacia Palaszczuk", "seat": "Oxley (Qld)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 66}, {"party": "Labor", "name": "Mark McGowan", "seat": "Brand (WA)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 67}, {"party": "Coalition", "name": "Scott Morrison", "seat": "Cook (NSW)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 68}, {"party": "Coalition", "name": "Tony Abbott", "seat": "Warringah (candidate)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 69}, {"party": "Coalition", "name": "Dominic Perrottet", "seat": "Bradfield (candidate)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 70}, {"party": "Coalition", "name": "Julie Bishop", "seat": "Curtin (candidate)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 71}, {"party": "Coalition", "name": "Gladys Berejiklian", "seat": "Bennelong (candidate)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 72}, {"party": "Coalition", "name": "Christopher Pyne", "seat": "Sturt (candidate)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 73}, {"party": "Coalition", "name": "Steven Marshall", "seat": "Boothby (candidate)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 74}, {"party": "Coalition", "name": "Campbell Newman", "seat": "Brisbane (candidate)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 75}, {"party": "Nationals", "name": "Warren Truss", "seat": "Wide Bay (Qld)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 77}, {"party": "Nationals", "name": "John Barilaro", "seat": "Eden-Monaro (candidate)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 78}, {"party": "Nationals", "name": "Barnaby Joyce", "seat": "Senate candidate (NSW)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 80}, {"party": "One Nation", "name": "Cory Bernardi", "seat": "Barker (candidate)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 82}, {"party": "One Nation", "name": "Mark Latham", "seat": "Hunter (candidate)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 83}, {"party": "Greens", "name": "Bob Brown", "seat": "Franklin (candidate)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 84}, {"party": "Greens", "name": "Adam Bandt", "seat": "Melbourne (candidate)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 86}, {"party": "Community Strong", "name": "Cathy McGowan", "seat": "Indi (Vic)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 87}, {"party": "Community Strong", "name": "Kerryn Phelps", "seat": "Wentworth (NSW)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 88}, {"party": "Community Strong", "name": "Simon Holmes à Court", "seat": "Kooyong (Vic)", "d": [0, 0, 0, 0, 0], "sel": false, "rk": 89}]);
 const D = ENGINE.prepare(DATA); ENGINE.calibrate(D);
 const P = DATA.groups;              // every party that stood in 2025: 0 ALP 1 COA 2 GRN 3 ON 4 IND, then minor parties
 const NG = P.length, CG = DATA.colG;
@@ -29,7 +36,7 @@ function applySplit(on){
   const ol=document.querySelector('.odd.coa .l'); if(ol) ol.textContent=on?'Liberal + National majority':'Coalition majority';
 }
 // changes since the 2025 election (seat holders)
-const HELD={'New England':'ON','Farrer':'ON'}, HELDBY={'New England':'Barnaby Joyce','Farrer':'David Farley'};
+const HELD={'New England':'ON','Farrer':'ON','Wentworth':'CSA','Warringah':'CSA'}, HELDBY={'New England':'Barnaby Joyce','Farrer':'David Farley'};
 const CHANGES=[['27 November 2025','New England','Barnaby Joyce resigns from the Nationals and later joins One Nation.','ON'],
   ['13 February 2026','—','Angus Taylor replaces Sussan Ley as Liberal leader and Leader of the Opposition.',null],
   ['10 March 2026','Maranoa','David Littleproud resigns as Nationals leader (stays MP for Maranoa).',null],
@@ -38,8 +45,14 @@ const CHANGES=[['27 November 2025','New England','Barnaby Joyce resigns from the
   ['30 September 2026','—','David Shoebridge replaces Larissa Waters as Greens leader.',null],
   ['2 June 2025','Senate (WA)','Senator Dorinda Cox leaves the Greens for Labor.','ALP'],
   ['13 May 2025','Senate (Vic)','Ralph Babet (United Australia) announces he will not recontest in 2028.',null],
-  ['18 October 2025','Senate (Tas)','Peter Whish-Wilson (Greens) announces his retirement.',null]];
-CHANGES.sort((a,b)=>new Date(a[0])-new Date(b[0]));
+  ['18 October 2025','Senate (Tas)','Peter Whish-Wilson (Greens) announces his retirement.',null],
+  ['2026','Capricornia','Michelle Landry (LNP) will not recontest; Matt Canavan (Nationals) is the candidate.',null],
+  ['2026','New England','Barnaby Joyce will not recontest New England; he runs for the Senate in New South Wales for One Nation.',null],
+  ['2026','Grayndler','Hannah Ferguson announces she will run as an independent.',null],
+  ['2026','Senate (SA)','Barbara Pocock (Greens) will retire; Isaac Astill heads the Greens ticket. Penny Wong and Don Farrell recontest for Labor.',null],
+  ['2026','Senate (Tas)','Jonathon Duniam (Liberal) will retire; Sarah Courtney takes his place on the ticket.',null],
+  ['2026','—','Trumpet of Patriots becomes the Australian Federation Party.',null]];
+CHANGES.sort((a,b)=>new Date(/^\d{4}$/.test(a[0])?a[0]+'-12-31':a[0])-new Date(/^\d{4}$/.test(b[0])?b[0]+'-12-31':b[0]));
 const gOf = s => {if(CIND_ON&&CINDS[s.n])return P.findIndex(g=>g.ab==='CSA');const g=HELD[s.n]?P.findIndex(g=>g.ab===HELD[s.n]) : s.inc==='IND'&&s.lc!==8 ? CG[s.lc] : INC[s.inc]; return g===1&&SPLIT&&s.nr?NATI:g;};
 const col = i => getComputedStyle(document.documentElement).getPropertyValue('--'+P[i].k).trim();
 const INC = {ALP:0,LNP:1,GRN:2,ON:3,IND:4};
@@ -48,7 +61,7 @@ const EV = window.SIM.EVENTS;
 EV.forEach(e=>{e.opts[0]='Default';});   // the starting value of every event is the baseline (no change)
 const LP = ['Labor','Coalition','Nationals','One Nation','Greens','Community Strong',"Katter's Australian"];
 // minor-party leaders (Wikipedia infoboxes, 2026); role shown when the party has no formal leader
-const LEAD = {IND:{n:'N/A',na:1}, CYA:{n:'Clive Palmer',r:'Chairman'}, FFP:{n:'Lyle Shelton',r:'National director'}, HMP:{n:'Michael Balderstone',r:'President'},
+const LEAD = {IND:{n:'N/A',na:1}, AFP:{n:'N/A',na:1}, FFP:{n:'Lyle Shelton',r:'National director'}, HMP:{n:'Michael Balderstone',r:'President'},
   XEN:{n:'No leader',na:1}, CSA:{n:'No leader',na:1}, KAP:{n:'Robbie Katter'}, LTP:{n:'Anthony Bull',r:'President'}, GRPF:{n:'Gerard Rennick',s:'None (former senator)'},
   AJP:{n:'Bruce Poon',r:'President'}, AUC:{n:'Maryka Groenewald'}, ASP:{n:'Robert Borsak',r:'NSW leader',s:'NSW Legislative Council'}, SAL:{n:'Collective leadership'},
   VNS:{n:'Collective leadership'}, CEC:{n:'Craig Isherwood',r:'National leader'}, SOPA:{n:'Drew Wolfendale',r:'President'}, IAP:{n:'Owen Whyman',r:'Convenor'},
@@ -60,7 +73,27 @@ function TBW(){const a=(S.seatAdj||[]).slice();
   Object.keys(S.retire||{}).forEach(n=>{const i=D.seats.findIndex(s=>s.n===n);if(i>=0)a.push({i,g:gOf(D.seats[i]),amt:-2.5});});
   // candidate quality: star candidate +3, strong local +1.5, scandal -4 for the chosen party
   Object.entries(S.cand||{}).forEach(([n,v])=>{const i=D.seats.findIndex(s=>s.n===n);if(i>=0&&v)a.push({i,g:v.g,amt:{star:3,local:1.5,scandal:-4}[v.q]||0});});if(TB()){const i=D.seats.findIndex(s=>s.n==='Wentworth');if(i>=0)a.push({i,g:P.findIndex(g=>g.ab==='CSA'),amt:4});}return a;}
-function tbMember(){if(TB())HELDBY['Wentworth']='Malcolm Turnbull';else if(HELDBY['Wentworth']==='Malcolm Turnbull')delete HELDBY['Wentworth'];}
+const HELDBY0={...HELDBY},HELD0={...HELD};
+function tbMember(){Object.keys(HELDBY).forEach(k=>delete HELDBY[k]);Object.assign(HELDBY,HELDBY0);Object.keys(HELD).forEach(k=>delete HELD[k]);Object.assign(HELD,HELD0);
+  Object.keys(S.spec||{}).forEach(n=>{if(!S.spec[n])return;const r=NEWL[n];if(r&&r.t==='h')HELDBY[r.s]=n;else if(n==='Malcolm Turnbull')HELDBY['Wentworth']=n;});
+  Object.entries(S.ldr||{}).forEach(([p,n])=>{const r=NEWL[n];if(!r||r.p!==p)return;if(r.t==='h')HELDBY[r.s]=n;if(r.t==='j')delete HELD[r.s];});
+  if(TB())HELDBY['Wentworth']='Malcolm Turnbull';}
+// a challenger leader stands as a named candidate in their seat (no vote effect); an earlier one is removed
+// speculative candidates: off by default, toggled in the sandbox; one tied to a leader is switched on when that leader is picked
+const SPG={Labor:0,Coalition:1,Nationals:1,'One Nation':3,Greens:2};
+const SPEC=(()=>{const out=[{s:'Kooyong',g:1,n:'Josh Frydenberg',pty:'Liberal',p:'Coalition',k:'c',note:'Former Treasurer; lost Kooyong in 2022.'}];
+  Object.entries(NEWL).forEach(([n,r])=>{if(r.t!=='h'&&r.t!=='c')return;const g=r.p==='Community Strong'?'CSA':SPG[r.p];if(g==null)return;
+    out.push({s:r.s,g,n,p:r.p,k:r.t,pty:r.p==='Coalition'?'Liberal':r.p,note:r.t==='h'?`Replaces ${r.inc} as the ${r.p} candidate.`:`Runs for ${r.s} (${r.st}).`});});
+  out.push({s:'Wentworth',g:'CSA',n:'Malcolm Turnbull',p:'Community Strong',k:'h',pty:'Community Strong',note:'Replaces Allegra Spender as the Community Strong candidate.'});
+  const ord=['Labor','Coalition','Nationals','One Nation','Greens','Community Strong'];return out.sort((a,b)=>ord.indexOf(a.p)-ord.indexOf(b.p));})();
+const spG=x=>x.g==='CSA'?GI('CSA'):x.g;
+function specOn(x){if(x.k==='h')return !!((S.spec||{})[x.n]||(S.ldr&&S.ldr[x.p]===x.n));const v=(S.cand||{})[x.s];return !!(v&&v.n===x.n);}
+function specSet(x,on){S.cand={...(S.cand||{})};S.spec={...(S.spec||{})};
+  if(x.k==='h'){if(on){SPEC.forEach(y=>{if(y!==x&&y.k==='h'&&y.s===x.s)delete S.spec[y.n];});S.spec[x.n]=1;}else delete S.spec[x.n];}
+  else if(on)S.cand[x.s]={g:spG(x),q:'',n:x.n,top:1};else if(S.cand[x.s]&&S.cand[x.s].n===x.n)delete S.cand[x.s];}
+function ldrCands(){S.cand={...(S.cand||{})};Object.keys(S.cand).forEach(k=>{if(S.cand[k]&&S.cand[k].auto)delete S.cand[k];});
+  SPEC.forEach(x=>{if(x.k==='c'&&S.ldr&&S.ldr[x.p]===x.n&&!S.cand[x.s])S.cand[x.s]={g:spG(x),q:'',n:x.n,top:1,auto:1};});
+}
 const GEO0 = window.SIM.GEO; let GEO = GEO0; const HEXR = window.SIM.HEX;
 // hex cartogram: every seat the same size, grouped by state (geographic map kept as GEO0)
 const HEXGEO=(()=>{const r=HEXR.r,cells={},key=(x,y)=>Math.round(x/4)+','+Math.round(y/4),at={},stOf={};DATA.seats.forEach(s=>stOf[s.n]=s.st);
@@ -90,7 +123,7 @@ const PHCREDIT = window.SIM.PHCREDIT;
 Object.entries(window.SIM.PHALIAS).forEach(([a,b])=>{if(PHCREDIT[b]&&!PHCREDIT[a])PHCREDIT[a]=PHCREDIT[b];});
 const PHSRC=new Map();Object.entries(PHCREDIT).forEach(([n,c])=>{if(PHOTO[n])PHSRC.set(PHOTO[n],c);});
 (()=>{let lab=null,cur=null;const hide=()=>{if(lab)lab.hidden=true;cur=null;};
-  document.addEventListener('mouseover',e=>{const t=e.target;if(!t||t.tagName!=='IMG')return;const c=PHSRC.get(t.getAttribute('src'));if(!c)return;
+  document.addEventListener('mouseover',e=>{const t=e.target;if(!t||t.tagName!=='IMG'||t.closest('.tcard'))return;const c=PHSRC.get(t.getAttribute('src'));if(!c)return;
     if(!lab){lab=document.createElement('div');lab.className='phcred';lab.setAttribute('role','note');document.body.appendChild(lab);}
     cur=t;lab.textContent=(/ logo /.test(c)?'':'Photo: ')+c;lab.hidden=false;
     const r=t.getBoundingClientRect(),w=Math.min(300,innerWidth-16);lab.style.maxWidth=w+'px';
@@ -98,7 +131,7 @@ const PHSRC=new Map();Object.entries(PHCREDIT).forEach(([n,c])=>{if(PHOTO[n])PHS
   document.addEventListener('mouseout',e=>{if(e.target===cur)hide();},true);addEventListener('scroll',hide,{passive:true,capture:true});})();
 // generic placeholder portraits for leaders without a supplied photo
 const PH_M='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%2242%2060%20216%20288%22%3E%3Cdefs%3E%3Cpattern%20id%3D%22d%22%20width%3D%227%22%20height%3D%227%22%20patternUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%223.5%22%20cy%3D%223.5%22%20r%3D%221.1%22%20fill%3D%22%23cfc3a6%22/%3E%3C/pattern%3E%3Cpattern%20id%3D%22h%22%20width%3D%224.5%22%20height%3D%224.5%22%20patternUnits%3D%22userSpaceOnUse%22%20patternTransform%3D%22rotate%2845%29%22%3E%3Crect%20width%3D%224.5%22%20height%3D%224.5%22%20fill%3D%22%23e2d8c2%22/%3E%3Cline%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%224.5%22%20stroke%3D%22%238a7d66%22%20stroke-width%3D%22.8%22/%3E%3C/pattern%3E%3Cpattern%20id%3D%22b%22%20width%3D%224%22%20height%3D%224%22%20patternUnits%3D%22userSpaceOnUse%22%20patternTransform%3D%22rotate%28-35%29%22%3E%3Crect%20width%3D%224%22%20height%3D%224%22%20fill%3D%22%238f8470%22/%3E%3Cline%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%224%22%20stroke%3D%22%232b2620%22%20stroke-width%3D%221.3%22/%3E%3C/pattern%3E%3Cpattern%20id%3D%22k%22%20width%3D%224%22%20height%3D%224%22%20patternUnits%3D%22userSpaceOnUse%22%20patternTransform%3D%22rotate%28-45%29%22%3E%3Crect%20width%3D%224%22%20height%3D%224%22%20fill%3D%22%233a342b%22/%3E%3Cline%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%224%22%20stroke%3D%22%231a1712%22%20stroke-width%3D%222%22/%3E%3C/pattern%3E%3CradialGradient%20id%3D%22v%22%20cx%3D%22.5%22%20cy%3D%22.42%22%20r%3D%22.7%22%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%23000%22%20stop-opacity%3D%220%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%235a4a2a%22%20stop-opacity%3D%22.22%22/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect%20x%3D%2242%22%20y%3D%2260%22%20width%3D%22216%22%20height%3D%22288%22%20fill%3D%22%23efe8d8%22/%3E%3Crect%20x%3D%2242%22%20y%3D%2260%22%20width%3D%22216%22%20height%3D%22288%22%20fill%3D%22url%28%23d%29%22/%3E%3Cpath%20d%3D%22M38%20400c6-78%2046-118%20112-118s106%2040%20112%20118z%22%20fill%3D%22url%28%23b%29%22%20stroke%3D%22%231a1712%22%20stroke-width%3D%221.6%22%20stroke-linejoin%3D%22round%22/%3E%3Cpath%20d%3D%22M126%20282l24%2036%2024-36z%22%20fill%3D%22%23efe8d8%22%20stroke%3D%22%231a1712%22%20stroke-width%3D%221.6%22%20stroke-linejoin%3D%22round%22/%3E%3Cpath%20d%3D%22M145%20300h10l7%2066-12%2015-12-15z%22%20fill%3D%22url%28%23k%29%22%20stroke%3D%22%231a1712%22%20stroke-width%3D%221.6%22%20stroke-linejoin%3D%22round%22/%3E%3Crect%20x%3D%22128%22%20y%3D%22236%22%20width%3D%2244%22%20height%3D%2252%22%20rx%3D%2214%22%20fill%3D%22url%28%23h%29%22%20stroke%3D%22%231a1712%22%20stroke-width%3D%221.6%22%20stroke-linejoin%3D%22round%22/%3E%3Cellipse%20cx%3D%22150%22%20cy%3D%22178%22%20rx%3D%2256%22%20ry%3D%2268%22%20fill%3D%22url%28%23h%29%22%20stroke%3D%22%231a1712%22%20stroke-width%3D%221.6%22%20stroke-linejoin%3D%22round%22/%3E%3Cpath%20d%3D%22M94%20172c-2-50%2022-82%2058-82s58%2030%2056%2080c-8-26-22-40-56-44-36%204-50%2020-58%2046z%22%20fill%3D%22url%28%23k%29%22%20stroke%3D%22%231a1712%22%20stroke-width%3D%221.6%22%20stroke-linejoin%3D%22round%22/%3E%3Crect%20x%3D%2242%22%20y%3D%2260%22%20width%3D%22216%22%20height%3D%22288%22%20fill%3D%22url%28%23v%29%22/%3E%3Crect%20x%3D%2248%22%20y%3D%2266%22%20width%3D%22204%22%20height%3D%22276%22%20fill%3D%22none%22%20stroke%3D%22%232b2620%22%20stroke-width%3D%221%22%20opacity%3D%22.55%22/%3E%3C/svg%3E', PH_F='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%2242%2060%20216%20288%22%3E%3Cdefs%3E%3Cpattern%20id%3D%22d%22%20width%3D%227%22%20height%3D%227%22%20patternUnits%3D%22userSpaceOnUse%22%3E%3Ccircle%20cx%3D%223.5%22%20cy%3D%223.5%22%20r%3D%221.1%22%20fill%3D%22%23cfc3a6%22/%3E%3C/pattern%3E%3Cpattern%20id%3D%22h%22%20width%3D%224.5%22%20height%3D%224.5%22%20patternUnits%3D%22userSpaceOnUse%22%20patternTransform%3D%22rotate%2845%29%22%3E%3Crect%20width%3D%224.5%22%20height%3D%224.5%22%20fill%3D%22%23e2d8c2%22/%3E%3Cline%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%224.5%22%20stroke%3D%22%238a7d66%22%20stroke-width%3D%22.8%22/%3E%3C/pattern%3E%3Cpattern%20id%3D%22b%22%20width%3D%224%22%20height%3D%224%22%20patternUnits%3D%22userSpaceOnUse%22%20patternTransform%3D%22rotate%28-35%29%22%3E%3Crect%20width%3D%224%22%20height%3D%224%22%20fill%3D%22%238f8470%22/%3E%3Cline%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%224%22%20stroke%3D%22%232b2620%22%20stroke-width%3D%221.3%22/%3E%3C/pattern%3E%3Cpattern%20id%3D%22k%22%20width%3D%224%22%20height%3D%224%22%20patternUnits%3D%22userSpaceOnUse%22%20patternTransform%3D%22rotate%28-45%29%22%3E%3Crect%20width%3D%224%22%20height%3D%224%22%20fill%3D%22%233a342b%22/%3E%3Cline%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%224%22%20stroke%3D%22%231a1712%22%20stroke-width%3D%222%22/%3E%3C/pattern%3E%3CradialGradient%20id%3D%22v%22%20cx%3D%22.5%22%20cy%3D%22.42%22%20r%3D%22.7%22%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%23000%22%20stop-opacity%3D%220%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%235a4a2a%22%20stop-opacity%3D%22.22%22/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect%20x%3D%2242%22%20y%3D%2260%22%20width%3D%22216%22%20height%3D%22288%22%20fill%3D%22%23efe8d8%22/%3E%3Crect%20x%3D%2242%22%20y%3D%2260%22%20width%3D%22216%22%20height%3D%22288%22%20fill%3D%22url%28%23d%29%22/%3E%3Cpath%20d%3D%22M98%20140c-26%2060-22%20140-8%20180h120c14-40%2018-120-8-180z%22%20fill%3D%22url%28%23k%29%22%20stroke%3D%22%231a1712%22%20stroke-width%3D%221.6%22%20stroke-linejoin%3D%22round%22/%3E%3Cpath%20d%3D%22M42%20400c6-74%2044-112%20108-112s102%2038%20108%20112z%22%20fill%3D%22url%28%23b%29%22%20stroke%3D%22%231a1712%22%20stroke-width%3D%221.6%22%20stroke-linejoin%3D%22round%22/%3E%3Cpath%20d%3D%22M120%20290l30%2042%2030-42z%22%20fill%3D%22url%28%23h%29%22%20stroke%3D%22%231a1712%22%20stroke-width%3D%221.6%22%20stroke-linejoin%3D%22round%22/%3E%3Crect%20x%3D%22130%22%20y%3D%22238%22%20width%3D%2240%22%20height%3D%2252%22%20rx%3D%2214%22%20fill%3D%22url%28%23h%29%22%20stroke%3D%22%231a1712%22%20stroke-width%3D%221.6%22%20stroke-linejoin%3D%22round%22/%3E%3Cellipse%20cx%3D%22150%22%20cy%3D%22180%22%20rx%3D%2252%22%20ry%3D%2264%22%20fill%3D%22url%28%23h%29%22%20stroke%3D%22%231a1712%22%20stroke-width%3D%221.6%22%20stroke-linejoin%3D%22round%22/%3E%3Cpath%20d%3D%22M96%20196c-10-66%2014-106%2056-106s66%2036%2054%20104c-6-30-18-52-46-62-14%2018-38%2030-64%2034z%22%20fill%3D%22url%28%23k%29%22%20stroke%3D%22%231a1712%22%20stroke-width%3D%221.6%22%20stroke-linejoin%3D%22round%22/%3E%3Crect%20x%3D%2242%22%20y%3D%2260%22%20width%3D%22216%22%20height%3D%22288%22%20fill%3D%22url%28%23v%29%22/%3E%3Crect%20x%3D%2248%22%20y%3D%2266%22%20width%3D%22204%22%20height%3D%22276%22%20fill%3D%22none%22%20stroke%3D%22%232b2620%22%20stroke-width%3D%221%22%20opacity%3D%22.55%22/%3E%3C/svg%3E';
-const FEM=new Set(['Tanya Plibersek','Pauline Hanson','Larissa Waters','Sarah Hanson-Young','Mehreen Faruqi','Sussan Ley',"Clare O'Neil",'Bridget McKenzie','Zali Steggall','Allegra Spender','Maryka Groenewald','Leonie Green','Jacqui Lambie']);
+const FEM=new Set(['Tanya Plibersek','Pauline Hanson','Larissa Waters','Sarah Hanson-Young','Mehreen Faruqi','Sussan Ley',"Clare O'Neil",'Bridget McKenzie','Zali Steggall','Allegra Spender','Maryka Groenewald','Leonie Green','Jacqui Lambie','Julie Bishop','Gladys Berejiklian','Kristina Keneally','Annastacia Palaszczuk','Cathy McGowan','Kerryn Phelps','Anika Wells','Madeleine King','Penny Allman-Payne','Elizabeth Watson-Brown','Kate Chaney','Helen Haines','Monique Ryan','Sophie Scamps']);
 const FFN=new Set('Ali Alice Alicia Alison Allegra Amanda Angie Anika Anne Bridget Carina Carol Cassandra Catherine Claire Clare Dai Elizabeth Emma Fiona Helen Jacqui Jess Jo Joanne Jodie Julie Julie-Ann Justine Kara Kate Kristy Larissa Leonie Libby Lisa Louise Madeleine Madonna Marion Mary Maryka Mehreen Melissa Meryl Michelle Monique Nicolette Pauline Rebecca Rebekha Renee Sally Sarah Sharon Sophie Susan Sussan Tania Tanya Tracey Trish Zali Zaneta Zoe'.split(' '));
 const isFem=n=>FEM.has(n)||FFN.has((n||'').split(' ')[0]);
 const phOf=n=>PHOTO[n]||(n&&n!=='—'&&!/^(No |Collective|N\/A)/.test(n)?(isFem(n)?PH_F:PH_M):null);   // supplied by the site owner: leader photos by name, party images by abbreviation
@@ -110,7 +143,7 @@ const DP = {'None':[], 'Graduates swing to the Greens and Labor':[{f:7,party:2,a
   'Mining seats back One Nation':[{f:26,party:3,amt:2},{f:26,party:0,amt:-1}], 'Chinese-Australian voters return to the Liberals':[{f:20,party:1,amt:1.5},{f:20,party:0,amt:-1}],
   'Apartment renters go Green':[{f:30,party:2,amt:1.5},{f:30,party:0,amt:-0.8}], 'Custom':null};
 // minor parties that stood in only a few seats in 2025 can be set to contest more: [share of the independent vote they take, extra starting share]
-const TEALS=['Goldstein','Wannon','Cowper','Monash','Flinders','Groom','Farrer','Forrest','Grey','Fisher','McPherson','Fairfax','Berowra','Casey','Moncrieff','Bean','Fremantle','Franklin'];
+const TEALS=['Goldstein','Wannon','Cowper','Monash','Flinders','Groom','Farrer','Forrest',"O'Donoghue",'Fisher','McPherson','Fairfax','Berowra','Casey','Moncrieff','Bean','Fremantle','Franklin'];
 const CONT={CSA:{opts:['Current: 2 seats','Teal-style seats (20)','Every seat (150)'],seed:(lv,s)=>{if(s.inc==='IND'&&!['Wentworth','Warringah'].includes(s.n))return null;if(['Wentworth','Warringah'].includes(s.n))return null;
       if(lv>=1&&TEALS.includes(s.n))return [0.7,2.5];if(lv>=2)return [0.5,1.2+(s.rg==='Inner Metro'?1.8:s.rg==='Outer Metro'?0.6:0)];return null;}},
   XEN:{opts:['Current: Mayo only','All South Australian seats','Every seat (150)'],seed:(lv,s)=>{if(s.n==='Mayo')return null;if(s.st==='SA')return [0,3];if(lv>=2)return [0,0.8];return null;}},
@@ -124,8 +157,8 @@ function lcOvFor(S){if(!S.cind)return null;const col=DATA.colG.indexOf(P.findInd
 function seedsFor(S){const out=[];
   if(S.cind){const col=DATA.colG.indexOf(P.findIndex(g=>g.ab==='CSA'));out.push({c:col,f:D.seats.map(s=>CINDS[s.n]?1:0),a:D.seats.map(()=>0)});}Object.entries(CONT).forEach(([ab,c])=>{let lv=(S.cont||{})[ab]||0;if(ab==='CSA'&&S.ldr['Community Strong']==='Malcolm Turnbull')lv=Math.max(lv,1);if(!lv)return;
   const col=DATA.colG.indexOf(P.findIndex(g=>g.ab===ab));if(col<0)return;const f=[],a=[];D.seats.forEach((s,i)=>{const r=c.seed(lv,s);f.push(r?r[0]:0);a.push(r?r[1]:0);});out.push({c:col,f,a});});return out;}
-const BASE = {pErr:{on:1,grn:1,ind:1}, retire:{}, cand:{Kooyong:{g:1,q:'',n:'Josh Frydenberg',prev:'Amelia Hamer'},...(P.findIndex(p=>p.ab==='CYA')>=0?{Fairfax:{g:P.findIndex(p=>p.ab==='CYA'),q:'',n:'Clive Palmer',top:1}}:{})}, form:{pm:-1,arr:'minority',part:-1}, regf:1, cont:{CSA:0,XEN:0,KAP:0}, cname:0, cind:0, called:{}, senD:{}, dd:0, d:new Array(NG).fill(0), coaON:D.coaON, trials:2000, ev:Object.fromEntries(EV.map(e=>[e.name,e.opts[0]])), mrpW:+DATA.mix.toFixed(2), split:0, err:1, big:0.1,
-  demo:[{f:7,party:2,amt:0},{f:2,party:3,amt:0}], dpre:'None', dfac:DATA.dfac.map(()=>0), preset:'Current polls (baseline)', seatAdj:(()=>{const i=DATA.seats.findIndex(x=>x.n==='Kooyong');return i>=0?[{i,g:4,amt:5}]:[];})()  /* Monique Ryan's local strength, so Kooyong starts as a genuine contest */,
+const BASE = {spec:{}, pErr:{on:1,grn:1,ind:1}, retire:{Capricornia:1,'New England':1}, cand:{Capricornia:{g:1,q:'star',n:'Matt Canavan',top:1},Grayndler:{g:4,q:'',n:'Hannah Ferguson',top:1}}, form:{pm:-1,arr:'minority',part:-1}, regf:1, cont:{CSA:0,XEN:0,KAP:0}, cname:0, cind:0, called:{}, senD:{}, dd:0, d:new Array(NG).fill(0), coaON:D.coaON, trials:2000, ev:Object.fromEntries(EV.map(e=>[e.name,e.opts[0]])), mrpW:+DATA.mix.toFixed(2), split:0, err:1, big:0.1,
+  demo:[{f:7,party:2,amt:0},{f:2,party:3,amt:0}], dpre:'None', dfac:DATA.dfac.map(()=>0), preset:'Current polls (baseline)', seatAdj:(()=>{const i=DATA.seats.findIndex(x=>x.n==='Capricornia');return i>=0?[{i,g:1,amt:8}]:[];})()  /* Matt Canavan's personal vote, on top of his star-candidate +3: tuned so he is a slight favourite (about 57%) in Capricornia */,
   pf:{onCoa:+(D.MC[3][1]/(D.MC[3][0]+D.MC[3][1])).toFixed(2), grnAlp:+(D.MC[2][0]/(D.MC[2][0]+D.MC[2][1]+D.MC[2][3])).toFixed(2), lg:0, minorOn:1}, ldr:Object.fromEntries(LP.map(p=>[p,(DATA.leaders.find(l=>l.party===p&&l.sel)||DATA.leaders.find(l=>l.party===p)).name]))};
 let S = JSON.parse(JSON.stringify(BASE)), R = null, sel = null, sortKey = 'pf', sortDir = 1;
 const $ = id => document.getElementById(id);
@@ -181,10 +214,11 @@ const PRESETS={'Current polls (baseline)':s=>{},
   'Labor leadership spill mid-2027':s=>{s.ldr['Labor']='Jim Chalmers';s.ev['Government']='Long-term government fatigue';s.d[0]-=1.5;s.d[3]+=1;},
   'Coalition reunites under Hastie':s=>{DFS(s,'tradie',1);DFS(s,'mining',1);s.ldr['Coalition']='Andrew Hastie';s.ev['Coalition']='Unites behind a strong campaign';s.d[1]+=2;s.d[3]-=3;s.pf.onCoa=Math.min(0.95,s.pf.onCoa+0.05);},
   'Greens–teal alliance':s=>{DFS(s,'flats',1);DFS(s,'edu',1);s.d[2]+=2.5;s.d[4]+=2;s.d[GI('CSA')]+=1;s.d[0]-=3;s.d[1]-=1.5;s.ev['Greens and independents']='Teal / community independent wave';s.pf.grnAlp=Math.max(0.5,s.pf.grnAlp-0.12);},
-  'Minor party chaos':s=>{DFS(s,'bluec',1);DFS(s,'muslim',-1.5);[['CYA',6],['FFP',4],['HMP',4],['LTP',3],['GRPF',4],['KAP',5],['XEN',3],['AJP',1.5],['CSA',4],['SAL',1],['VNS',1.5]].forEach(([a,v])=>{const k=GI(a);if(k>=0)s.d[k]+=v;});s.d[4]+=7;s.d[0]-=9;s.d[1]-=8;s.d[3]-=7;s.d[2]-=2;s.cont={CSA:1,XEN:1,KAP:1};
+  'Minor party chaos':s=>{DFS(s,'bluec',1);DFS(s,'muslim',-1.5);[['AFP',6],['FFP',4],['HMP',4],['LTP',3],['GRPF',4],['KAP',5],['XEN',3],['AJP',1.5],['CSA',4],['SAL',1],['VNS',1.5]].forEach(([a,v])=>{const k=GI(a);if(k>=0)s.d[k]+=v;});s.d[4]+=7;s.d[0]-=9;s.d[1]-=8;s.d[3]-=7;s.d[2]-=2;s.cont={CSA:1,XEN:1,KAP:1};
     // minor parties break through where they are already strongest: their best few seats get a local surge
-    [['CYA',4,22],['FFP',3,22],['HMP',3,14],['LTP',2,20],['GRPF',3,22],['AJP',1,18],['SAL',1,16],['VNS',1,20]].forEach(([ab,n,amt])=>{const g=GI(ab);if(g<0)return;
+    [['AFP',4,22],['FFP',3,22],['HMP',3,14],['LTP',2,20],['GRPF',3,22],['AJP',1,18],['SAL',1,16],['VNS',1,20]].forEach(([ab,n,amt])=>{const g=GI(ab);if(g<0)return;
       D.seats.map((x,i)=>[x.p.reduce((t,v,j)=>t+(DATA.colG[j]===g?v:0),0),i]).sort((a,b)=>b[0]-a[0]).slice(0,n).forEach(([v,i])=>{if(v>0)s.seatAdj.push({i,g,amt});});});s.cont={...s.cont,CSA:1,XEN:1,KAP:1};s.ev['Greens and independents']='Minor-party fragmentation';s.ev['Preference climate']='Preferences scatter (less predictable)';},
+  'Comeback election: every former leader runs':s=>{const keep=S;S=s;SPEC.forEach(x=>specSet(x,true));S=keep;},
   'Early double dissolution':s=>{s.dd=1;s.ev['Election timing']='Early election (October 2027)';s.ev['Government']='Broken election promise';s.d[0]-=1;}};
 $('preset').innerHTML=['Current polls (baseline)'].concat(Object.keys(PRESETS).filter(k=>k!=='Current polls (baseline)').sort((a,b)=>a.replace(/^[^A-Za-z]+/,'').localeCompare(b.replace(/^[^A-Za-z]+/,''),'en'))).map(k=>`<option>${k}</option>`).join('');
 $('preset').addEventListener('change',e=>{const k=e.target.value;S=JSON.parse(JSON.stringify(BASE));PRESETS[k](S);S.preset=k;sync();schedule();});
@@ -203,13 +237,76 @@ const ldrChg=l=>{if(l.sel)return '(current)';const N=['Labor','Coalition','Green
 {const d=document.createElement('div');d.className='ctl';d.innerHTML=`<label for="cname">Community Strong: party name</label><select id="cname">${CNAMES.map((n,k)=>`<option value="${k}">${n[1]}${k?'':' (current)'}</option>`).join('')}</select>`;
   const d2=document.createElement('div');d2.className='ctl';d2.innerHTML=`<label for="cind">Community independents</label><select id="cind"><option value="0">Stay independent (current)</option><option value="1">Join Community Strong: Ryan, Scamps, Chaney, Haines, Boele</option></select>`;
   setTimeout(()=>{const box=document.createElement('details');box.className='sub csaopts';box.innerHTML='<summary>Party name and community independents</summary>';box.appendChild(d);box.appendChild(d2);
-    const li=LP.indexOf('Community Strong'),anchor=$('l'+li)&&$('l'+li).closest('.ctl');if(anchor)anchor.after(box);else $('leaders').appendChild(box);sync();});d.querySelector('select').addEventListener('change',e=>{S.cname=+e.target.value;sync();schedule();});
+    const li=LP.indexOf('Community Strong'),anchor=$('l'+li)&&$('l'+li).closest('.ctl');if(anchor){const dd=anchor.querySelector('details.ldd');if(dd)dd.appendChild(box);else anchor.after(box);}else $('leaders').appendChild(box);sync();});d.querySelector('select').addEventListener('change',e=>{S.cname=+e.target.value;sync();schedule();});
   d2.querySelector('select').addEventListener('change',e=>{S.cind=+e.target.value;if(!S.cind&&CINDL.includes(S.ldr['Community Strong']))S.ldr['Community Strong']='No formal leader';sync();schedule();});}
 // Scamps, Ryan, Chaney and Haines can only lead Community Strong once they have joined it
-const CINDL=['Sophie Scamps','Monique Ryan','Kate Chaney','Helen Haines'];
+const CINDL=['Monique Ryan'];
 function csaLdrOpts(){const sel=$('l'+LP.indexOf('Community Strong'));if(!sel)return;[...sel.options].forEach(o=>{const hide=CINDL.includes(o.value)&&!S.cind;o.hidden=hide;o.disabled=hide;});}
-LP.forEach((p,i)=>{const d=document.createElement('div');d.className='ctl';d.innerHTML=`<label for="l${i}">${p} leader</label><select id="l${i}">${DATA.leaders.filter(l=>l.party===p).map(l=>`<option value="${l.name}">${l.name} ${ldrChg(l)}</option>`).join('')}</select>`;$('leaders').appendChild(d);
-  d.querySelector('select').addEventListener('change',e=>{S.ldr[p]=e.target.value;sync();schedule();});});
+Object.entries(FAC_NEW).forEach(([n,k])=>{if(!FAC[n])FAC[n]=k;});
+const LDCOL={'Labor':'var(--alp)','Coalition':'var(--coa)','Greens':'var(--grn)','One Nation':'var(--on)','Nationals':'var(--nat,#2f8a55)','Community Strong':'var(--csa,#16a39a)',"Katter's Australian":'var(--kap)'};
+const ldOut=l=>/\(candidate\)|state seat/.test(l.seat||'')||(NEWL[l.name]&&NEWL[l.name].p===l.party&&NEWL[l.name].t!=='j')||l.name==='Malcolm Turnbull';
+const ldEsc=t=>String(t).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+const ldSur=(n,all)=>{if(/^No /.test(n))return 'No leader';const w=n.split(' '),i=w.findIndex((x,k)=>k>0&&/^(à|de|van|von)$/.test(x)),sn=i>0?w.slice(i-1).join(' '):w[w.length-1];
+  return all.filter(m=>m!==n&&ldSur0(m)===sn).length?`${w[0][0]}. ${sn}`:sn;};
+const ldSur0=n=>{const w=n.split(' '),i=w.findIndex((x,k)=>k>0&&/^(à|de|van|von)$/.test(x));return i>0?w.slice(i-1).join(' '):w[w.length-1];};
+// ---- trait cards
+const TRT=window.TRAITS||{L:{},A:{},M:{},ML:{}};
+const trFx=(t,p)=>{const out=[],pn=p==='Coalition'?'the Coalition':p==='Nationals'?'the Nationals':p==='Greens'?'the Greens':p,f=v=>(v>0?'+':'−')+Math.abs(v).toFixed(1);
+  if(t[3])out.push(`<span class="${t[3]>0?'up':'dn'}">${f(p==='Nationals'?t[3]*0.35:t[3])}</span> ${pn} nationally`);
+  t[4].forEach(([m,v])=>out.push(`<span class="${v>0?'up':'dn'}">${f(v)}</span> in ${TRT.ML[m]||m}`));
+  return out.length?out.join('<br>'):'<span class="nil">No effect on the vote</span>';};
+const TIER={2:['▲▲','t2'],1:['▲','t1'],0:['●','t0'],'-1':['▼','tm1'],'-2':['▼▼','tm2']};
+let ldPinned=false,ldPopTimer=null;
+function ldPop(b,pin){clearTimeout(ldPopTimer);let el=$('ldpop');if(!el){el=document.createElement('div');el.id='ldpop';el.className='ldpop';el.setAttribute('role','dialog');el.setAttribute('aria-live','polite');document.body.appendChild(el);
+    el.addEventListener('mouseenter',()=>clearTimeout(ldPopTimer));el.addEventListener('mouseleave',()=>ldPopHide(false));}
+  if(pin)ldPinned=true;else if(ldPinned&&el.dataset.n!==b.dataset.n&&!el.hidden)return;
+  const n=b.dataset.n,p=b.dataset.p,l=DATA.leaders.find(x=>x.name===n&&x.party===p)||{},fk=FAC[n],ids=(TRT.A[n+'|'+p]||TRT.A[n]||[]).slice().sort((x,y)=>(TRT.L[y]?TRT.L[y][1]:0)-(TRT.L[x]?TRT.L[x][1]:0)),pic=/^No /.test(n)?null:phOf(n);
+  const cur=DATA.leaders.find(x=>x.party===p&&x.sel);
+  el.dataset.n=n;
+  el.innerHTML=`<button type="button" class="lpx" aria-label="Close">×</button><div class="lph">${pic?`<img src="${pic}" alt="">`:'<i></i>'}<div><b>${ldEsc(n)}</b><small>${ldEsc(p)}${fk&&FACN[fk]?` · <span style="color:${FACN[fk][1]}">${FACN[fk][0]}</span>`:''}</small><small>${ldOut(l)?'Extra-Parliamentary':'Parliamentary'}${l.sel?' · current leader':''}</small></div></div>
+    <ul class="lptr">${ids.map(id=>{const t=TRT.L[id];if(!t)return '';const ti=TIER[t[1]]||TIER[0];return `<li class="${ti[1]}"><span class="lpi" aria-hidden="true">${ti[0]}</span><div><b>${ldEsc(t[0])}</b><em>${ldEsc(t[2])}</em><span class="lpfx">${trFx(t,p)}</span></div></li>`;}).join('')}</ul>
+    <p class="lpn">${l.sel?'Choosing another leader removes these traits and adds theirs.':cur?`Replaces ${ldEsc(cur.name)}'s traits.`:''} Seat effects are points per standard deviation from the average seat.</p>`;
+  el.hidden=false;el.classList.toggle('pinned',ldPinned);
+  el.querySelector('.lpx').onclick=()=>ldPopHide(true);
+  ldAnchor=b;ldPos();}
+let ldAnchor=null;
+function ldPos(){const el=$('ldpop'),b=ldAnchor;if(!el||el.hidden||!b)return;
+  if(matchMedia('(max-width:700px)').matches){el.style.left='';el.style.top='';el.classList.add('sheet');return;}
+  el.classList.remove('sheet');const r=b.getBoundingClientRect(),w=el.offsetWidth,h=el.offsetHeight,vw=innerWidth,vh=innerHeight;
+  if(r.bottom<0||r.top>vh){ldPopHide(true);return;}
+  let x=r.right+10;if(x+w>vw-8)x=r.left-w-10;if(x<8)x=Math.max(8,Math.min(vw-w-8,r.left));
+  let y=Math.max(8,Math.min(vh-h-8,r.top-20));el.style.left=x+'px';el.style.top=y+'px';}
+function ldPopHide(force){const el=$('ldpop');if(!el)return;if(force){ldPinned=false;el.hidden=true;return;}if(ldPinned)return;clearTimeout(ldPopTimer);ldPopTimer=setTimeout(()=>{el.hidden=true;},180);}
+document.addEventListener('click',e=>{const el=$('ldpop');if(el&&!el.hidden&&!e.target.closest('#ldpop')&&!e.target.closest('.ldt'))ldPopHide(true);});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')ldPopHide(true);});
+addEventListener('scroll',ldPos,{passive:true});addEventListener('resize',ldPos);
+function ldTiles(){document.querySelectorAll('.ldtiles').forEach(tw=>{const sel=$(tw.dataset.sel);if(!sel)return;
+  tw.querySelectorAll('.ldt').forEach(b=>{const o=[...sel.options].find(o=>o.value===b.dataset.n),on=sel.value===b.dataset.n;b.hidden=!!(o&&o.hidden);const pp=b.dataset.p,oth=pp==='Nationals'?'One Nation':pp==='One Nation'?'Nationals':null,lock=!on&&b.dataset.n==='Barnaby Joyce'&&oth&&S.ldr[oth]==='Barnaby Joyce';b.classList.toggle('lock',!!lock);b.setAttribute('aria-disabled',lock?'true':'false');b.title=lock?'Leading '+oth+'. Pick someone else there first.':'';b.setAttribute('aria-checked',on?'true':'false');b.tabIndex=on?0:-1;});
+  tw.querySelectorAll('.ldgrp').forEach(g=>{g.hidden=![...g.querySelectorAll('.ldt')].some(b=>!b.hidden);});
+  const lc=$(tw.dataset.sel.replace('l','lc'));if(lc){const n=sel.value,pic=/^No /.test(n)?null:phOf(n),cur=DATA.leaders.find(l=>l.name===n&&l.party===tw.closest('.ldctl').dataset.p);
+    lc.innerHTML=`${pic?`<img src="${pic}" alt="">`:''}<span>${ldEsc(n)}</span>${cur&&cur.sel?'<em>current</em>':'<em class="chg1">changed</em>'}`;}});}
+LP.forEach((p,i)=>{const d=document.createElement('div');d.className='ctl ldctl';d.dataset.p=p;const ls=DATA.leaders.filter(l=>l.party===p),names=ls.map(l=>l.name);
+  const tile=l=>{const fk=FAC[l.name],c=fk&&FACN[fk]?FACN[fk][1]:(LDCOL[p]||'var(--ink)'),pic=/^No /.test(l.name)?null:phOf(l.name),eff=ldrChg(l);
+    return `<button type="button" class="ldt" role="radio" aria-checked="false" data-n="${ldEsc(l.name)}" data-p="${ldEsc(p)}" aria-label="${ldEsc(l.name)}${fk&&FACN[fk]?', '+FACN[fk][0]:''}"><span class="ldpic">${pic?`<img src="${pic}" alt="" loading="lazy" decoding="async">`:'<b aria-hidden="true">—</b>'}</span><i class="ldfac" style="background:${c}"></i><span class="ldn">${ldEsc(ldSur(l.name,names))}</span></button>`;};
+  const grp=(t,arr)=>arr.length?`<div class="ldgrp"><div class="ldgh">${t}</div><div class="ldrow">${arr.map(tile).join('')}</div></div>`:'';
+  d.innerHTML=`<details class="ldd"><summary><span class="ldparty" id="lh${i}">${p}</span><span class="ldcur" id="lc${i}"></span></summary><select id="l${i}" hidden aria-hidden="true" tabindex="-1">${ls.map(l=>`<option value="${ldEsc(l.name)}">${l.name} ${ldrChg(l)}</option>`).join('')}</select>
+    <div class="ldtiles" role="radiogroup" aria-labelledby="lh${i}" data-sel="l${i}">${grp('Parliamentary',ls.filter(l=>!ldOut(l)))}${grp('Extra-Parliamentary',ls.filter(ldOut))}</div></details>`;
+  $('leaders').appendChild(d);
+  const sel=d.querySelector('select'),tw=d.querySelector('.ldtiles');
+  tw.addEventListener('click',e=>{const b=e.target.closest('.ldt');if(!b)return;ldPop(b,true);if(b.getAttribute('aria-checked')==='true'||b.classList.contains('lock'))return;sel.value=b.dataset.n;sel.dispatchEvent(new Event('change'));});
+  tw.addEventListener('mouseover',e=>{const b=e.target.closest('.ldt');if(b&&matchMedia('(hover:hover)').matches)ldPop(b,false);});
+  tw.addEventListener('mouseleave',()=>ldPopHide(false));
+  tw.addEventListener('focusin',e=>{const b=e.target.closest('.ldt');if(b&&b.matches(':focus-visible'))ldPop(b,false);});
+  tw.addEventListener('keydown',e=>{if(!['ArrowRight','ArrowLeft','ArrowDown','ArrowUp'].includes(e.key))return;const bs=[...tw.querySelectorAll('.ldt')].filter(b=>!b.hidden),k=bs.indexOf(document.activeElement);if(k<0)return;e.preventDefault();
+    const nb=bs[(k+(e.key==='ArrowRight'||e.key==='ArrowDown'?1:bs.length-1))%bs.length];nb.focus();nb.click();});
+  d.querySelector('select').addEventListener('change',e=>{S.ldr[p]=e.target.value;
+    if(e.target.value==='Barnaby Joyce'){const other=p==='Nationals'?'One Nation':p==='One Nation'?'Nationals':null;if(other&&S.ldr[other]==='Barnaby Joyce')S.ldr[other]=other==='One Nation'?'Pauline Hanson':'Matt Canavan';}
+    ldrCands();sync();schedule();});});
+ldTiles();
+{const box=$('speccands');if(box){let lastP='';box.innerHTML=SPEC.map((x,k)=>{const h=x.p!==lastP?`<p class="sublbl">${x.p}</p>`:'';lastP=x.p;const pic=phOf(x.n);return h+`<label class="ctl spec"><input type="checkbox" id="spec${k}">${pic?`<img src="${pic}" alt="" loading="lazy">`:''}<span><b>${x.n}</b> <small>${x.pty}, ${x.s}</small><em>${x.note}</em></span></label>`;}).join('');
+  SPEC.forEach((x,k)=>$('spec'+k).addEventListener('change',e=>{specSet(x,e.target.checked);
+    if(!e.target.checked){if(S.ldr[x.p]===x.n){const cur=DATA.leaders.find(l=>l.party===x.p&&l.sel);S.ldr[x.p]=cur?cur.name:BASE.ldr[x.p];const i=LP.indexOf(x.p);if(i>=0)$('l'+i).value=S.ldr[x.p];}}
+    ldrCands();sync();schedule();}));}}
 const DFD={muslim:['Seats with large Muslim communities move further towards Labor.','Muslim communities turn away from Labor, towards independents and the Greens.'],
   chinese:['Seats with large Chinese-Australian communities move further to Labor and the Greens.','Chinese-Australian voters drift back to the Liberals.'],
   sasia:['South Asian communities move further to Labor.','South Asian communities swing to the Coalition and independents.'],
@@ -235,7 +332,7 @@ DATA.dfac.forEach((f,k)=>{const d=document.createElement('div');d.className='ctl
 const S2=DATA.sen2, SK=S2.groups.map(g=>g.k);
 const SCOL={JLN:'#c2185b',POC:'var(--ind)',AV:'#5c6bc0',SPP:'#2e7d32',INDO:'var(--ind)',UAP:'#f2c200'};
 const scol=g=>S2.groups[g].h>=0?col(S2.groups[g].h):(SCOL[S2.groups[g].k]||'var(--empty)');
-const SSL=['ALP','COA','GRN','ON','JLN','POC','HMP','CYA','FFP','AV'];
+const SSL=['ALP','COA','GRN','ON','JLN','POC','HMP','AFP','FFP','AV'];
 SSL.forEach(k=>{const g=SK.indexOf(k),d=document.createElement('div');d.className='ctl';const st=k==='POC'?' (ACT)':k==='JLN'?' (strongest in Tas)':'';
   d.innerHTML=`<label for="ss_${k}"><span>${S2.groups[g].n}${st}</span> <output id="ss_${k}o"></output></label><input id="ss_${k}" type="range" min="-10" max="10" step="0.5">`;
   $('sensliders').appendChild(d);d.querySelector('input').addEventListener('input',e=>{const v=+e.target.value;if(v)S.senD[g]=v;else delete S.senD[g];sync();schedule();});});
@@ -279,14 +376,15 @@ function sync(){
   $('pfOn').value=S.pf.onCoa;$('pfOnO').textContent=Math.round(S.pf.onCoa*100)+'%';$('pfGrn').value=S.pf.grnAlp;$('pfGrnO').textContent=Math.round(S.pf.grnAlp*100)+'%';
   const lg0=D.MC[0][1]/(D.MC[0][1]+D.MC[0][3]);$('pfLg').value=S.pf.lg;$('pfLgO').textContent=Math.round((lg0+S.pf.lg)*100)+'%';$('pfMin').value=S.pf.minorOn;$('pfMinO').textContent='x'+S.pf.minorOn.toFixed(2);
   LP.forEach((p,i)=>{$('l'+i).value=S.ldr[p];});
-  Object.keys(CONT).forEach(ab=>{if($('ct_'+ab))$('ct_'+ab).value=(S.cont||{})[ab]||0;});if($('cname'))$('cname').value=S.cname||0;csaLdrOpts();if($('regf'))$('regf').value=S.regf===0?0:1;if($('cind')){$('cind').value=S.cind||0;$('cind').options[1].textContent=`Join ${P[CSAI].n}: Ryan, Scamps, Chaney, Haines, Boele`;}
+  Object.keys(CONT).forEach(ab=>{if($('ct_'+ab))$('ct_'+ab).value=(S.cont||{})[ab]||0;});if($('cname'))$('cname').value=S.cname||0;csaLdrOpts();ldTiles();if($('regf'))$('regf').value=S.regf===0?0:1;if($('cind')){$('cind').value=S.cind||0;$('cind').options[1].textContent=`Join ${P[CSAI].n}: Ryan, Scamps, Chaney, Haines, Boele`;}
   DATA.dfac.forEach((f,k)=>{$('df_'+k).value=S.dfac[k];$('df_'+k+'o').textContent=(S.dfac[k]>0?'+':'')+S.dfac[k].toFixed(1);});
   $('dpre').value=S.dpre;[0,1].forEach(i=>{$('df'+i).value=S.demo[i].f;$('dp'+i).value=S.demo[i].party;$('da'+i).value=S.demo[i].amt;$('da'+i+'o').textContent=(S.demo[i].amt>0?'+':'')+S.demo[i].amt.toFixed(2)+' pts';});
   $('mrp').value=S.mrpW;$('mrpO').textContent=Math.round(S.mrpW*100)+'%';$('split').value=S.split;
   $('err').value=S.err;$('errO').textContent='x'+S.err.toFixed(1);[['peOn','on'],['peGrn','grn'],['peInd','ind']].forEach(([id,k])=>{const v=(S.pErr||{})[k];$(id).value=v;$(id+'O').textContent='x'+v.toFixed(1);});$('big').value=S.big;$('bigO').textContent=Math.round(S.big*100)+'%';
   $('trials').value=S.trials;$('trialsO').textContent=nf(S.trials);
   const mark=(id,on)=>{const e=$(id);if(e)e.closest('.ctl').classList.toggle('changed',!!on);};
-  const cnt={prim:0,minor:0,ldr:0,ev:0,demo:0,pref:0,unc:0,mod:0,sen:0};
+  const cnt={prim:0,minor:0,ldr:0,ev:0,demo:0,pref:0,unc:0,mod:0,sen:0,cand:0};
+  SPEC.forEach((x,k)=>{const e=$('spec'+k);if(!e)return;const on=specOn(x),lk=!!(x.p&&S.ldr[x.p]===x.n);e.checked=on;e.closest('.spec').classList.toggle('changed',on);e.closest('.spec').title=lk?'On because '+x.n+' leads the party. Turning it off restores the current leader.':'';cnt.cand+=on;});
   SSL.forEach(k=>{const g=SK.indexOf(k),v=S.senD[g]||0;$('ss_'+k).value=v;$('ss_'+k+'o').textContent=(v>0?'+':'')+v.toFixed(1);mark('ss_'+k,v);cnt.sen+=!!v;});
   $('dd').value=S.dd;mark('dd',S.dd);cnt.sen+=!!S.dd;
   P.forEach((_,i)=>{if(!$('s'+i))return;const c=S.d[i]!==0;mark('s'+i,c);cnt.prim+=c;if(i>=5)cnt.minor+=c;});
@@ -297,6 +395,7 @@ function sync(){
   const dc=S.demo.some(r=>r.amt);mark('dpre',dc);[0,1].forEach(i=>mark('da'+i,S.demo[i].amt));cnt.demo+=dc;
   [['pfOn',S.pf.onCoa!==BASE.pf.onCoa,'pref'],['pfGrn',S.pf.grnAlp!==BASE.pf.grnAlp,'pref'],['pfLg',S.pf.lg!==BASE.pf.lg,'pref'],['pfMin',S.pf.minorOn!==BASE.pf.minorOn,'pref'],['coa',S.coaON!==BASE.coaON,'pref'],['split',S.split!==BASE.split,'pref'],['err',S.err!==BASE.err,'unc'],['big',S.big!==BASE.big,'unc'],['mrp',S.mrpW!==BASE.mrpW,'mod'],['trials',S.trials!==BASE.trials,'mod']].forEach(([id,c,g])=>{mark(id,c);cnt[g]+=c;});
   document.querySelectorAll('.chg').forEach(e=>{const n=cnt[e.dataset.g];e.textContent=n?n+' changed':'';});
+  {const tot=Object.entries(cnt).reduce((t,[k,v])=>t+(k==='minor'?0:v),0),bd=$('sbxbadge');if(bd){bd.textContent=tot;bd.hidden=!tot;bd.title=tot+' setting'+(tot===1?'':'s')+' changed';}}
 }
 let seed=1, timer=null, LS=null, RUNNO=0; const BYSALT=(Math.random()*4294967296)>>>0;   // byline rotation: different reporters each visit and each run
 // sandbox changes wait for "Run again": nothing re-simulates until the reader asks
@@ -310,18 +409,24 @@ function settings(){
   let libD=0,natD=0; d.g[NATI]=0; if(split){libD=S.d[1];natD=S.d[NATI];d.g[1]-=libD;}
   const fade=Math.pow(0.5,Math.max(0,days)/180);
   const senBoost={};
-  LP.forEach(p=>{const l=DATA.leaders.find(x=>x.name===S.ldr[p]); if(!l||l.sel) return; const f=(p==='Labor'||p==='Coalition')?fade:1; add5(l.d,f); if(l.dg) Object.entries(l.dg).forEach(([ab,v])=>{const k=GI(ab);if(k>=0)d.g[k]+=v;}); if(l.sen) Object.entries(l.sen).forEach(([st,v])=>{const k=S2.states.indexOf(st);if(k>=0)(senBoost[k]=senBoost[k]||[]).push([SK.indexOf(l.party==='Community Strong'?'CSA':l.party),v]);});});
-  return {pErr:S.pErr, d, coaON:Math.min(0.95,Math.max(0.05,coa)), errScale:err, flowScale:flow, bigP, bigX, days, trials:S.trials, seed, onBias:0, mrpW:S.mrpW, regFlows:S.regf!==0, split:!!split, demo:S.demo.filter(r=>r.amt), pf:S.pf, seatAdj:TBW(), senD:S.senD, dd:!!S.dd, called:S.called, libD, natD, senBoost, seeds:seedsFor(S), lcOv:lcOvFor(S), dfac:DATA.dfac.map((f,k)=>({i:k,v:S.dfac[k],load:f.load,one:f.one})).filter(f=>f.v)};
+  // leader traits: the new leader's traits count, and the current leader's are taken away (the polls already reflect them)
+  const TR=window.TRAITS||{L:{},A:{},M:{}},TCOL={Nationals:2,"Katter's Australian":11,'Community Strong':26},TPTY={Labor:0,Coalition:1,Greens:2,'One Nation':3},TGRP={Labor:0,Coalition:1,Greens:2,'One Nation':3,"Katter's Australian":GI('KAP'),'Community Strong':GI('CSA')},trRules=[];
+  const trApply=(p,name,sg)=>{(TR.A[name+'|'+p]||TR.A[name]||[]).forEach(id=>{const t=TR.L[id];if(!t)return;const nat=t[3],rules=t[4];
+    if(nat){if(p==='Nationals')d.g[1]+=nat*0.35*sg;else if(TGRP[p]!=null&&TGRP[p]>=0)d.g[TGRP[p]]+=nat*sg;}
+    rules.forEach(([m,v])=>{const r={amt:v*sg};if(m.startsWith('st:'))r.st=m.slice(3);else r.f=TR.M[m];if(TCOL[p]!=null)r.col=TCOL[p];else if(TPTY[p]!=null)r.party=TPTY[p];else return;trRules.push(r);});});};
+  LP.forEach(p=>{const l=DATA.leaders.find(x=>x.name===S.ldr[p]&&x.party===p); if(!l||l.sel) return; const f=1;   // traits are lasting, so they do not fade with time to the election
+    const cur=DATA.leaders.find(x=>x.party===p&&x.sel); trApply(p,l.name,f); if(cur) trApply(p,cur.name,-f); if(l.sen) Object.entries(l.sen).forEach(([st,v])=>{const k=S2.states.indexOf(st);if(k>=0)(senBoost[k]=senBoost[k]||[]).push([SK.indexOf(l.party==='Community Strong'?'CSA':l.party),v]);});});
+  return {pErr:S.pErr, d, coaON:Math.min(0.95,Math.max(0.05,coa)), errScale:err, flowScale:flow, bigP, bigX, days, trials:S.trials, seed, onBias:0, mrpW:S.mrpW, regFlows:S.regf!==0, split:!!split, demo:S.demo.filter(r=>r.amt).concat(trRules), pf:S.pf, seatAdj:TBW(), senD:S.senD, dd:!!S.dd, called:S.called, libD, natD, senBoost, seeds:seedsFor(S), lcOv:lcOvFor(S), dfac:DATA.dfac.map((f,k)=>({i:k,v:S.dfac[k],load:f.load,one:f.one})).filter(f=>f.v)};
 }
-function go(){tbMember();PENDING=false;$('run').classList.remove('pending');$('run').textContent='Run again';$('pendmsg').hidden=true;if(REPLAY){cancelAnimationFrame(REPLAY.raf);REPLAY=null;$("replay").hidden=true;$("replaybtn").textContent="▶ Replay results night";}
+function go(){tbMember();PENDING=false;$('run').classList.remove('pending');$('run').textContent='Run again';$('pendmsg').hidden=true;if(REPLAY){cancelAnimationFrame(REPLAY.raf);REPLAY=null;$("replay").hidden=true;$("replaybtn").innerHTML=ICON("play")+" Replay results night";}
   $('status').textContent='Simulating '+nf(S.trials)+' elections...';
   requestAnimationFrame(()=>setTimeout(()=>{const t=performance.now();LS=settings();applySplit(LS.split);applyCind(S.cind);applyName(S.cname||0);R=ENGINE.simulate(D,LS);RUNNO++;
     $('status').textContent=nf(S.trials)+' simulations in '+((performance.now()-t)/1000).toFixed(1)+' s'+(JSON.stringify(S)!==JSON.stringify(BASE)?' · sandbox changes active':' · baseline');
-    render();if(mapBuilt&&!window.NOLIVE&&!$('skiplive').checked)replayStart(true);},20));
+    render();if(mapBuilt&&!window.NOLIVE&&!$('skiplive').checked)replayStart(true);if(window.APP&&APP._after){const f=APP._after;APP._after=null;try{f();}catch(e){console.error(e);}}},20));
 }
 const pct = v => v>=0.995?'>99%':v<0.005?'<1%':Math.round(v*100)+'%';
 // figure numbers follow the order figures appear on the page
-function renumberFigs(){[...document.querySelectorAll('span.fig')].filter(e=>/^Fig\./.test(e.textContent)).forEach((e,k)=>{e.textContent='Fig. '+(k+1);});}
+function renumberFigs(){[...document.querySelectorAll('span.fig')].filter(e=>/^Fig\./.test(e.textContent)&&!e.closest('#cmp')).forEach((e,k)=>{e.textContent='Fig. '+(k+1);});}
 function render(){
   tickTo($('pA'),pct(R.pA));tickTo($('pC'),pct(R.pC));tickTo($('pH'),pct(R.pH));
   const cb=coaBreak(), cbTxt=g=>{const parts=Object.entries(cb[g]||{}).filter(([,v])=>v).sort((a,b)=>b[1]-a[1]);return parts.length>1?` <small class="cbk">(${parts.map(([k,v])=>`${COASUB[k][0].replace(/ \(.*\)/,'')} ${v}`).join(' · ')})</small>`:'';};
@@ -431,7 +536,7 @@ ${named.filter(v=>v.top).map(v=>`<div class="candrow"><i style="background:${map
       <div class="adjrow"><span class="adjl">Candidate</span><select id="cqP" aria-label="Party">${opts.map(j=>`<option value="${j}"${j===cq.g?' selected':''}>${P[j].n}</option>`).join('')}</select>
         <select id="cqQ" aria-label="Candidate quality"><option value="">Ordinary candidate</option><option value="star"${cq.q==='star'?' selected':''}>Star candidate (+3)</option><option value="local"${cq.q==='local'?' selected':''}>Strong local profile (+1.5)</option><option value="scandal"${cq.q==='scandal'?' selected':''}>Scandal (−4)</option></select><button id="cqGo" type="button" class="ghost">Apply</button></div>
       <div class="adjrow"><span class="adjl">Local swing</span><select id="ovP" aria-label="Party">${opts.map(j=>`<option value="${j}">${P[j].n}</option>`).join('')}</select><span class="adjsl"><input id="ovA" type="range" min="-15" max="15" step="0.5" value="3" aria-label="Points"><output id="ovO">+3.0</output></span><button id="ovAdd" type="button" class="ghost">Apply</button></div>
-      ${mine.length?`<div class="ovlist">${mine.map(a=>`<button type="button" data-g="${a.g}" title="Remove">${P[a.g].n} ${a.amt>0?'+':''}${a.amt.toFixed(1)} ✕</button>`).join('')}</div>`:''}
+      ${mine.length?`<div class="ovlist">${mine.map(a=>`<button type="button" data-g="${a.g}" title="Remove">${P[a.g].n} ${a.amt>0?'+':''}${a.amt.toFixed(1)} ${ICON('close')}</button>`).join('')}</div>`:''}
       <span class="status">A retiring member costs their party about 2.5 points of personal vote. A local swing adds points to one party in this seat only.</span></div></div>`;
   const slot=c.querySelector('#candslot');if(slot)slot.outerHTML=candHTML;else c.insertAdjacentHTML('beforeend',candHTML);
   $('retChk').addEventListener('change',e=>{S.retire={...(S.retire||{})};if(e.target.checked)S.retire[s.n]=1;else delete S.retire[s.n];sync();go();});
@@ -454,7 +559,9 @@ function table(){
 // government formation: the reader's choice only applies in a hung parliament (no party on 76 in the central forecast)
 function formOK(){return null;const f=S.form,c=R&&R.likeCount;if(!f||f.pm==null||f.pm<0||!c)return null;if(Math.max(...c)>=76||!(c[f.pm]>0))return null;
   const part=f.arr!=='minority'&&f.part>=0&&f.part!==f.pm&&c[f.part]>0?f.part:-1;return {pm:f.pm,arr:part<0?'minority':f.arr,part,n:c[f.pm]+(part>=0?c[part]:0)};}
-function govSides(){const c=R.likeCount;const F=formOK();if(F){const rk=P.map((_,j)=>j).filter(j=>j!==F.pm&&!(F.arr==='coalition'&&j===F.part)&&j!==4).sort((a,b)=>c[b]-c[a]);const opp=rk[0];return {gov:F.pm,opp,cross:P.map((_,j)=>j).filter(j=>j!==F.pm&&j!==opp),F};}
+function govSides(){const c=R.likeCount;const F=formOK();
+  {const OV=window.APP&&APP.govOv;if(OV!=null&&c[OV]>0&&!REPLAY){const opp=P.map((_,j)=>j).filter(j=>j!==OV&&j!==4).sort((a,b)=>c[b]-c[a])[0];return {gov:OV,opp,cross:P.map((_,j)=>j).filter(j=>j!==OV&&j!==opp)};}}
+  if(F){const rk=P.map((_,j)=>j).filter(j=>j!==F.pm&&!(F.arr==='coalition'&&j===F.part)&&j!==4).sort((a,b)=>c[b]-c[a]);const opp=rk[0];return {gov:F.pm,opp,cross:P.map((_,j)=>j).filter(j=>j!==F.pm&&j!==opp),F};}
   const rk=P.map((_,j)=>j).sort((a,b)=>c[b]-c[a]||[0,1,3,2].indexOf(b)-[0,1,3,2].indexOf(a));const gov=rk[0],opp=rk[1];return {gov,opp,cross:P.map((_,j)=>j).filter(j=>j!==gov&&j!==opp)};}
 const ANIM=!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
 function tickTo(el,txt){if(!el)return;const m=/^(<?)(\d+)(%)$/.exec(txt),o=/^(<?)(\d+)(%)$/.exec(el.textContent);
@@ -571,7 +678,7 @@ function buildMap(){
     else if(pts.size===2){const [o]=[...pts.entries()].filter(([k])=>k!==e.pointerId);const d0=Math.hypot(prev[0]-o[1][0],prev[1]-o[1][1]),d1=Math.hypot(e.clientX-o[1][0],e.clientY-o[1][1]);
       if(d0>0) zoomAt(d1/d0,(e.clientX+o[1][0])/2,(e.clientY+o[1][1])/2); moved+=10;}
     pts.set(e.pointerId,[e.clientX,e.clientY]);});
-  const end=e=>{if(pts.has(e.pointerId)&&pts.size===1&&moved<6){const el=document.elementFromPoint(e.clientX,e.clientY);const i=el&&el.dataset?el.dataset.i:null;if(REPLAY&&i!=null&&el.classList.contains('cell')){whatIf(+i,e.clientX,e.clientY);pts.delete(e.pointerId);return;}if(i!=null&&i!==undefined&&el.classList.contains('cell')){sel=+i;render();$('seatcard').scrollIntoView({behavior:'smooth',block:'nearest'});if(e.pointerType!=='mouse'){showTip(sel,e.clientX,e.clientY);clearTimeout(window._tt);window._tt=setTimeout(()=>$('maptip').hidden=true,2500);}}}pts.delete(e.pointerId);};
+  const end=e=>{if(pts.has(e.pointerId)&&pts.size===1&&moved<6){const el=document.elementFromPoint(e.clientX,e.clientY);const i=el&&el.dataset?el.dataset.i:null;if(REPLAY&&!(window.APP&&APP.noWhatIf)&&i!=null&&el.classList.contains('cell')){whatIf(+i,e.clientX,e.clientY);pts.delete(e.pointerId);return;}if(i!=null&&i!==undefined&&el.classList.contains('cell')&&sel===+i){sel=null;$('maptip').hidden=true;render();}else if(i!=null&&i!==undefined&&el.classList.contains('cell')){sel=+i;render();$('seatcard').scrollIntoView({behavior:'smooth',block:'nearest'});if(e.pointerType!=='mouse'){showTip(sel,e.clientX,e.clientY);clearTimeout(window._tt);window._tt=setTimeout(()=>$('maptip').hidden=true,2500);}}}pts.delete(e.pointerId);};
   svg.addEventListener('pointermove',e=>{if(e.pointerType!=='mouse'||pts.size)return;const el=e.target;if(el.classList&&el.classList.contains('cell'))showTip(+el.dataset.i,e.clientX,e.clientY);else $('maptip').hidden=true;});
   svg.addEventListener('pointerleave',()=>{$('maptip').hidden=true;});
   $('mparty').innerHTML=[0,1,2,3,4,...MINOR].filter(j=>DATA.prim25[j]>0).map(j=>`<option value="${j}">${P[j].n}</option>`).join('');$('mparty').value=MP;
@@ -653,6 +760,8 @@ function drawMap(){
 }
 const fmt1=v=>(v*100).toFixed(1);
 function natCentral(){const t=new Array(NG).fill(0);let W=0;D.seats.forEach((s,i)=>{const b=R.base[i],cg=cgFor(s);W+=s.fv;b.forEach((v,j)=>t[cg[j]]+=v*s.fv);});return t.map(v=>v/W/100);}
+// did Matt Canavan win Capricornia? (he runs there for the Nationals/LNP)
+function canCap(){const i=D.seats.findIndex(x=>x.n==='Capricornia');if(i<0)return true;const w=R.likely[i];return w===1||w===NATI;}
 function article(){
   const nat=natCentral(), c=R.likeCount, order=ORD.slice().filter(j=>j<5||R.dist[j].p95>0||c[j]>0).sort((a,b)=>REPLAY?(c[b]-c[a]||DATA.current[b]-DATA.current[a]):(R.dist[b].med-R.dist[a].med||c[b]-c[a]||b-a));
   const ord2=order.filter(j=>j!==4).concat([4]); const top=ord2.slice(0,3), rest=ord2.slice(3), rows3=[];for(let k=0;k<rest.length;k+=3)rows3.push(rest.slice(k,k+3));
@@ -665,7 +774,7 @@ function article(){
   // ---- Wikipedia-style infobox (mirrors "Next Australian federal election")
   const SINCE={'Anthony Albanese':'30 May 2019','Angus Taylor':'13 February 2026','Pauline Hanson':'18 November 2014','David Shoebridge':'30 September 2026','Robbie Katter':'3 February 2020','Matt Canavan':'11 March 2026'};
   const STN={NSW:'New South Wales',Vic:'Victoria',VIC:'Victoria',Qld:'Queensland',QLD:'Queensland',WA:'Western Australia',SA:'South Australia',Tas:'Tasmania',TAS:'Tasmania',ACT:'Australian Capital Territory',NT:'Northern Territory'};
-  const CONTEST=['ALP','COA','NAT','GRN','ON','CYA','FFP','CSA'];
+  const CONTEST=['ALP','COA','NAT','GRN','ON','AFP','FFP','CSA'];
   const lk=(s,ti)=>wl(s,ti), na='<i>N/A</i>';
   const wSeat=j=>{if(noL(j))return na;
     if(ld(j)==='Malcolm Turnbull'){const wi=D.seats.findIndex(s=>s.n==='Wentworth'),won=wi>=0&&R.likely[wi]===j&&(!REPLAY||REPLAY.done.has(wi));const dec=!REPLAY||REPLAY.done.has(wi);
@@ -674,7 +783,7 @@ function article(){
     const LOST='<br><i>(lost re-election)</i>';
     if(l&&l.seat){const m=l.seat.match(/^Senator for (.+)$/);if(m){const sn=SENBY[l.name],F=sn?senFate(sn):null;return `${lk(STN[m[1]]||m[1])} (${lk('Senate')})${F&&!F.cont&&!F.hold?LOST:''}`;}
       const sname=l.seat.replace(/ \([^)]*\)$/,''),i=D.seats.findIndex(x=>x.n===sname),s=D.seats[i];
-      return `${lk(sname)}${s?' ('+stN(s.st)+')':l.seat!==sname?l.seat.slice(sname.length):''}${s&&R.likely[i]!==j&&(!REPLAY||REPLAY.done.has(i))?LOST:''}`;}
+      return `${lk(sname)}${s?' ('+stN(s.st)+')':l.seat!==sname?l.seat.slice(sname.length):''}${s&&R.likely[i]!==j&&(!REPLAY||REPLAY.done.has(i))?(/\(candidate\)/.test(l.seat)?'<br><i>(not elected)</i>':LOST):''}`;}
     const mm=LEAD[P[j].ab];return mm&&mm.s&&!/state seat|former/.test(mm.s)?mm.s:'<i>None</i>';};
   const TODAY=new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
   const wSince=j=>{if(noL(j))return na;const v=ld(j);if(DATA.leaders.some(l=>l.name===v&&!l.sel))return `${TODAY}`;if(SINCE[v])return ['Anthony Albanese','Angus Taylor','David Shoebridge'].includes(v)?lk(SINCE[v],WIKI[SINCE[v]]?SINCE[v]:v):SINCE[v];
@@ -740,11 +849,31 @@ function article(){
     // a leader who has lost their own seat is spoken of as "whoever replaces them"
     const lostE=(n,j)=>{const l=DATA.leaders.find(x=>x.name===n);if(!l||!l.seat||/Senat|Not in|state seat/.test(l.seat))return null;const sn=l.seat.replace(/ \(.*\)$/,''),i=D.seats.findIndex(x=>x.n===sn);return i>=0&&R.likely[i]!==j?sn:null;};
     const lN=(n,j)=>{const s=lostE(n,j);return s?`whoever replaces ${n} (who lost ${s}) as ${j===0?'Labor':'Liberal'} leader`:n;};
-    const SHE=['Tanya Plibersek','Sussan Ley',"Clare O'Neil",'Pauline Hanson','Larissa Waters','Sarah Hanson-Young','Mehreen Faruqi'];
+    const SHE={includes:isFem}; // pronouns follow the full FEM list + female first names
+    // ---- XYZ News text (news-text.js): deterministic variant picker and token filler
+    const XT=window.XYZT||{};
+    const hsh=salt=>{let h=2166136261>>>0;const s0=c.join(',')+'|'+(S.preset||'')+'|'+salt;for(let i=0;i<s0.length;i++){h^=s0.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}return h;};
+    const pk=(p,salt)=>Array.isArray(p)?(p.length?p[hsh(salt)%p.length]:''):p;
+    const fillT=(t,v)=>{if(t==null)return '';v=v||{};
+      const res=s1=>{let out='',i=0;while(i<s1.length){const ch=s1[i];
+        if(ch==='{'&&(s1[i+1]==='?'||s1[i+1]==='#')){let d=0,j=i;for(;j<s1.length;j++){if(s1[j]==='{')d++;else if(s1[j]==='}'){d--;if(!d)break;}}
+          const body=s1.slice(i+2,j),ci=body.indexOf(':'),key=body.slice(0,ci),rest=body.slice(ci+1),parts=[];let dd=0,st=0;
+          for(let k=0;k<rest.length;k++){if(rest[k]==='{')dd++;else if(rest[k]==='}')dd--;else if(rest[k]==='|'&&!dd){parts.push(rest.slice(st,k));st=k+1;}}parts.push(rest.slice(st));
+          const cv=v[key];out+=res(s1[i+1]==='?'?(cv?parts[0]:(parts[1]||'')):(parts[Math.max(0,Math.min(parts.length-1,cv|0))]||''));i=j+1;continue;}
+        out+=ch;i++;}return out;};
+      let o=res(t).replace(/\{76−(\w+)\}/g,(m,k)=>v[k]!=null?76-(+v[k]||0):m);
+      o=o.replace(/\{([^{}]+)\}/g,(m,k)=>{if(k in v&&v[k]!=null)return String(v[k]);try{console.warn('XYZ News: unfilled token',k);}catch(e){}return '';});
+      o=o.replace(/\b(\d+|one|One|a|A|single) ([A-Za-z-]+)\(s\)/g,(m,n0,w)=>`${n0} ${(n0==='1'||/^(one|a|single)$/i.test(n0))?w:w+'s'}`).replace(/\(s\)/g,'s');
+      o=o.replace(/\b1 (seat|MP|member|senator|recount|contest)s\b/g,'1 $1');
+      return o.replace(/ +([,.;:])/g,'$1').replace(/ {2,}/g,' ').replace(/\.\./g,'.').trim();};
+    const pv=n=>({Leader:n,leader:n,Surname:sur(n||''),surname:sur(n||''),'his/her':his(n),'he/she':he(n),'him/her':isFem(n)?'her':'him','His/Her':cap(his(n)),'He/She':cap(he(n))});
     const he=n=>SHE.includes(n)?'she':'he', his=n=>SHE.includes(n)?'her':'his', cap=s=>s[0].toUpperCase()+s.slice(1);
     const sur=n=>n.split(' ').slice(-1)[0];
     const a=c[0], co=c[1], on=c[3], gr=c[2], csa=c[iCSA], ind=c[4];
     const nums=n=>['no','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve'][n]||String(n);
+    const isCoaG=g=>g===1||g===NATI;
+    const on2cp=D.seats.reduce((t,_,i)=>{const M=seatMargin(i);return t+(M&&(M.w===3||M.r===3)&&!((M.w===0&&isCoaG(M.r))||(M.r===0&&isCoaG(M.w)))?1:0);},0);
+    const V0=()=>({a,co,on,gr,csa,ind,nt:c[NATI]||0,'Labor leader':L,'Coalition leader':C,'ON leader':O,'Greens leader':G,'Labor surname':sur(L),'Coalition surname':sur(C),'ON name':onName,wipe:(typeof fallTxt!=='undefined'?fallTxt:'').trim(),'crossbench list':xb.length?list(xb):'the crossbench'});
     // Labor's worst state against 2025
     const STF={NSW:'New South Wales',VIC:'Victoria',QLD:'Queensland',WA:'Western Australia',SA:'South Australia',TAS:'Tasmania',ACT:'the ACT',NT:'the Northern Territory'};
     const loss={};D.seats.forEach((s,i)=>{const was=gOf(s)===0,now=R.likely[i]===0;loss[s.st]=(loss[s.st]||0)+(was&&!now?1:0)-(!was&&now?1:0);});
@@ -768,7 +897,7 @@ function article(){
     if(csa===0&&DATA.current[iCSA]>0)falls.push('Community Strong loses both its seats in its first election');
     else if(csa===1&&DATA.current[iCSA]===2)falls.push('Community Strong is cut to a single seat');
     const fallTxt=falls.length?` ${cap(list(falls))}.`:'';
-    const RIGHTL=['KAP','CYA','FFP','LTP','GRPF','AUC','ASP','CEC','IMO','GAP'];
+    const RIGHTL=['KAP','AFP','FFP','LTP','GRPF','AUC','ASP','CEC','IMO','GAP'];
     const nonRight=a+gr+csa+ind+c[iXEN]+P.reduce((s,g,j)=>s+(j>=5&&![iCSA,iKAP,iXEN,NATI].includes(j)&&!RIGHTL.includes(g.ab)?c[j]:0),0);
     const rightMin=P.reduce((s,g,j)=>s+(RIGHTL.includes(g.ab)?c[j]:0),0), ntS=SPLIT?(c[NATI]||0):0, rightTot=co+ntS+on+rightMin;
     const hung=c.every(v=>v<76), leftOK=nonRight>=76, rightOK=rightTot>=76, leftNeedX=76-a-gr, leftShaky=leftOK&&leftNeedX>8;
@@ -779,10 +908,10 @@ function article(){
     const PN=j=>j===4?'the independents':j===1?'the Coalition':j===2?'the Greens':P[j].n;
     if(top===3&&maj){
       head='One Nation wins government';
-      body=`The unthinkable has happened. ${onName} wins majority government in its own right with ${sN(on)}, a feat no minor party has achieved since Federation. ${O} will be sworn in as Prime Minister, ${onNew?'leading':'nearly three decades after founding'} the party the major parties spent a generation trying to contain. ${a===0&&co===0?`Labor and the Coalition, which between them have governed Australia since 1910, are both wiped out of the House.`:a===0?`Labor is wiped out of the House altogether, and ${C}'s Coalition is reduced to ${sN(co)}.`:co===0?`The Coalition is wiped out of the House altogether, and Labor is reduced to ${sN(a)}.`:`Labor is reduced to ${sN(a)} and ${C}'s Coalition to ${sN(co)}.`}${fallTxt} Canberra, and the region, will be watching closely.`;
+      body=`The unthinkable has happened. ${onName} wins majority government in its own right with ${sN(on)}, a feat no minor party has achieved since Federation. ${(XT.ST.onGov||{})[O]||`${O} will be sworn in as Prime Minister, leading the party the major parties spent a generation trying to contain.`} ${a===0&&co===0?`Labor and the Coalition, which between them have governed Australia since 1910, are both wiped out of the House.`:a===0?`Labor is wiped out of the House altogether, and ${C}'s Coalition is reduced to ${sN(co)}.`:co===0?`The Coalition is wiped out of the House altogether, and Labor is reduced to ${sN(a)}.`:`Labor is reduced to ${sN(a)} and ${C}'s Coalition to ${sN(co)}.`}${fallTxt} Canberra, and the region, will be watching closely.`;
     } else if(top===2){
       head=maj?'The Greens win government':'The Greens top the count';
-      body=maj?`The impossible has happened. The Greens, who for most of their history held a single lower-house seat, sweep to majority government with ${sN(gr)}. ${G} will become the first Greens Prime Minister in Australian history, at the head of a party room full of first-time MPs. ${a===0&&co===0?'Labor and the Coalition are both wiped out of the House':a===0?`Labor is wiped out of the House and the Coalition reduced to a rump of ${sN(co)}`:co===0?`The Coalition is wiped out of the House and Labor reduced to a rump of ${sN(a)}`:`Labor (${a}) and the Coalition (${co}) are reduced to rumps`}, and every assumption about Australian politics goes with them.${fallTxt}`
+      body=maj?`The impossible has happened. The Greens, who for most of their history held a single lower-house seat, sweep to majority government with ${sN(gr)}. ${(XT.ST.grGov||{})[G]||`${G} will become the first Greens Prime Minister in Australian history, at the head of a party room full of first-time MPs.`} ${a===0&&co===0?'Labor and the Coalition are both wiped out of the House':a===0?`Labor is wiped out of the House and the Coalition reduced to a rump of ${sN(co)}`:co===0?`The Coalition is wiped out of the House and Labor reduced to a rump of ${sN(a)}`:`Labor (${a}) and the Coalition (${co}) are reduced to rumps`}, and every assumption about Australian politics goes with them.${fallTxt}`
         :`In the most extraordinary result in a generation, the Greens are the largest party in the House with ${sN(gr)}, ${76-gr} short of a majority. ${G} now has a claim on The Lodge that no Greens leader has ever had, and Labor's ${sN(a)} make it the natural partner, if the old rivals can bury the hatchet.${fallTxt}`;
     } else if(top===4||P[top].ab==='CSA'){
       const csaT=P[top].ab==='CSA';
@@ -790,47 +919,54 @@ function article(){
       const CL0=S.ldr['Community Strong']||'No formal leader';
       body=csaT?`Two years after Zali Steggall and Allegra Spender launched it, Community Strong Australia ${maj?'wins majority government':'becomes the largest party in the House'} with ${sN(csa)}, the first new party to ${maj?'win government':'top a federal count'} since the Liberals in 1949. `+(CL0==='No formal leader'?`A party that promised not to choose a leader until it had ten MPs now has ${tn}, and must choose a Prime Minister${maj?'':' and find partners'} by the end of the week.`
           :CL0==='Malcolm Turnbull'?`Malcolm Turnbull, dumped by his own party room in 2018, ${maj?'returns as Prime Minister':'has the first claim on The Lodge'} at the head of a party built largely from the Liberals' former heartland.`
-          :`${CL0} ${maj?'will be sworn in as Prime Minister':'has the first claim on The Lodge, and the hardest negotiation of her career'}.`)+fallTxt
+          :`${CL0} ${maj?'will be sworn in as Prime Minister':`has the first claim on The Lodge, and the hardest negotiation of ${his(CL0)} career`}.`)+fallTxt
         :`For the first time, independents outnumber every party in the House: ${sN(ind)} won by candidates with no party, no national leader and no shared platform. ${maj?'Together they hold a majority, but no one yet knows who will lead them, or whether they can agree to.':'The Governor-General faces a question no Australian vice-regal has faced: who, if anyone, can command the confidence of the House.'}${fallTxt}`;
+    } else if(top===NATI&&SPLIT){
+      const NLt=S.ldr['Nationals']||'Matt Canavan',ntt=c[NATI],inSt=/Senat/.test((DATA.leaders.find(l=>l.name===NLt&&l.party==='Nationals')||{}).seat||'');
+      head=maj?'Nationals win government':'Nationals top the count';
+      body=`A party founded more than a century ago to represent the bush has just rewritten Australian political history. Running separately from the Liberals after tearing up the Coalition agreement, the Nationals ${maj?'win majority government in their own right':'emerge as the largest party in the House'} with ${sN(ntt)}, sweeping regional Australia and picking off outer-suburban seats left behind by the Liberals. ${NLt} ${maj?'becomes the first Nationals Prime Minister since John McEwen in 1967–68, and the first ever elected to the office in their own right':'now has a claim to The Lodge no Nationals leader has held since John McEwen in 1967, if the Liberals and crossbench can be brought to the table'}.${inSt?` There is one catch: ${sur(NLt)} sits in the Senate and will need a House seat quickly.`:''}${fallTxt}`;
     } else if(top>=5){
       head=maj?`${P[top].n} wins government`:`${P[top].n} tops the count`;
       const ld0=ld(top), led=ld0&&ld0!=='—'&&!noL(top)&&!ld0.startsWith('Collective');
       body=`Few would have believed it. ${P[top].full||P[top].n}, which won ${fmt1(DATA.prim25[top])}% of the vote in 2025, ${maj?'wins majority government':'is now the largest party in the House'} with ${sN(tn)}.${led?` ${ld0}${maj?' will be sworn in as Prime Minister':' has a genuine claim on The Lodge'}.`:''} ${PN(sec)==='the Coalition'||PN(sec)==='Labor'?cap(PN(sec)):cap(PN(sec))} ${sec===4||sec===1||sec===2?'are':'is'} next on ${sN(c[sec])}${maj?'':', and the negotiations will be like nothing Canberra has seen'}.${fallTxt}`;
     } else if(on>a&&on>co){
       head='One Nation tops the count';
-      body=`It is the result almost nobody predicted a year ago. ${onName} emerges as the largest party in the House of Representatives with ${sN(on)}, sweeping regional Queensland, the mining belt and the outer suburbs of every capital. With no party near 76, the question is no longer whether One Nation matters, but whether anyone can govern without it. A deal with ${C}'s Coalition (${co} seats) would break decades of convention; refusing one may hand ${labShort} minority government on Labor's ${a}.${fallTxt} Australia's political centre has shifted, and it will not shift back quickly.`;
+      body=`${fillT(pk(XT.ST.onTop.open,'ontop'),V0())} With no party near 76, the question is no longer whether One Nation matters, but whether anyone can govern without it. A deal with ${C}'s Coalition (${co} seats) would break decades of convention; refusing one may hand ${labShort} minority government on Labor's ${a}.${fallTxt} Australia's political centre has shifted, and it will not shift back quickly.`;
     } else if(co>=76){
-      head='The Coalition returns';
-      body=`Against the odds, the Coalition is back. ${C}${coaNew?`, only weeks into the leadership,`:''} leads ${his(C)} party to ${co} seats and majority government, reclaiming the suburbs it lost in 2025 and turning back One Nation in the regions. ${a===0?`For Labor it is not a defeat but an annihilation: a government that once looked unassailable leaves the House with no members at all.`:a<20?`For Labor the defeat ends a government that once looked unassailable: reduced to ${sN(a)}, it faces the long, bitter work of rebuilding from almost nothing.`:`For Labor the defeat ends a government that once looked unassailable: its ${a} seats are its lowest tally in years, and the post-mortem will be long and bitter.`}${fallTxt} ${sur(C)} arrives at The Lodge promising stability after one of the most volatile terms in modern memory.`;
+      const tier=co>=86?'coaLand':co>=79?'coaRet':'coaScr';
+      head=co>=86?'A Coalition landslide':co>=79?'The Coalition returns':'Coalition scrapes home';
+      const lab0=a===0?`For Labor it is not a defeat but an annihilation: a government that once looked unassailable leaves the House with no members at all.`:a<20?`For Labor the defeat ends a government that once looked unassailable: reduced to ${sN(a)}, it faces the long, bitter work of rebuilding from almost nothing.`:`For Labor the defeat ends a government that once looked unassailable: its ${a} seats are its lowest tally in years, and the post-mortem will be long and bitter.`;
+      const end0={coaLand:`${sur(C)} arrives at The Lodge with a party room big enough to govern without looking over ${his(C)} shoulder.`,coaRet:`${sur(C)} arrives at The Lodge promising stability after one of the most volatile terms in modern memory.`,coaScr:`${sur(C)} will govern without a crossbench deal, but every absence in the House will be felt.`}[tier];
+      body=`${fillT(pk(XT.ST[tier].open,tier),{...V0(),...pv(C),coaNew})} ${lab0}${fallTxt} ${end0}`;
     } else if(a>=90){
       head='A Labor landslide';
-      body=`${L==='Anthony Albanese'?'Anthony Albanese has done what few thought possible: a third term, won bigger than the second.':`${L} has turned a change of leader into a triumph: Labor's biggest win in decades.`} Labor sweeps ${a} seats, rolling back One Nation's advance across the outer suburbs and holding the inner cities against the Greens. ${co===0?'':`For the Coalition it is a night of reckoning. Reduced to ${co} seats, ${C}'s party room faces questions about whether the Coalition can survive another term in its current form. `}${on>co?'':on===0?`${onName} is shut out of the House entirely, proof that a big poll lead can still collapse in the final week.`:`${onName} stalls at ${sN(on)}, proof that a big poll lead can still collapse in the final week.`}${fallTxt} ${labShort} returns to Canberra with a mandate few leaders have held, and the hardest job in politics: keeping it.`;
+      body=`${fillT(pk(XT.ST.labLand.open,'labland'),{...V0(),...pv(L),albo:L==='Anthony Albanese'})} ${co===0?'':`For the Coalition it is a night of reckoning. Reduced to ${co} seats, ${C}'s party room faces questions about whether the Coalition can survive another term in its current form. `}${on>co?'':on===0?`${onName} is shut out of the House entirely, proof that a big poll lead can still collapse in the final week.`:`${onName} stalls at ${sN(on)}, proof that a big poll lead can still collapse in the final week.`}${fallTxt} ${labShort} returns to Canberra with a mandate few leaders have held, and the hardest job in politics: keeping it.`;
     } else if(a>=76){
       const comfy=a>=85;
       const razor=a<=77, slim=a<=80;
       head=comfy?'Labor wins comfortably':razor?'Labor scrapes home':slim?'Labor holds on':'Labor returned';
-      body=`${comfy?`${labLead} wins clearly.`:razor?'It was closer than it should have been.':slim?'It was tighter than Labor hoped.':`${labLead} is returned, though not without a fight.`} Labor ${comfy?'secures':razor?'clings to':slim?'holds':'keeps'} majority government with ${a} seats${worst&&worst[1]>0?`, losing ${worst[1]} seat${worst[1]>1?'s':''} in ${STF[worst[0]]}`:''} but holding ${comfy?'firm in':slim?'just enough of':'most of'} its marginal outer-suburban seats.${comfy?'':slim?' The result is a warning as much as a win.':' The margin is workable, but the warning signs are there.'} One Nation's ${fmt1(nat[3])}% of the primary vote has redrawn the electoral map, and seats once considered Labor heartland now sit on ${comfy||!slim?'thinner':'knife-edge'} margins.${fallTxt} ${labShort} will govern alone${comfy?', with room to spare.':slim?', but every vote in the House will count.':', with a few seats to spare.'}`;
+      body=`${comfy?`${labLead} wins clearly.`:razor?'It was closer than it should have been.':slim?'It was tighter than Labor hoped.':`${labLead} is returned, though not without a fight.`} Labor ${comfy?'secures':razor?'clings to':slim?'holds':'keeps'} majority government with ${a} seats${worst&&worst[1]>0?`, losing ${worst[1]} seat${worst[1]>1?'s':''} in ${STF[worst[0]]}`:''} but holding ${comfy?'firm in':slim?'just enough of':'most of'} its marginal outer-suburban seats.${comfy?'':slim?' The result is a warning as much as a win.':' The margin is workable, but the warning signs are there.'} ${fillT(pk(XT.ST.labMid,'labmid'),{x:fmt1(nat[3]),thin:comfy||!slim})}${fallTxt} ${fillT(pk(XT.ST.labEnd,'labend'),{'Labor surname':labShort}).replace(/\.$/,'')}${comfy?', with room to spare.':slim?', but every vote in the House will count.':', with a few seats to spare.'}`;
     } else if(a<60&&(co>a||on>a)){
       head='Labor routed';
-      body=`The government has been swept away. Labor falls to ${a} seats, its worst result in a generation, losing ground on every front: to One Nation in the suburbs, the Greens in the inner city and independents everywhere in between. Senior ministers lose their seats on live television${L==='Anthony Albanese'?', and the leadership will change hands within days':`, and ${L}'s gamble on a new leader has failed`}.${fallTxt} Who governs now depends on whether ${C}'s ${co} Coalition seats and ${O}'s ${on} One Nation members can find common ground: a partnership that would remake the Australian right.`;
+      body=`${fillT(pk(XT.ST.labRout.open,'labrout'),V0())} Senior ministers lose their seats on live television${L==='Anthony Albanese'?', and the leadership will change hands within days':`, and ${L}'s gamble on a new leader has failed`}.${fallTxt} Who governs now depends on whether ${C}'s ${co} Coalition seats and ${O}'s ${on} One Nation members can find common ground: a partnership that would remake the Australian right.`;
     } else if(a>=co&&a>=on){
       const need=76-a, canXb=nonRight>=76;
       head='A hung parliament';
-      body=`Australia wakes to a hung parliament. Labor is the largest party on ${a} seats, ${need} short of a majority, and power now runs through the crossbench: ${xb.length?list(xb):'a handful of minor-party MPs'}${canXb?' hold the balance':', and even together they leave Labor short'}.${fallTxt} ${canXb?`Each has a price, and integrity, climate and housing will dominate the negotiations.`:`${labShort} will need either One Nation or the Coalition to abstain to survive a confidence vote.`} ${co+on>=76?`On the other side, ${C}'s Coalition (${co}) and ${O}'s One Nation (${on}) together have the numbers for an alternative government, if they can stomach a deal.`:`The Coalition's ${co} seats leave it unable to form an alternative, while ${onNew?'One Nation':'Pauline Hanson'}'s ${on} members arrive in Canberra as the loudest opposition voice in a generation.`} The next fortnight of negotiations will decide who governs.`;
+      body=`${fillT(pk(XT.ST.hungL.open,'hungl'),{...V0(),canXb,'crossbench list':xb.length?list(xb):'a handful of minor-party MPs'})}${fallTxt} ${canXb?`Each has a price, and integrity, climate and housing will dominate the negotiations.`:`${labShort} will need either One Nation or the Coalition to abstain to survive a confidence vote.`} ${co+on>=76?`On the other side, ${C}'s Coalition (${co}) and ${O}'s One Nation (${on}) together have the numbers for an alternative government, if they can stomach a deal.`:`The Coalition's ${co} seats leave it unable to form an alternative, while ${onNew?'One Nation':'Pauline Hanson'}'s ${on} members arrive in Canberra as the loudest opposition voice in a generation.`} The next fortnight of negotiations will decide who governs.`;
     } else {
       head='A hung parliament, the Coalition ahead';
-      body=`No one has a majority, but the Coalition has the numbers to try. ${C} leads the largest party with ${co} seats, ${76-co} short of 76, and the path to government runs through ${O}'s ${on} One Nation members. Labor, on ${a}, will look to ${xb.length?list(xb):'the crossbench'} to block it.${fallTxt} Whoever governs will do so with the narrowest of footholds.`;
+      body=`${fillT(pk(XT.ST.hungC.open,'hungc'),V0())}${fallTxt} Whoever governs will do so with the narrowest of footholds.`;
     }
     // ---- hung parliaments where the usual arithmetic breaks down
     {const coN=SPLIT?'the Liberals and Nationals':'the Coalition', rxb=rightMin?`, plus ${nums(rightMin)} conservative crossbencher${rightMin>1?'s':''},`:'';
-     const lxb=xb.filter(s=>!/Katter|Trumpet|Family First|Libertarian|People First|Christians|Shooters|Citizens|HEART|Great Australian/.test(s)), leftList=lxb.length?list(lxb):'the crossbench';
+     const lxb=xb.filter(s=>!/Katter|Federation|Family First|Libertarian|People First|Christians|Shooters|Citizens|HEART|Great Australian/.test(s)), leftList=lxb.length?list(lxb):'the crossbench';
      if(hung&&[0,1,3].includes(top)&&!rightOK&&(!leftOK||leftShaky)){
        const grand=a+co+ntS>=76, labOn=a+on>=76, coOnX=rightTot+gr+csa+ind+c[iXEN]>=76;
        head=grand?'Deadlock: grand coalition talk':'Deadlock: no path to 76';
        body=`There is no obvious government. `+(leftOK?`Labor has ${a} seats and could reach 76 only by holding together ${gr?'the Greens and ':''}${nums(leftNeedX)} ${gr?'other ':''}crossbenchers from across the spectrum (${leftList}) on every confidence vote, a government few in Canberra think could last a year. `:`Labor has ${a} seats and even with every progressive crossbencher reaches only ${nonRight}. `)+`${cap(coN)} (${co+ntS}) and One Nation (${on})${rxb} manage just ${rightTot}. ${leftOK?'Neither side has a stable path to 76.':'Neither side can count to 76.'}`
-         +(grand?` That leaves an option Australian politics has never seriously contemplated in peacetime: a grand coalition. Labor and ${coN} together hold ${a+co+ntS} seats, a commanding majority, if two parties that have defined themselves against each other for eighty years can sit in the same cabinet. ${cap(lN(L,0))} and ${lN(C,1)} will both face open revolt from their own backbenches for even taking the call.`:'')
+         +(grand?' '+fillT(pk(XT.ST.grand,'grand'),{right:coN,n:a+co+ntS,'Labor leader':cap(lN(L,0)),'Coalition leader':lN(C,1)}):'')
          +(labOn&&!grand?` The only two-party combination that reaches 76 is Labor (${a}) and One Nation (${on}), a partnership neither base would forgive.`:'')
-         +` The alternatives are hardly better: a minority government surviving vote by vote on abstentions, or a return to the polls within months.${fallTxt} ${L==='Anthony Albanese'?'Albanese':labShort} remains caretaker Prime Minister, and the Governor-General may soon have to decide who gets the first chance to test the floor of the House.`;
+         +' '+fillT(pk(XT.ST.deadClose,'deadclose'),{wipe:fallTxt.trim(),albSur:L==='Anthony Albanese'?'Albanese':labShort});
      } else if(hung&&top===0&&!leftOK&&rightOK){
        const onLead=on>co+ntS;
        head='Labor largest, but the right has the numbers';
@@ -900,18 +1036,10 @@ function article(){
         bad:'Tehan\'s steady-as-she-goes pitch could not hold the line. The Coalition goes backwards again.',
         oppUp:'Tehan narrows the gap. The Coalition gains seats, and the man often described as a safe pair of hands has earned another go.',
         oppDown:'Tehan was chosen to stop the slide. The slide continued, and the party room is looking around again.'},
-      'Sean Bell':{good:'Sean Bell, a first-term senator from New South Wales, leads One Nation past the Coalition. Without Pauline Hanson on the ballot, few thought it possible.',
-        mid:'Bell keeps One Nation in the game without its founder, with enough seats to make the major parties call.',
-        bad:'Without Hanson, One Nation turns out to be a brand without a face. Bell\'s first campaign is likely his last as leader.'},
-      'Tyron Whitten':{good:'Tyron Whitten, the West Australian senator who stepped up after Hanson, delivers One Nation its best night. The party has proved it can outlive its founder.',
-        mid:'Whitten holds One Nation together after Hanson, with seats enough to bargain but not to lead.',
-        bad:'The post-Hanson era begins with a thud. Whitten inherits a movement and hands back a minor party.'},
       'Elizabeth Watson-Brown':{good:'Elizabeth Watson-Brown, the architect who took Ryan from the Liberals in 2022, becomes the first Greens leader to sit in the House. She builds the party\'s best lower-house result on the Brisbane template.',
         bad:'Watson-Brown was meant to show the Greens could win suburbs, not just inner cities. The suburbs had other ideas.'},
       'Penny Allman-Payne':{good:'Penny Allman-Payne, the Queensland senator and former teacher, takes the Greens to a record House haul. Her pitch on housing and schools reached well beyond the inner city.',
         bad:'Allman-Payne\'s focus on the regions did not stop the losses in the cities. The Greens go backwards again.'},
-      'Nick McKim':{good:'Nick McKim, the Tasmanian veteran who once sat in a state cabinet, leads the Greens to their best lower-house night. Experience, for once, was the selling point.',
-        bad:'McKim\'s experience could not stop the Greens\' slide. The party will wonder whether it needed a fresher face.'},
       'Sussan Ley':{oppUp:['Sussan Ley will not be Prime Minister, but she has done what few thought possible after the turmoil of 2026: the Coalition gains ground. A leader twice written off now has a party room with more members than she started with, and a fair claim to stay.',
           'For Sussan Ley, a loss that feels like progress. The Coalition claws back seats it was expected to lose, and the leader who was rolled and then restored has earned herself a second campaign.'],
         oppDown:['Sussan Ley was restored to the leadership to steady the ship. It took on water anyway. With the Coalition shedding seats again, the party room that brought her back must decide whether a third Liberal leader in one term is a solution or another symptom.',
@@ -950,30 +1078,12 @@ function article(){
         good:n=>`Community Strong grows from ${nums(csaCur)} seats to ${nums(n)}. Not bad for a party that began as two independents, a shared volunteer list and a teal logo.`,
         bad:n=>`Community Strong's experiment in leaderless politics ends with ${sN(n)}. Working out who takes the blame is harder when nobody was in charge.`,
         km:n=>`Community Strong, barely two years old, has ${n===1?'a single MP':`${nums(n)} MPs`} with the government's fate in their hands. With no leader, every negotiation will be run by committee, which may be exactly how its members like it. Integrity and climate will be the price.`},
-      'Sophie Scamps':{maj:n=>`Sophie Scamps, the GP who took Mackellar from the Liberals in 2022, will be sworn in as Prime Minister, leading ${nums(n)} Community Strong MPs from Mackellar to The Lodge.`,
-        min:n=>`Scamps leads the biggest party but not a majority. The Mackellar MP's first job as leader is to find ${76-n} more votes.`,
-        opp:n=>`Scamps becomes Leader of the Opposition, a remarkable rise for a community independent who first won Mackellar in 2022.`,
-        good:n=>`Under Scamps, Community Strong grows to ${sN(n)}. The movement that won Mackellar has gone national.`,
-        bad:n=>`Scamps's Community Strong goes backwards to ${sN(n)}. Turning a local campaign into a national party is harder than it looked from Mackellar.`,
-        km:n=>`Scamps, who won Mackellar as an independent, now leads a crossbench bloc of ${n===1?'one':nums(n)} that decides who governs.`},
       'Monique Ryan':{maj:n=>`Monique Ryan, the paediatric neurologist who unseated Treasurer Josh Frydenberg, will be sworn in as Prime Minister, leading ${nums(n)} Community Strong MPs from Kooyong to The Lodge.`,
         min:n=>`Ryan leads the biggest party but not a majority. The Kooyong MP's first job as leader is to find ${76-n} more votes.`,
         opp:n=>`Ryan becomes Leader of the Opposition, a remarkable rise for a community independent who first won Kooyong in 2022.`,
         good:n=>`Under Ryan, Community Strong grows to ${sN(n)}. The movement that won Kooyong has gone national.`,
         bad:n=>`Ryan's Community Strong goes backwards to ${sN(n)}. Turning a local campaign into a national party is harder than it looked from Kooyong.`,
         km:n=>`Ryan, who won Kooyong as an independent, now leads a crossbench bloc of ${n===1?'one':nums(n)} that decides who governs.`},
-      'Kate Chaney':{maj:n=>`Kate Chaney, the Perth lawyer from a Liberal dynasty who won Curtin as an independent, will be sworn in as Prime Minister, leading ${nums(n)} Community Strong MPs from Curtin to The Lodge.`,
-        min:n=>`Chaney leads the biggest party but not a majority. The Curtin MP's first job as leader is to find ${76-n} more votes.`,
-        opp:n=>`Chaney becomes Leader of the Opposition, a remarkable rise for a community independent who first won Curtin in 2022.`,
-        good:n=>`Under Chaney, Community Strong grows to ${sN(n)}. The movement that won Curtin has gone national.`,
-        bad:n=>`Chaney's Community Strong goes backwards to ${sN(n)}. Turning a local campaign into a national party is harder than it looked from Curtin.`,
-        km:n=>`Chaney, who won Curtin as an independent, now leads a crossbench bloc of ${n===1?'one':nums(n)} that decides who governs.`},
-      'Helen Haines':{maj:n=>`Helen Haines, the rural nurse and midwife who kept Indi independent, will be sworn in as Prime Minister, leading ${nums(n)} Community Strong MPs from Indi to The Lodge.`,
-        min:n=>`Haines leads the biggest party but not a majority. The Indi MP's first job as leader is to find ${76-n} more votes.`,
-        opp:n=>`Haines becomes Leader of the Opposition, a remarkable rise for a community independent who first won Indi in 2019.`,
-        good:n=>`Under Haines, Community Strong grows to ${sN(n)}. The movement that won Indi has gone national.`,
-        bad:n=>`Haines's Community Strong goes backwards to ${sN(n)}. Turning a local campaign into a national party is harder than it looked from Indi.`,
-        km:n=>`Haines, who won Indi as an independent, now leads a crossbench bloc of ${n===1?'one':nums(n)} that decides who governs.`},
       'Zali Steggall':{maj:n=>`Zali Steggall, the Olympic skier who ended Tony Abbott's career in Warringah in 2019, will be sworn in as Prime Minister. From slalom gates to The Lodge in under a decade.`,
         min:n=>`Steggall has the most seats but not the numbers. The barrister who beat a former prime minister now has to out-negotiate two major parties that never quite took her seriously.`,
         opp:n=>`Steggall becomes Leader of the Opposition, taking the chair once held by the man she unseated in Warringah. The independent who promised to hold governments to account now has a shadow cabinet to do it with.`,
@@ -988,64 +1098,135 @@ function article(){
         km:n=>`Spender, the economist of the crossbench, will price every vote. Expect a tax reform package on the table before any confidence motion.`},
       'Malcolm Turnbull':{maj:n=>`It is the comeback of the century. Malcolm Turnbull, rolled by his own party room in August 2018, returns to The Lodge at the head of a party made largely of the Liberals' lost heartland. ${tbIn?'He wins back Wentworth too, the eastern-suburbs seat he held from 2004 until he quit Parliament in 2018.':'There is just one problem: he lost his own bid for Wentworth, and will need a by-election before he can sit in the House.'}`,
         min:n=>`Turnbull has the most seats and, characteristically, the most opinions about what to do with them. The man who lost the prime ministership in a party-room vote must now win it back on the floor of the House.`,
-        opp:n=>`Malcolm Turnbull returns from political exile to lead the Opposition. Eight years after his own party room tore him down, he will sit across from the government at the head of ${nums(n)} MPs, while the party that removed him is reduced to ${sN(co)} and a place behind him on the crossbench. ${tbIn?'Back in Wentworth, the seat he quit in 2018, he will face the Prime Minister across the dispatch box himself.':'Having lost his own bid for Wentworth, he will lead from outside Parliament, leaving a deputy to face the Prime Minister across the dispatch box until a seat can be found.'}`,
+        opp:n=>`Malcolm Turnbull returns from political exile to lead the Opposition. Ten years after his own party room tore him down, he will sit across from the government at the head of ${nums(n)} MPs, while the party that removed him is reduced to ${sN(co)} and a place behind him on the crossbench. ${tbIn?'Back in Wentworth, the seat he quit in 2018, he will face the Prime Minister across the dispatch box himself.':'Having lost his own bid for Wentworth, he will lead from outside Parliament, leaving a deputy to face the Prime Minister across the dispatch box until a seat can be found.'}`,
         good:n=>`Turnbull's star power turns Community Strong from a ${csaCur}-seat curiosity into ${/^(8|11|18)$/.test(String(n))?'an':'a'} ${n}-seat force, much of it carved out of the Liberal heartland that once called him its own. ${tbIn?'He wins back Wentworth too.':'His own bid to win back Wentworth, ironically, falls short.'} Revenge, it turns out, tastes faintly of harbour water.`,
         bad:n=>`Turnbull filled the town halls but not the ballot boxes. The former prime minister's comeback tour ends with Community Strong on ${sN(n)}.`,
         km:n=>`From the crossbench, the former prime minister now holds the keys to The Lodge. Community Strong's ${nums(n)} MPs answer to a man who spent his prime ministership bargaining with the crossbench for every vote; he knows exactly what a vote is worth. Turnbull has never been known to wait quietly to be asked.`}};
-    const csaL=CSAL[CL]||CSAL['No formal leader'];
+    {const csaF=t=>n=>fillT(t,{...pv(CL),n:nums(n),before:nums(csaCur),co});
+      const TBS={maj:tbIn?' He wins back Wentworth too, the eastern-suburbs seat he held from 2004 until he quit Parliament in 2018.':' There is just one problem: he lost his own bid for Wentworth, and will need a by-election before he can sit in the House.',
+        opp:tbIn?' Back in Wentworth, the seat he quit in 2018, he will face the Prime Minister across the dispatch box himself.':' Having lost his own bid for Wentworth, he will lead from outside Parliament, leaving a deputy to face the Prime Minister across the dispatch box until a seat can be found.',
+        good:(tbIn?' He wins back Wentworth too.':' His own bid to win back Wentworth, ironically, falls short.')+' Revenge, it turns out, tastes faintly of harbour water.'};
+      Object.entries(XT.CSA||{}).forEach(([nm,d])=>{const tg=CSAL[nm]||(CSAL[nm]={});Object.entries(d).forEach(([k,t])=>{tg[k]=nm==='Malcolm Turnbull'&&TBS[k]?(n=>csaF(t)(n)+TBS[k]):csaF(t);});});}
+    const csaL=CSAL[CL]||CSAL._;
     const csaV=top===iCSA?(maj?'maj':'min'):maj&&sec===iCSA?'opp':csa>=csaCur+3&&csa>=4?'good':csa<csaCur&&csa>0?'bad':null;
     // a rump (15 seats or fewer) gets a bleaker line than an ordinary loss; leaders without their own get a generic one
     const RUMP={L:n=>`${sur(n)} leads what is left of Labor out of the tally room: just {a} seats, a rump that could hold its caucus meeting around a single table. There will be no leadership challenge tonight, because there is barely anyone left to mount one.`,
       C:n=>`With {co} seats, the Coalition is no longer a government-in-waiting but a rump. ${sur(n)} faces no challenge tonight, only the far grimmer question of whether the Liberal Party can survive as a national force at all.`};
-    const pl=(n,ok,side)=>{const k=ok===true?'good':ok===false?'bad':ok;let t=PERS[n]&&PERS[n][k];if(Array.isArray(t))t=t[(a*13+co*7+on)%t.length];if(!t&&k==='rump')t=side&&RUMP[side]?RUMP[side](n):PERS[n]&&PERS[n].bad;
-      return t?'¶'+t.replace('{on}',on).replace('{co}',co).replace('{a}',a):'';};
+    const sideOf=n=>{const l=DATA.leaders.find(x=>x.name===n);const p=l?l.party:'';return p==='Labor'?'L':p==='Coalition'?'C':p==='One Nation'?'O':p==='Greens'?'G':null;};
+    const XTAB={L:XT.LAB,C:XT.COA,O:XT.ON,G:XT.GRN};
+    const ALBO_OK=(i)=>!((i===1&&a<=94)||((i===2||i===3)&&a>=86));   // Albanese majority variants that only fit some sizes
+    const pl=(n,ok,side)=>{const k=ok===true?'good':ok===false?'bad':ok,sd=side||sideOf(n),tb=XTAB[sd]||{};
+      let t=tb[n]&&tb[n][k];
+      if(!t&&(k==='goodN'||k==='goodB'))t=(tb[n]&&(tb[n].goodN||tb[n].goodB))||(PERS[n]&&PERS[n].good);
+      if(!t)t=PERS[n]&&PERS[n][k==='narrow'?'bad':k];
+      if(!t&&k==='rump')t=sd==='C'?(tb[n]&&tb[n].bad?null:XT.COA_RUMP):null;
+      if(!t)t=(tb._&&(tb._[k]||(k==='narrow'?tb._.bad:null)||(k==='goodN'||k==='goodB'?tb._.goodN:null)))||(k==='rump'&&RUMP[sd]?RUMP[sd](n):null);
+      if(Array.isArray(t)){let pool=t;if(n==='Anthony Albanese'&&k==='good'){const f=t.filter((_,i)=>ALBO_OK(i));if(f.length)pool=f;}t=pk(pool,n+'|'+k);}
+      return t?'¶'+fillT(t,{...V0(),...pv(n),before:DATA.current[3],government:a>=76?'Labor':co>=76?'the Coalition':'the next government'}):'';};
     // good = majority (or One Nation out-polling the Coalition); bad = clear losses; hung-parliament leaders get no verdict yet
     // mid = short of a majority but in the contest (largest party, or kingmaker)
     const isCoaJ=g=>g===1||g===NATI;
-    const jf=(()=>{const v=(S.cand||{}).Kooyong;if(!v||v.n!=='Josh Frydenberg')return '';const i=D.seats.findIndex(x=>x.n==='Kooyong'),w=R.likely[i],M=seatMargin(i),hold=HELDBY.Kooyong||D.seats[i].mem;
+    const jf=(()=>{const v=(S.cand||{}).Kooyong;if(!v||v.n!=='Josh Frydenberg')return '';const i=D.seats.findIndex(x=>x.n==='Kooyong'),w=R.likely[i],M=seatMargin(i),hold=HELDBY0.Kooyong||D.seats[i].mem;
       if(C==='Josh Frydenberg')return isCoaJ(w)?`¶Frydenberg also wins back Kooyong${M?` by ${M.m.toFixed(1)} points`:''}, so the Liberal leader at least has a seat in the House again.`:`¶Worse for the Liberals, their leader loses his own contest: Frydenberg falls short in Kooyong${M?` by ${M.m.toFixed(1)} points`:''}, leaving the party led from outside the House.`;
       return isCoaJ(w)?`¶Josh Frydenberg is back. The former Treasurer, who lost Kooyong to ${hold} in 2022, wins it back for the Liberals${M?` by ${M.m.toFixed(1)} points`:''}, and walks straight into the conversation about who leads the party next.`
         :!M||M.m>0.9?'':`¶Josh Frydenberg's comeback falls short. The former Treasurer, who lost Kooyong to ${hold} in 2022, fails to win it back${M?`, finishing ${M.m.toFixed(1)} points behind`:''}, and with him goes the moderates' best hope of a quick revival.`;})();
-    let extra=a===0?'':a>=76?pl(L,true):a<=15?pl(L,'rump','L'):((a<60&&top!==0)||(co>a)||(on>a))?pl(L,false):pl(L,'mid');
+    let extra=a===0?'':a>=76?pl(L,true):a<=15?pl(L,'rump','L'):((a<60&&top!==0)||(co>a)||(on>a))?pl(L,a>=60?'narrow':false):pl(L,'mid');
     extra+=jf;
+    // comeback candidates: who made it back and who did not (own section)
+    let cbx='';
+    {const on=SPEC.filter(specOn);if(on.length>=4){
+      const res=on.map(x=>{const i=D.seats.findIndex(z=>z.n===x.s);if(i<0)return null;const w=R.likely[i],g=spG(x),M=seatMargin(i),won=w===g||(g===1&&w===NATI);
+        return {...x,i,won,m:M?M.m:null,by:won?null:mapName(D.seats[i],w,R.base[i]),lead:S.ldr[x.p]===x.n};}).filter(Boolean);
+      const W=res.filter(r=>r.won).sort((a,b)=>(b.m||0)-(a.m||0)),Lz=res.filter(r=>!r.won).sort((a,b)=>(a.m||0)-(b.m||0));
+      const pts=m=>m==null?'':` by ${m.toFixed(1)} point${m.toFixed(1)==='1.0'?'':'s'}`;
+      const isCB=/^Comeback election/.test(S.preset||'');
+      const open=isCB?pk([`It was sold as the election of the second act. ${cap(nums(res.length))} former prime ministers, premiers, party leaders and ministers put their names back on the ballot, and by the end of the count ${nums(W.length)} of them had a seat in the 49th Parliament.`,
+          `Australian politics has rarely seen a homecoming like it: ${nums(res.length)} familiar names from parliaments past stood again, and voters let ${nums(W.length)} of them back in.`,
+          `The comeback election delivered a split verdict. Of the ${nums(res.length)} former leaders, premiers and ministers who tried to return, ${nums(W.length)} won and ${nums(Lz.length)} did not.`],'cbopen')
+        :`${cap(nums(res.length))} comeback candidates were on the ballot; ${nums(W.length)} won their seats and ${nums(Lz.length)} did not.`;
+      cbx+='¶'+open;
+      if(W.length)cbx+='¶'+`<b>Back in Parliament:</b> ${W.map(r=>`${r.n} (${r.s}, ${r.pty}${pts(r.m)})`).join('; ')}.`;
+      if(Lz.length)cbx+='¶'+`<b>Not this time:</b> ${Lz.map(r=>`${r.n} (${r.s}, ${r.by?'lost to '+(r.by==='Independent'?'an independent':r.by):'lost'}${pts(r.m)})`).join('; ')}.`;
+      // the story inside the numbers: which party's old guard did best and worst, and the closest result
+      const byP={};res.forEach(r=>{(byP[r.p]=byP[r.p]||{w:0,n:0});byP[r.p].n++;if(r.won)byP[r.p].w++;});
+      const ps=Object.entries(byP).filter(([p,v])=>v.n>=2).map(([p,v])=>[p,v.w/v.n,v]).sort((a,b)=>b[1]-a[1]);
+      const PNM={Coalition:'the Liberals',Labor:'Labor',Nationals:'the Nationals','One Nation':'One Nation',Greens:'the Greens','Community Strong':'Community Strong'};
+      let tail='';
+      if(ps.length>=2){const [bp,br,bv]=ps[0],[wp,wr,wv]=ps[ps.length-1];
+        if(br>wr)tail+=`${cap(PNM[bp]||bp)} had the best night, returning ${nums(bv.w)} of ${nums(bv.n)}${br===1?', a clean sweep':''}; ${PNM[wp]||wp} fared worst, with ${wv.w?nums(wv.w)+' of '+nums(wv.n):'none of '+nums(wv.n)} getting back in.`;}
+      const close=res.filter(r=>r.m!=null&&r.m<2).sort((a,b)=>a.m-b.m)[0];
+      if(close)tail+=` The tightest contest was ${close.n}'s in ${close.s}, ${close.won?'won':'lost'} by just ${close.m.toFixed(1)} points.`;
+      const lead=res.filter(r=>r.lead);lead.forEach(r=>{tail+=` ${r.n}, who led ${PNM[r.p]||r.p} into the campaign, ${r.won?'is among those back in the House':'is not, leaving the party led from outside Parliament'}.`;});
+      if(tail.trim())cbx+='¶'+tail.trim();}}
+    const seatShort=[];
+    {const SI=n=>{const i=D.seats.findIndex(x=>x.n===n);return i<0?null:{i,w:R.likely[i],M:seatMargin(i),was:gOf(D.seats[i])};},mm=M=>M?M.m.toFixed(1):'a few';
+     // Farrer: One Nation's by-election seat
+     {const f=SI('Farrer');if(f){const isCo=w=>w===1||w===NATI,leyIn=C==='Sussan Ley'&&((S.cand||{}).Farrer||{}).n==='Sussan Ley';
+       if(leyIn){extra+='¶'+fillT(isCo(f.w)?XT.SEAT.farrerLeyWin:XT.SEAT.farrerLeyLose,{m:mm(f.M)});seatShort.push(isCo(f.w)?XT.SEAT.farrerShortWin:XT.SEAT.farrerShortLose);}
+       else if(isCo(f.w))extra+='¶'+fillT(XT.SEAT.farrerLib,{m:mm(f.M)});
+       else if(f.w===4||f.w===iCSA)extra+='¶'+fillT(XT.SEAT.farrerInd,{m:mm(f.M)});
+       else if(f.w===3&&f.M&&f.M.m<5)extra+='¶'+fillT(XT.SEAT.farrerON,{m:mm(f.M)});}}
+     // Dickson: Peter Dutton's old seat
+     {const f=SI('Dickson');if(f){if((f.w===1||f.w===NATI)&&f.was===0)extra+='¶'+fillT(XT.SEAT.dicksonLIB,{m:mm(f.M)});else if(f.w===0&&f.M&&f.M.m<3&&f.M.r===1)extra+='¶'+XT.SEAT.dicksonALP;}}
+     // flagship teal seats
+     {const FL=['Warringah','Goldstein','Mackellar','Curtin','Indi'],back=FL.map(SI).filter(f=>f&&(f.was===4||f.was===iCSA)&&(f.w===1||f.w===NATI)).map(f=>D.seats[f.i].n);
+      if(back.length>=2)extra+='¶'+fillT(XT.SEAT.tealLib,{seat_list:list(back)});
+      const CLs=(DATA.leaders.find(l=>l.name===CL&&l.party==='Community Strong')||{}).seat;
+      if(CLs&&csa>=4){const sn=CLs.replace(/ \(.*\)$/,''),f=SI(sn);if(f&&f.w!==iCSA)extra+='¶'+fillT(XT.SEAT.tealLeader,{leader:CL,seat:sn,n:nums(csa)});}}
+     // comeback and outsider leaders: by-election handovers and challengers
+     {const PJ={Labor:[0],Coalition:[1,NATI],Nationals:[1,NATI],'One Nation':[3],Greens:[2],'Community Strong':[iCSA,4]};
+      Object.entries(S.ldr||{}).forEach(([p,n])=>{const r=NEWL[n];if(!r||r.p!==p||r.t==='j'||n==='Sussan Ley')return;const f=SI(r.s);if(!f)return;const won=(PJ[p]||[]).includes(f.w),m=mm(f.M),T=XT.SEAT,v={...pv(n),seat:r.s,m,incumbent:r.inc};
+        let t='';
+        if(r.t==='h')t=won?T.handoverWin:T.handoverLose;
+        else if(n==='Julie Bishop')t=won?T.bishopWin:T.bishopLose;
+        else if(n==='Adam Bandt')t=won?T.bandtWin:T.bandtLose;
+        else if(n==='Mark Latham')t=won?T.latham:'';
+        else if(n==='Tony Abbott'||n==='Dominic Perrottet')t=won?T.abbPerWin.replace("Sydney's northern beaches / North Shore",(r.s==='Mackellar'||r.s==='Warringah')?"Sydney's northern beaches":"Sydney's North Shore"):'';
+        else if(n==='Gladys Berejiklian')t=won?T.gladysWin:T.gladysLose;
+        else if(n==='Christopher Pyne'||n==='Steven Marshall')t=won?T.sawin:'';
+        else if(n==='Campbell Newman')t=won?T.newman:'';
+        if(t&&r.t==='h'&&won&&f.M&&f.M.m<3)t=t.replace('easily holds','narrowly holds');
+        if(t)extra+='¶'+fillT(t,v);});}
+     // inner-city Greens seats
+     {const GS=['Melbourne','Griffith','Brisbane','Ryan'].map(SI).filter(f=>f&&f.was===2&&f.w!==2).map(f=>D.seats[f.i].n);if(GS.length>=2)extra+='¶'+fillT(XT.SEAT.grnSeats,{lost_seats:list(GS)});}
+    }
     // the Nationals running alone and finishing first: a Country Party prime minister for the first time since John McEwen
-    if(SPLIT&&top===NATI){const NLx=S.ldr['Nationals']||'Matt Canavan',nn=c[NATI],sn=sur(NLx),inS=/Senat/.test((DATA.leaders.find(l=>l.name===NLx)||{}).seat||'');
+    if(SPLIT&&top===NATI&&false){const NLx=S.ldr['Nationals']||'Matt Canavan',nn=c[NATI],sn=sur(NLx),inS=/Senat/.test((DATA.leaders.find(l=>l.name===NLx)||{}).seat||'');
       extra+='¶'+(nn>=76?`For the first time in its history, the Nationals will govern in their own right. ${NLx} becomes the first Nationals Prime Minister since John McEwen held the job for three weeks in 1967–68, and the first ever to win the office at an election. ${inS?`There is one problem: ${sn} sits in the Senate, and will need a House seat quickly.`:`The party of the bush now has to govern the cities too.`}`
         :`The Nationals, running on their own for the first time, finish as the largest party in the House with ${nn} seats. ${NLx} now has a claim to The Lodge no Nationals leader has had since John McEwen in 1967, if the Liberals and the crossbench can be brought along. ${inS?`Leading from the Senate, ${sn} will need a House seat before facing a confidence vote.`:''}`);}
     else if(SPLIT&&govSides().gov===NATI&&!(c[NATI]>=76)){const NLx=S.ldr['Nationals']||'Matt Canavan';
       extra+='¶'+`Against every expectation, the path to government runs through the Nationals. ${NLx} is the most likely Prime Minister, at the head of a minority arrangement with the Liberals and the crossbench, the first Nationals-led government since 1968.`;}
     // the Nationals leader in a winning Coalition becomes Deputy Prime Minister
     if(co>=76){const NLd=S.ldr['Nationals']||'Matt Canavan',nn=D.seats.filter((x,i)=>(R.likely[i]===1||R.likely[i]===NATI)&&coaSub(x,R.likely[i],R.base[i])==='NAT').length,sn=sur(NLd);
-      const NG={'Matt Canavan':`Matt Canavan, the coal-country senator who has never been shy about disagreeing with his own side, becomes Deputy Prime Minister. He will need a seat in the House to stay there.`,
-        'David Littleproud':`David Littleproud, who first led the Nationals from 2022 and spent that whole term in opposition, finally becomes Deputy Prime Minister, with ${nums(nn)} Nationals in the House behind him.`,
-        'Darren Chester':`Darren Chester, the Gippsland moderate long seen as the Nationals' most electable figure, becomes Deputy Prime Minister.`,
-        'Bridget McKenzie':`Bridget McKenzie becomes the first woman to serve as a Nationals Deputy Prime Minister, and the first from the Senate in decades. A move to the House is already being discussed.`,
-        'Kevin Hogan':`Kevin Hogan, the quiet operator from Page, becomes Deputy Prime Minister and the voice of the bush in the new cabinet.`,
-        'Michael McCormack':`Michael McCormack returns to the Deputy Prime Minister's job he lost to Barnaby Joyce in 2021. Second chances are rare in Canberra; he has earned one.`}[NLd]
-        ||`${NLd} becomes Deputy Prime Minister, leading ${nums(nn)} Nationals into government.`;
-      extra+=pl(C,true)+'¶'+NG;}
+      const ND=XT.NATDPM[NLd]||XT.NATDPM._,NG=fillT((NLd==='Matt Canavan'&&!canCap()&&ND.dpmLost)||ND.dpm,{...pv(NLd),n:nums(nn)});
+      extra+=pl(C,co>=86?'goodB':'goodN')+'¶'+NG;}
     else if(co===0&&!SPLIT){} else if(co<=15) extra+=pl(C,'rump','C'); else if(co<on||co<35) extra+=pl(C,false); else if(co+on>=76||co>=a) extra+=pl(C,'mid'); else extra+=pl(C,co>(DATA.current[1]||0)?'oppUp':'oppDown');
+    if(!SPLIT&&co>15&&co<76&&govSides().gov!==1){const NLo=S.ldr['Nationals']||'Matt Canavan',NO=XT.NATDPM[NLo]||XT.NATDPM._;extra+='¶'+fillT((NLo==='Matt Canavan'&&!canCap()&&NO.oppLost)||NO.opp,pv(NLo));}
     if(on>co&&sec!==3&&!(top===3)) extra+='¶'+`${sur(O)==='Hanson'?'Hanson':O} has finally overtaken the Coalition, ${on} seats to ${co}, only to watch ${PN(sec)} take the Opposition benches One Nation had spent the campaign eyeing. It is a record night for the party, and somehow still a frustrating one.`; else if(on>co) extra+=pl(O,true); else if(on<10) extra+=pl(O,false); else if(co<76&&a<76&&(co+on>=76||nonRight<76)) extra+=pl(O,'mid');   // only when One Nation's seats decide who governs
     else {const govN=a>=76?'Labor':co>=76?'the Coalition':'the next government',cur=DATA.current[3],hn=sur(O)==='Hanson'?'Hanson':O,
-      third={'Pauline Hanson':`One Nation ends the night with ${on} seats, up from ${cur}, the best result in the party's history. It falls short of the Opposition benches, and with ${govN} holding a majority it has no leverage this term. But for the first time Hanson has a genuine party room in the House, and a platform to make the next three years about the issues that got her here.`,
-        'Barnaby Joyce':`Barnaby Joyce brings ${on} One Nation MPs into the House, many of them from seats his old Nationals colleagues once held. It is not enough to reach the Opposition benches, but the man who walked out of the Coalition now leads a crossbench bloc that ${govN} cannot ignore for long.`,
-        'Malcolm Roberts':`Under Malcolm Roberts, One Nation wins ${on} seats, up from ${cur}. It is a record haul without Hanson at the top of the ticket, though third place and a majority government opposite mean the gains bring presence rather than power.`}[O]
-        ||`${hn}'s One Nation wins ${on} seats, up from ${cur}. Third place, with ${govN} holding a majority, brings presence rather than power, but the party has never been stronger in the House.`;
+      third=fillT(pk(XT.ON_THIRD[O]||XT.ON._.third,'onthird'),{...V0(),...pv(O),before:cur,government:govN});
       if(on>=10&&!(top===3||sec===3))extra+='¶'+(maj?third:`One Nation finishes with ${on} seats, up from ${cur}, its best result ever. In a hung parliament those votes will matter: on legislation, if not on who governs, ${sur(O)==='Hanson'?'Hanson':O} will expect to be consulted.`);}
     if(!maj&&!formOK()){const grandH=head==='Deadlock: grand coalition talk';
-      extra+='¶'+`Until the numbers are settled, ${lostE(L,0)?'Labor stays in office as':`${L} remains Prime Minister at the head of`} a caretaker government, bound by convention not to make major appointments or new policy decisions. Convention also gives the incumbent the first chance to show it can command the House. In 2010 it took Julia Gillard 17 days of negotiations with the crossbench to secure a second term; this count could take longer.`;
+      extra+='¶'+fillT(pk(XT.CARETAKER,'caretaker'),{'Labor leader':L,notLost:!lostE(L,0)});
       if(grandH)extra+='¶'+`Inside both party rooms, the grand coalition idea is already dividing MPs. Labor's left faction sees it as a betrayal of everything the party stands for; Coalition conservatives warn it would hand One Nation the Opposition benches and a decade of growth. Supporters on both sides argue it is the only way to give the country a stable government, and point to Germany, where grand coalitions have governed for years. The price would be a shared cabinet and a program both sides could sign.`;
-      else if(co+on+(c[NATI]||0)>=76&&a<76)extra+='¶'+`On the other side, ${lN(C,1)} faces a choice the Liberal Party has avoided for thirty years: whether to govern with One Nation's support. A formal deal would deliver the numbers; it would also cost the party votes in the cities it most needs to win back.`;}
-    if(top===2) extra+='¶'+`${G}, who took the Greens leadership only in ${G==='David Shoebridge'?'September 2026':'the last term'}, now has to turn a protest movement into a government. The first test comes quickly: a cabinet with almost no ministerial experience, a public service that has never served a Greens government, and a Senate where ${R.senCentral?`the party holds ${R.senCentral.tot[SK.indexOf('GRN')]} seats`:'the numbers are uncertain'}. Climate, housing and integrity will dominate the first hundred days.`;
-    else if(gr>=3) extra+=pl(G,true); else if(gr===0&&DATA.current[2]>0) {}   // the Greens wipeout paragraph covers this
-    else if(gr>0) extra+='¶'+`${G} keeps the Greens in the House with ${nums(gr)} ${gr>1?'seats':'seat'}, ${gr>DATA.current[2]?`up from ${DATA.current[2]}, a modest recovery after the 2025 losses`:gr===DATA.current[2]?'holding the line after the 2025 losses':`down from ${DATA.current[2]}`}. The party's real power lies in the Senate, where ${R.senCentral?`its ${R.senCentral.tot[SK.indexOf('GRN')]} senators`:'its senators'} will matter on every contested bill.`;
-    if(S.ldr["Katter's Australian"]==='Bob Katter'){const k=c[iKAP];extra+='¶'+(k>=2?`Bob Katter, back in charge of the party he founded, turns a one-man band into a ${nums(k)}-member bloc. North Queensland has been telling Canberra it exists for decades; tonight it said it louder.`
+      else if(co+on+(c[NATI]||0)>=76&&a<76)extra+='¶'+fillT(pk(XT.ST.coaON,'co_on'),{...V0(),'Coalition leader':lN(C,1)});}
+    const senGr=R.senCentral?R.senCentral.tot[SK.indexOf('GRN')]:null;
+    if(top===2) extra+='¶'+fillT(XT.GRN_LARGEST,{...pv(G),tenure:(XT.GRN_TENURE[G]||XT.GRN_TENURE._),n:senGr!=null?senGr:'an uncertain number of'});
+    else if(gr>=5) extra+=pl(G,true);
+    else if(gr>=2) extra+='¶'+fillT(XT.GRN_MID,{...pv(G),gr:nums(gr),n:senGr!=null?senGr:'its'});
+    else if(gr===0&&DATA.current[2]>0) {}   // the Greens wipeout paragraph covers this
+    else if(gr===1||gr<DATA.current[2]) extra+=pl(G,false);
+    const kapK=iKAP>=0?c[iKAP]:0,kenI=D.seats.findIndex(x=>x.n==='Kennedy'),kenHeld=kenI>=0&&R.likely[kenI]===iKAP,kapShow=iKAP>=0&&(!kenHeld||kapK>=2);
+    if(!kapShow){}
+    else if(kapK===1){const ln=(S.ldr["Katter's Australian"]||'Robbie Katter')==='Bob Katter'?'Bob Katter':'Robbie Katter';const ks=D.seats[R.likely.findIndex(w=>w===iKAP)];extra+='¶'+`Kennedy falls after more than three decades in Katter hands, but ${ln}'s party survives in Canberra by winning ${ks?ks.n:'another seat'} instead. The family seat is gone; the party is not.`;}
+    else if(S.ldr["Katter's Australian"]==='Bob Katter'){const k=kapK;extra+='¶'+(k>=2?`Bob Katter, back in charge of the party he founded, turns a one-man band into a ${nums(k)}-member bloc. North Queensland has been telling Canberra it exists for decades; tonight it said it louder.`
       :k===1?`Bob Katter holds Kennedy, as he has since 1993, and takes the party leadership back from his son without growing it. The Katter brand is still a family business.`
       :`Kennedy falls, and with it the last Katter seat in Canberra. The party Bob Katter founded will go on in the Queensland parliament, but the federal chapter of the family saga has closed.`);}
+    else if((S.ldr["Katter's Australian"]||'Robbie Katter')==='Robbie Katter'){const k=kapK;extra+='¶'+fillT(XT.KAT_ROBBIE[k>=2?'2':k===1?'1':'0'],{n:nums(k)});}
     let kmx='', csaKM=false;
     // kingmakers: in a hung parliament, any crossbench group whose seats decide whether a side reaches 76
     if(c.every(v=>v<76)){
-      const RIGHT=['KAP','CYA','FFP','LTP','GRPF','AUC','ASP','CEC','IMO','GAP'];
+      const RIGHT=['KAP','AFP','FFP','LTP','GRPF','AUC','ASP','CEC','IMO','GAP'];
       const bloc=P.map((g,j)=>j).filter(j=>![0,1,3].includes(j)&&c[j]>0);
       const leftTot=a+bloc.filter(j=>!RIGHT.includes(P[j].ab)).reduce((s,j)=>s+c[j],0);
       const rightTot=co+on+bloc.filter(j=>RIGHT.includes(P[j].ab)).reduce((s,j)=>s+c[j],0);
@@ -1054,7 +1235,7 @@ function article(){
         CSA:n=>{csaKM=true;return csaL.km(n);},
         IND:n=>`The ${n===1?'lone independent becomes':nums(n)+' independents, from the teal suburbs to the bush, become'} the most courted ${n===1?'MP':'MPs'} in the country.`,
         KAP:n=>S.ldr["Katter's Australian"]==='Bob Katter'?`Bob Katter, in Parliament since 1993 and now leading his own party again, has seen this movie before: in 2010 he gave a forty-minute speech before choosing a side. Expect a longer one, a list of dams, and a price measured in north Queensland railway lines.`:`Katter's Australian Party, which drove a hard bargain in the 2010 hung parliament, is back at the table, and north Queensland will want its due.`,
-        CYA:n=>`Clive Palmer has spent more on election campaigns than almost anyone in Australian history, with little to show for it. Now Trumpet of Patriots has ${n===1?'a seat':nums(n)+' seats'} in the House and, at last, real leverage over who governs.`,
+        AFP:n=>`The Australian Federation Party has ${n===1?'a seat':nums(n)+' seats'} in the House and, for the first time, real leverage over who governs.`,
         XEN:n=>`Centre Alliance's single vote from Mayo could decide who governs: in a hung parliament, every seat is a kingdom.`};
       const gen=(j,n)=>`Few expected ${P[j].n} to win a seat at all. Now ${n===1?'its only MP':`its ${nums(n)} MPs`} may decide who governs.`;
       // a group is a kingmaker if some combination of the other groups on its side falls short without it but reaches 76 with it
@@ -1063,14 +1244,17 @@ function article(){
           if(sums.some(s=>s<d&&s+c[j]>=d))out.push(j);});return out;};
       const left=bloc.filter(j=>!RIGHT.includes(P[j].ab)), rightG=bloc.filter(j=>RIGHT.includes(P[j].ab));
       const km=new Set([...(leftTot>=76?swing(a,left):[]),...(rightTot>=76?swing(co+on,rightG):[])]);
-      if([...km].some(j=>P[j].ab==='GRN')) extra=extra.replace(pl(G,true),'');   // the kingmaker line already covers the Greens
+      if(!kapShow)[...km].forEach(j=>{if(P[j].ab==='KAP')km.delete(j);});
+      if(gr>=5){const gi=[...km].find(j=>P[j].ab==='GRN');if(gi!=null){km.delete(gi);extra+='¶'+fillT(XT.GRN_KMTAG,{...pv(G),gr:nums(gr)});}}
       [...km].sort((x,y)=>c[y]-c[x]).slice(0,3).forEach(j=>{const ab=P[j].ab;kmx+='¶'+(KM[ab]?KM[ab](c[j]):gen(j,c[j]));});
     }
+    if(maj){const MP=P.map((_,j)=>j).filter(j=>j>=5&&j!==NATI&&j!==iCSA&&j!==iKAP&&j!==top&&c[j]>0);
+      if(MP.length)extra+='¶'+fillT(XT.MINOR.intro,{winner:PN(top)})+' '+MP.map(j=>fillT(XT.MINOR[P[j].ab]||XT.MINOR._,{n:nums(c[j]),Party:P[j].full||P[j].n})).join(' ');}
     if(csaV&&!csaKM&&csaV!=='maj') extra+='¶'+csaL[csaV](csa); else if(csaV==='maj') extra+='¶'+csaL.maj(csa);
     // One Nation as opposition, when the government is Labor
-    if(maj&&top===0&&sec===3) body+=` And the political order has been overturned: for the first time since Federation the official Opposition will be led by neither the Liberals nor Labor. One Nation's ${on} seats outnumber the Coalition's ${co}, and ${O} will face the Prime Minister across the dispatch box.`;
+    if(maj&&top===0&&sec===3) body+=` And the political order has been overturned: for the first time since the 1940s the official Opposition will be led by neither the Liberals nor Labor. One Nation's ${on} seats outnumber the Coalition's ${co}, and ${O} will face the Prime Minister across the dispatch box.`;
     else if(maj&&sec===iCSA) body+=` But the real story of the night is who sits opposite. For the first time since Federation the official Opposition will belong to neither Labor nor the conservative parties: Community Strong's ${csa} seats put it ahead of One Nation (${on}) and the ${SPLIT?'Liberals':'Coalition'} (${co}).`;
-    else if(maj&&top===1&&sec===3) body+=` One Nation's ${on} seats make it the official Opposition, the first time since Federation that Labor will not sit opposite a conservative government.`;
+    else if(maj&&top===1&&sec===3) body+=` One Nation's ${on} seats make it the official Opposition, the first time in more than a century that Labor will not be the Opposition to a conservative government.`;
     const senPara=(()=>{const T=R.senCentral.tot, ix=k=>SK.indexOf(k), sA=T[ix('ALP')], sG=T[ix('GRN')], sC=T[ix('COA')]+(ix('NAT')>=0?T[ix('NAT')]:0), sO=T[ix('ON')], lgS=sA+sG, coS=sC+sO, onS=sO, onB=S2.before[ix('ON')];
       const xs=S2.groups.map((_,g)=>g).filter(g=>!['ALP','GRN','COA','ON'].includes(SK[g])&&T[g]>0).map(g=>`${S2.groups[g].n} (${T[g]})`);
       const lead=S.dd?'In the double-dissolution Senate count, with all 76 seats up for grabs,':'In the Senate,';
@@ -1078,19 +1262,13 @@ function article(){
       const govL=top===0, govR=top===1||top===3, govName=top===0?'Labor':top===1?'the Coalition':top===3?'One Nation':PN(top);
       const govSen=top===0?lgS:top===1||top===3?coS:T[ix(P[top].ab)]||0;
       const pivot=xs.length?list(xs):'a handful of crossbenchers';
-      let s;
-      if(govL){
-        s=lgS>=39?`${lead} Labor and the Greens hold ${lgS} of 76 seats, enough to keep passing legislation with the Greens' support and without the Coalition.`
-          :coS>=39?`${lead} the Coalition and One Nation together hold ${coS} of 76 seats: a hostile upper house that can block the government's agenda, leaving ${labShort} to bargain bill by bill.`
-          :`${lead} Labor and the Greens fall to ${lgS}, short of the 39 needed, so every bill will need the votes of ${pivot}.`;
-      } else if(govR){
-        s=coS>=39?`${lead} the Coalition and One Nation together command ${coS} of 76 seats, so the new government can pass its agenda if ${top===1?`${C} can strike deals with One Nation`:`${O} can keep the Coalition onside`}.`
-          :lgS>=39?`${lead} Labor and the Greens keep a blocking majority of ${lgS} of 76 seats. ${govName==='the Coalition'?C:O} faces a hostile upper house from day one, and a double dissolution could be on the table within the term.`
-          :`${lead} neither bloc reaches 39: the Coalition and One Nation hold ${coS} and Labor and the Greens ${lgS}, so ${govName}'s legislation will live or die with ${pivot}.`;
-      } else {
+      let s;const SV={lead,lg:lgS,rt:coS,crossbench:pivot,'Labor surname':labShort,'Coalition leader':C,'ON leader':O,coaGov:top===1,PM:govName==='the Coalition'?C:O,government:govName};
+      if(govL) s=fillT(pk(lgS>=39?XT.SEN.labLG:coS>=39?XT.SEN.labRT:XT.SEN.labNO,'sen_lab'),SV);
+      else if(govR) s=fillT(pk(coS>=39?XT.SEN.rtRT:lgS>=39?XT.SEN.rtLG:XT.SEN.rtNO,'sen_rt'),SV);
+      else {
         s=`${lead} ${govSen>0?`${govName} ${top===4||top===2?'have':'has'} ${govSen} of 76 seats`:`${govName} ${top===4||top===2?'have':'has'} no organised presence`}. Labor and the Greens hold ${lgS} and the Coalition and One Nation ${coS}, so ${lgS>=39?'Labor and the Greens':coS>=39?'the Coalition and One Nation':pivot} will decide which of the new government's bills pass.`;
       }
-      if(c.every(v=>v<76)) s=`${lead} ${lgS>=39?`Labor and the Greens hold ${lgS} of 76 seats`:coS>=39?`the Coalition and One Nation hold ${coS} of 76 seats`:`no bloc reaches 39 (Labor–Greens ${lgS}, Coalition–One Nation ${coS})`}, which will shape the negotiations over who can govern${lgS>=39||coS>=39?'':`; ${pivot} hold the balance`}.`;
+      if(c.every(v=>v<76)) s=fillT(pk(XT.SEN.hung,'sen_hung'),{...SV,bloc:lgS>=39?0:coS>=39?1:2,none:!(lgS>=39||coS>=39)});
       return s+onLine;})();
     const senP=SPLIT?senPara.replace(/the Coalition and One Nation/g,'the Liberals, Nationals and One Nation').replace(/the Coalition/g,'the Liberals and Nationals').replace(/Coalition/g,'Liberal–National'):senPara;
     // election-night scenes (no quotes): where each leader spends the night
@@ -1126,12 +1304,12 @@ function article(){
     const swMax=Math.max(1,...swings.map(o=>Math.max(Math.abs(o.up.d[o.j]),Math.abs(o.dn.d[o.j]))));
     const sgn=v=>(v>0?'+':v<0?'−':'')+Math.abs(v).toFixed(1);
     const swingCard=swings.length?`<div class="more" style="margin:4px 0 16px"><div class="mcard swcard"><div class="mkick">Swings of the night</div><div class="mh">Where each party gained and lost the most</div>
-      <div class="swkey"><span>◀ Biggest fall</span><span>Biggest rise ▶</span></div>
+      <div class="swkey"><span>← Biggest fall</span><span>Biggest rise →</span></div>
       ${swings.map(o=>{const j=o.j,u=o.up.d[j],dn=o.dn.d[j],w=v=>(Math.abs(v)/swMax*50).toFixed(1);
         return `<div class="swrow"><div class="swname"><span class="pp" style="--c:${o.e.c}">${o.e.name}</span></div>
         <div class="swbar"><span class="swmid"></span>${dn<0?`<i class="swdn" style="width:${w(dn)}%;background:${o.e.c}"></i>`:''}${u>0?`<i class="swup" style="width:${w(u)}%;background:${o.e.c}"></i>`:''}</div>
         <div class="swlab"><span class="swl">${dn<0?`<b>${sgn(dn)}</b> ${o.dn.s.n}`:`<span class="status">No falls</span>`}</span><span class="swr">${u>0?`<b>${sgn(u)}</b> ${o.up.s.n}`:`<span class="status">No rises</span>`}</span></div></div>`;}).join('')}
-      <p class="fmore">Change in first-preference vote since 2025, in percentage points, among seats where the party stood (the Coalition's vote is counted for the Liberals or the Nationals by who holds or contests each seat)${S.cind?' (seats where sitting independents joined Community Strong are left out)':''}.</p></div></div>`:'';
+      <p class="fmore">Change in first-preference vote since 2025, in percentage points, among seats where the party stood (the Coalition's vote is counted for the Liberals or the Nationals by who holds or contests each seat)${S.cind?' (seats where sitting independents joined Community Strong are left out)':''}.</p>${on2cp>=10?`<p class="fmore">${fillT(XT.NOTE2CP,{n:on2cp})}</p>`:''}</div></div>`:'';
     // ---- how the factions fared: Labor caucus, Liberal and Nationals party rooms (House and Senate together), before and after the count
     const FACM=(()=>{const RET=S.retire||{},isCoa=g=>g===1||g===NATI,memb=[];
       const roomOf=(s,n)=>FAC[n]&&FAC[n].startsWith('N_')?'NAT':coaSub(s,1,null)==='NAT'&&s.st!=='QLD'?'NAT':'LIB';
@@ -1146,12 +1324,19 @@ function article(){
       S2.states.forEach((st,k)=>{const W=R.senCentral.st[k].won;[['ALP',['ALP'],x=>x.k==='ALP'],['LIB',['COA'],x=>x.k==='COA'&&x.room!=='N'],['NAT',['NAT'],x=>x.k==='COA'&&x.room==='N']].forEach(([pk,ks,f])=>{
         const won=ks.map(x=>SK.indexOf(x)).filter(g=>g>=0).reduce((a,g)=>a+(W[g]||0),0),held=SENATE.filter(x=>x.st===st&&f(x)&&(S.dd||x.term===2028)&&senFate(x).hold).length;nw[pk]+=Math.max(0,won-held);});});
       // the faction rule for leadership: the largest faction left standing, then its most senior figure
+      // the new leader: a surviving frontbencher first, with the largest faction favoured but not certain; if the frontbench is gone, a more open field
       const pick=(pk,cur)=>{const alive=memb.filter(m=>m.pk===pk&&m.keep&&m.n!==cur);if(!alive.length)return null;
         // leaders come from the House unless the party has been reduced to a handful of MPs there
         const house=alive.filter(m=>m.where!=='Senate'),pool=house.length>=5?house:alive;
-        const cnt={};alive.forEach(m=>{if(FACORD[m.k])cnt[m.k]=(cnt[m.k]||0)+1;});const ranked=Object.keys(cnt).sort((x,y)=>cnt[y]-cnt[x]);
-        const big=ranked.find(k=>pool.some(m=>m.k===k));if(!big)return {n:pool[0].n,k:null};
-        const names=new Set(pool.filter(m=>m.k===big).map(m=>m.n));return {n:FACORD[big].find(n=>names.has(n))||[...names][0],k:big,size:cnt[big]};};
+        const cnt={};alive.forEach(m=>{if(FACORD[m.k])cnt[m.k]=(cnt[m.k]||0)+1;});const big=Object.keys(cnt).sort((x,y)=>cnt[y]-cnt[x])[0]||null,share=k=>(cnt[k]||0)/(cnt[big]||1);
+        // the same result always gives the same winner, so the report does not change each time it is redrawn
+        let h=2166136261;for(const ch of pk+'|'+cur+'|'+R.likely.join(''))h=Math.imul(h^ch.charCodeAt(0),16777619);
+        const rnd=()=>{h=Math.imul(h^(h>>>15),2246822507);h=Math.imul(h^(h>>>13),3266489909);h^=h>>>16;return (h>>>0)/4294967296;};
+        const draw=(arr,wf)=>{const ws=arr.map(wf),t=ws.reduce((a,b)=>a+b,0);let r=rnd()*t;for(let k=0;k<arr.length;k++){r-=ws[k];if(r<=0)return arr[k];}return arr[arr.length-1];};
+        const senior=m=>{const o=FACORD[m.k]||[],x=o.indexOf(m.n);return x>=0&&x<6?1.5:1;};
+        const FRONT=new Set((pk==='ALP'?CABINET:SHADOW).map(x=>x[0])),front=pool.filter(m=>FRONT.has(m.n));
+        const m=front.length?draw(front,m=>(m.k===big?4:1+2*share(m.k))*senior(m)):draw(pool,m=>1+share(m.k));
+        return {n:m.n,k:FACORD[m.k]?m.k:null,big,front:front.length>0,size:cnt[m.k]||0};};
       return {memb,nw,pick};})();
     const facCard=(()=>{const memb=FACM.memb,nw=FACM.nw;
       const nm=k=>FACN[k][0];
@@ -1178,8 +1363,14 @@ function article(){
         const lab=l===r?`Labor's Left and Right finish level on ${l}`:`Labor's ${l>r?'Left':'Right'} ${(B('LL')>B('LR'))===(l>r)?'keeps':'takes'} the upper hand, ${Math.max(l,r)} to ${Math.min(l,r)}`;
         const lib=m===n?`, and the Liberal moderates and National Right are level`:m>n?`, while the Liberal moderates now outnumber the National Right`:`, while the National Right ${B('NR')>B('LM')?'still dominates':'now dominates'} the Liberal party room`;
         return lab+lib;})();
+      const facNarr=(()=>{const l=A('LL'),r=A('LR'),m=A('LM'),n=A('NR'),F=XT.FACT||{};
+        const s1=a<=15?F.labRump:l>r+4?F.labL:r>l+4?F.labR:F.labBal;
+        const s2=co<=15?F.libRump:n>m+4?(co>=76?F.libNRwin:F.libNRloss):m>=n?F.libMod:'';
+        const s3=SPLIT&&(c[NATI]||0)>co?F.natTag:'';
+        return [s1,s2,s3].filter(Boolean).join(' ');})();
       return `<div class="mcard flipcard faccard"><div class="mkick">How the factions fared</div><div class="mh">${hd}</div>
         ${sec('ALP','Labor caucus',['LL','LR','LU','NONE'])}${sec('LIB','Liberal party room',['LM','NR','CR','LBU','NONE'])}${sec('NAT','Nationals party room',['N_NSW','N_VIC','N_QLD','NONE'])}
+        ${facNarr?`<p class="facnarr"><b>What the result means for the factions.</b> ${facNarr}</p>`:''}
         <p class="fmore">Members of both houses, by the faction they are reported to belong to. The Nationals have no formal factions, so they are grouped by state branch; Queensland's LNP members who sit with the Nationals are counted there. Leading figure: the most senior member still in Parliament. New members' factions are not yet known.</p></div>`;})();
     const more=`<div class="more"><h4>More from XYZ News</h4>
 
@@ -1200,7 +1391,7 @@ function article(){
     const posted=tm(rnd(2),rnd(60)), updated=tm(7+rnd(4),rnd(60));
     // news headline
     // headlines in the style of ABC election-night copy: sentence case, the leader's name, the result, then the twist
-    const lostSeat=(n,j)=>{const l=DATA.leaders.find(x=>x.name===n);if(!l||!l.seat||/Senat|Not in/.test(l.seat))return null;const sn=l.seat.replace(/ \(.*\)$/,''),i=D.seats.findIndex(x=>x.n===sn);return i>=0&&R.likely[i]!==j?sn:null;};
+    const lostSeat=(n,j)=>{if(j===GI('CSA')&&NEWL[n]&&NEWL[n].p==='Community Strong'){const i=D.seats.findIndex(x=>x.n===NEWL[n].s);if(i>=0&&(R.likely[i]===j||R.likely[i]===4))return null;}const l=DATA.leaders.find(x=>x.name===n);if(!l||!l.seat||/Senat|Not in/.test(l.seat))return null;const sn=l.seat.replace(/ \(.*\)$/,''),i=D.seats.findIndex(x=>x.n===sn);return i>=0&&R.likely[i]!==j?sn:null;};
     const cLost=lostSeat(C,1),lLost=lostSeat(L,0),isAlbo=L==='Anthony Albanese';
     const tail=cLost?` as ${C} loses seat of ${cLost}`:on>co&&sec!==3?' as One Nation overtakes Coalition':on>=20&&!(top===3||sec===3)?` as One Nation surges to ${on} seats`:'';
     const labHL=()=>a>=90?(isAlbo?`Anthony Albanese wins third term in landslide`:`Labor wins landslide third term under ${L}`)
@@ -1208,6 +1399,8 @@ function article(){
       :a>=78?`Labor holds on to slim ${a}-seat majority`:`Labor clings to power with ${a} seats`;
     const HL0={'One Nation tops the count':`One Nation emerges as largest party in election shock${maj?`, ${O} to become prime minister`:`, ${76-on} seats short of majority`}`,
       'The Coalition returns':`Coalition wins election, ${C} to become prime minister${lLost?` as ${L} loses seat of ${lLost}`:''}`,
+      'A Coalition landslide':`Coalition sweeps back to power in landslide, ${C} to become prime minister${lLost?` as ${L} loses seat of ${lLost}`:''}`,
+      'Coalition scrapes home':`Coalition edges into power with slim ${co}-seat majority under ${C}${lLost?` as ${L} loses seat of ${lLost}`:''}`,
       'A Labor landslide':labHL()+tail,
       'Labor wins comfortably':labHL()+tail,
       'Labor scrapes home':labHL()+tail,
@@ -1224,7 +1417,9 @@ function article(){
         if(co>=35&&co>=on)opts.push(`Coalition comeback forces hung parliament, Labor ${sh}`);
         opts.push(`Hung parliament looms as Labor falls ${sh} of majority`);
         return opts[(a*7+on*3+co)%opts.length];})(),
-      'A hung parliament, the Coalition ahead':`Hung parliament looms as Coalition wins most seats but falls short of majority`,
+      'A hung parliament, the Coalition ahead':(()=>{const H=XT.HL_COA||[],xbc=c.reduce((t,v,j)=>t+(j!==0&&j!==1&&j!==3&&j!==NATI?v:0),0),o=[];
+        if(on>=30&&H[0])o.push(H[0]);if(xbc>=10&&H[1])o.push(H[1]);if(gr>=3&&xbc>=8&&H[2])o.push(H[2]);if(co-(DATA.current[1]||0)>=25&&H[3])o.push(H[3]);if(a>=60&&H[4])o.push(H[4]);o.push(H[5]||'Hung parliament looms as Coalition wins most seats but falls short of majority');
+        return fillT(pk(o,'hlc'),{on,n:76-co,leader:C});})(),
       'Deadlock: grand coalition talk':`No clear winner as neither side can reach 76, grand coalition floated`,
       'Deadlock: no path to 76':`Election deadlock: no party or bloc can form government as fresh poll looms`,
       'Labor largest, but the right has the numbers':`Labor wins most seats, but ${on>co+(c[NATI]||0)?O:C} could take power in Coalition–One Nation deal`,
@@ -1244,10 +1439,12 @@ function article(){
     else if(head==='Labor largest, but the right has the numbers')short.push(`A Coalition–One Nation deal (${rightTot} seats) would have the numbers to govern; Labor and its allies have ${nonRight}.`);
     else if(head==='Coalition largest, but Labor can govern'||head==='One Nation largest, but locked out')short.push(`Labor and the crossbench (${nonRight}) have the numbers to govern; the right has ${rightTot}.`);
     const nGen=short.length;
+    short.push(...seatShort);
     const nt=c[NATI]||0, NL=S.ldr['Nationals']||'Matt Canavan', lib=c[1], N0=DATA.split.cur[1], vN=nt>=N0?'good':nt>=Math.ceil(N0*0.55)?'mid':'bad';
-    const NATL={'Matt Canavan':{good:`Canavan's bet that the Nationals could out-fight One Nation in the bush on their own terms pays off: the party holds ${sN(nt)}, ${nt>N0?'up from':'matching'} the ${N0} it took into the election.`,
-        mid:`Canavan's go-it-alone strategy delivers a mixed night: ${sN(nt)}, down from ${N0}, as One Nation bites into the party's heartland.`,
-        bad:`The split proves disastrous for the Nationals. Reduced to ${sN(nt)} from ${N0}, Canavan's party is swamped by One Nation across regional Queensland and New South Wales, and its future as a separate force is in doubt.`},
+    const capS=canCap()?' Canavan himself makes the jump to the lower house, winning Capricornia.':' Worse, Canavan loses Capricornia and is left without a seat in Parliament.';
+    const NATL={'Matt Canavan':{good:`Canavan's bet that the Nationals could out-fight One Nation in the bush on their own terms pays off: the party holds ${sN(nt)}, ${nt>N0?'up from':'matching'} the ${N0} it took into the election.${capS}`,
+        mid:`Canavan's go-it-alone strategy delivers a mixed night: ${sN(nt)}, down from ${N0}, as One Nation bites into the party's heartland.${capS}`,
+        bad:`The split proves disastrous for the Nationals. Reduced to ${sN(nt)} from ${N0}, Canavan's party is swamped by One Nation across regional Queensland and New South Wales, and its future as a separate force is in doubt.${capS}`},
       'Darren Chester':{good:`Chester's steady, local-member style holds the Nationals together on their own: ${sN(nt)}, ${nt>N0?'up from':'matching'} ${N0}.`,
         mid:`Chester keeps the Nationals alive as an independent force, but at a price: ${sN(nt)}, down from ${N0}.`,
         bad:`Chester's moderate pitch finds few takers in a bush turning to One Nation. The Nationals fall to ${sN(nt)} from ${N0}.`},
@@ -1263,46 +1460,43 @@ function article(){
       'David Littleproud':{good:`Back in the leadership, Littleproud steers the Nationals through the split with ${sN(nt)}, ${nt>N0?'up from':'matching'} ${N0}.`,
         mid:`Littleproud's return steadies the Nationals but cannot stop the bleeding: ${sN(nt)}, down from ${N0}.`,
         bad:`Littleproud's second stint ends in heavy losses: the Nationals are reduced to ${sN(nt)} from ${N0}.`}};
-    const nl=(NATL[NL]||{good:`The Nationals hold ${sN(nt)} running on their own.`,mid:`The Nationals finish with ${sN(nt)}, down from ${N0}.`,bad:`The Nationals are cut to ${sN(nt)} from ${N0}.`})[vN];
+    const nl=fillT(((XT.NATL||{})[NL]||(XT.NATL||{})._||{})[vN]||(NATL[NL]||{})[vN]||'',{nt:sN(nt).replace(/ seats?$/,''),N0,upm:nt>N0?'up from':'matching',Leader:NL});
     const bloc=c.some(v=>v>=76)?(a>=76?` With Labor governing in its own right, ${lib===0||nt===0?`${lib===0?'the Liberals, wiped out of the House, and the Nationals':'the Nationals, wiped out of the House, and the Liberals'} must decide whether there is anything left to rebuild: the old §COA§ partners hold just ${sN(lib+nt)} between them.`:`the Liberals (${lib}) and Nationals (${nt}) must decide whether to face three years in opposition apart or rebuild the §COA§: together they hold ${sN(lib+nt)}.`}`:'')
       :lib+nt>=76?` Together the Liberals (${lib}) and Nationals (${nt}) hold ${lib+nt} seats, enough to govern if they can stitch the §COA§ back together, and both leaders will face intense pressure to do it within days.`
       :lib+nt+on>=76?` The Liberals (${lib}), Nationals (${nt}) and One Nation (${on}) together reach ${lib+nt+on}: a three-way deal is the right's only path to government.`
       :` Even together, the Liberals (${lib}) and Nationals (${nt}) are well short of a majority.`;
-    const natGov=(lib+nt>=76||(govSides&&lib+nt>0&&lib>=a))?` If the two parties do reunite in government, ${NL} is the Liberals' obvious Deputy Prime Minister.`:'';
-    const natPara=`This was the first election since the Liberals and Nationals tore up their §COA§ agreement and ran candidates against each other in the regions. ${nl}${bloc}${natGov}`;
+    const natSenR=/Senat/.test((DATA.leaders.find(l=>l.name===NL&&l.party==='Nationals')||{}).seat||'');
+    const natGov=(lib+nt>=76||(govSides&&lib+nt>0&&lib>=a))?' '+(natSenR?fillT(XT.NAT_REUNITE_SEN,{...pv(NL),leader:NL}):`If the two parties do reunite in government, ${NL} is the Liberals' obvious Deputy Prime Minister.`):'';
+    const natBeat=SPLIT&&nt>=N0&&co<(DATA.split.cur[0]||0)?' '+fillT(XT.COA_NATBEAT,{surname:sur(C),nt}):'';
+    const natPara=`This was the first election since the Liberals and Nationals tore up their §COA§ agreement and ran candidates against each other in the regions. ${nl}${bloc}${natGov}${natBeat}`;
     // wipeouts: a major party left with no House seats at all
     if(S.cind){const k=P.findIndex(g=>g.ab==='CSA'),n=c[k];short.push(`Community Strong, which absorbed five sitting community independents before the campaign, finishes with ${sN(n)} (it went in with ${DATA.current[k]}).`);}
     let tbPara='';
     if(TB()){const wi=D.seats.findIndex(s=>s.n==='Wentworth'),won=wi>=0&&R.likely[wi]===iCSA,wv=wi>=0?R.prob[wi][iCSA]:0;
-      tbPara=won?`And eight years after he walked out of Parliament, Malcolm Turnbull is coming back. Standing in Wentworth, the harbourside seat he held from 2004 to 2018, in place of sitting member Allegra Spender, the former prime minister wins it again for Community Strong.`
+      tbPara=won?`And ten years after he walked out of Parliament, Malcolm Turnbull is coming back. Standing in Wentworth, the harbourside seat he held from 2004 to 2018, in place of sitting member Allegra Spender, the former prime minister wins it again for Community Strong.`
         :`Malcolm Turnbull's comeback falls short in his own backyard. The former prime minister stood for Community Strong in Wentworth, the seat he held from 2004 to 2018, and drew crowds, cameras and plenty of Liberal anxiety, but not enough votes.`;
       short.push(won?'Former prime minister Malcolm Turnbull wins back Wentworth for Community Strong.':'Malcolm Turnbull fails in his bid to win back Wentworth for Community Strong.');}
     const wipe=[], seatOf=n=>{const l=DATA.leaders.find(x=>x.name===n);return l&&l.seat?l.seat.replace(/ \(.*\)$/,''):'';}, inHouse=n=>{const s=seatOf(n);return s&&!/Senator/.test(s);};
-    if(a===0){const ls=seatOf(L);
-      wipe.push(`There is no caucus left to address. For the first time since the 1890s, when shearers and wharfies sent the first Labor men to colonial parliaments, the party will have no one in the House of Representatives. Seat after seat turned on the night: the western suburbs that were Labor before they were suburbs, the inner-city strongholds, the Hunter, the old industrial towns of Geelong and Newcastle. By ten o'clock there was nothing left to count.`);
-      wipe.push(`${L} ${inHouse(L)?`watched ${ls}, ${his(L)} home seat for ${L==='Anthony Albanese'?'three decades':'years'}, fall with the rest`:'went down with the rest of the party'}, and conceded to a near-empty function room. History will not be gentle: ${he(L)} will be remembered as the leader who took the party of Curtin, Chifley, Whitlam and Hawke from the government benches to nothing in a single night. The question for the true believers is no longer who leads them, but whether there is anything left to lead.`);
+    const WP=k=>{const p=(XT.WIPE||{})[k]||[];return p.length?p[hsh('wipe_'+k)%p.length]:['',''];};
+    const FE={'Anthony Albanese':1996,'Jim Chalmers':2013,'Tanya Plibersek':1998,'Richard Marles':2007,'Tony Burke':2004,'Chris Bowen':2004,"Clare O'Neil":2013,'Jason Clare':2007,'Anika Wells':2019,'Mark Butler':2007,'Madeleine King':2016,'Ed Husic':2010};
+    const noSeat=t=>t.replace(/\s*\((?:who lost|losing|having lost) \{seat\}(?: in the process)?\)/,'').replace(/^Having lost \{seat\} in the rout, /,'');
+    if(a===0){const ls=seatOf(L),[m0,t0]=WP('lab');wipe.push(fillT(m0,V0()));
+      if(inHouse(L)&&t0){const y=FE[L]?eday.getFullYear()-FE[L]:0;wipe.push(fillT(y<=1?t0.replace('{his/her} home for {years} years','{his/her} home seat'):t0,{...pv(L),seat:ls,years:y}));}
+      else wipe.push(`${L} went down with the rest of the party, and conceded to a near-empty function room. History will not be gentle: ${he(L)} will be remembered as the leader who took the party of Curtin, Chifley, Whitlam and Hawke from the government benches to nothing in a single night.`);
       short.push('Labor is wiped out of the House of Representatives for the first time in its history.');}
-    if(!SPLIT&&co===0){
-      wipe.push(`The ${'§COA§'} has been erased. Every Liberal and every National seat is gone: the blue-ribbon harbourside suburbs, the Melbourne leafy belt, the wheatbelt and the cattle country, the Queensland coast. For the first time since Menzies built the modern Liberal Party in 1944, the conservative tradition he founded has no voice in the House of Representatives.`);
-      wipe.push(`${C}${inHouse(C)?` loses ${seatOf(C)} and`:''} will be the last leader of a party room that no longer exists. There will be no shadow cabinet, no Question Time ambush, no morning doorstop at the Parliament House courtyard. Somewhere in the party's Barton headquarters, a staffer is already being asked to take down the photos.`);
+    if(!SPLIT&&co===0){const [m0,t0]=WP('coa');wipe.push(fillT(m0,V0()));if(t0)wipe.push(fillT(inHouse(C)?t0:noSeat(t0),{...pv(C),seat:seatOf(C)}));
       short.push('The Liberal and National parties are wiped out of the House: not one seat.');}
-    if(SPLIT&&lib===0){
-      wipe.push(`The party Robert Menzies founded in 1944 has not won a single seat. The Liberals, who governed Australia for more than fifty of the past eighty years, are gone from the House: Kooyong, Wentworth and Higgins long since lost, and tonight even the safest seats on the outer fringes fall away.`);
-      wipe.push(`${C}${inHouse(C)?` loses ${seatOf(C)} and`:''} becomes the leader of a party with no members in the lower house. The split was supposed to free the Liberals from the Nationals. Instead it has freed them from Parliament.`);
+    if(SPLIT&&lib===0){const [m0,t0]=WP('lib');wipe.push(fillT(m0,V0()));if(t0)wipe.push(fillT(inHouse(C)?t0:noSeat(t0),{...pv(C),seat:seatOf(C)}));
       short.push('The Liberal Party fails to win a single House seat.');}
-    if(SPLIT&&nt===0){
-      wipe.push(`More than a century after the Country Party first took its seats in Melbourne in 1920, the Nationals are gone. Not one seat survives: not Riverina, not Maranoa, not Gippsland, not the river towns and rail sidings that built the party. The bush has chosen One Nation, the independents and anyone but the party that once claimed to own it.`);
-      wipe.push(`${NL}${inHouse(NL)?`, who loses ${seatOf(NL)},`:', safe in the Senate,'} must now explain how going it alone produced not independence, but extinction. The party room will meet this week. It will not need a large table.`);
+    if(SPLIT&&nt===0){const [m0,t0]=WP('nat');wipe.push(fillT(m0,V0()));if(t0)wipe.push(fillT(t0,{...pv(NL),seat:seatOf(NL),inH:inHouse(NL)}));
       short.push('The Nationals are wiped out of the House, losing every seat.');}
-    if(on===0&&DATA.current[3]>0){
-      wipe.push(`One Nation's House breakthrough is over before it began. Both of the seats the party picked up before the election, ${HELDBY['New England']?'New England':'its regional beachhead'} among them, are lost, and ${O==='Pauline Hanson'?'Hanson':O} is left to lead a party whose influence is once again confined to the Senate crossbench.`);
+    if(on===0&&DATA.current[3]>0){wipe.push(fillT(WP('on')[0],{...V0(),...pv(O)}));
       short.push('One Nation loses every House seat it held.');}
-    if(gr===0&&DATA.current[2]>0){
-      wipe.push(`The Greens leave the House of Representatives without a single member for the first time since 2010, when Adam Bandt first won Melbourne. The party that once held four lower-house seats and talked of a "Greenslide" is reduced to a Senate party again, and ${G} faces hard questions about whether the inner-city strategy has run its course.`);}
-    if(csa===0&&DATA.current[iCSA]>0){
-      wipe.push(`Community Strong's first election is also, in the House at least, its last stand: both of its sitting members lose their seats, and the experiment of turning the teal movement into a party will be argued over for years.`);}
-    if(ind===0&&DATA.current[4]>0){
-      wipe.push(`For the first time this century, not a single independent sits in the House of Representatives. The crossbench that grew with every election since 2010 is wiped away in one night.`);}
+    if(gr===0&&DATA.current[2]>0){wipe.push(fillT(WP('grn')[0],{...V0(),...pv(G)}));}
+    if(csa===0&&DATA.current[iCSA]>0){const CC=XT.WIPE_CSACLOSE||{},cs0=(DATA.leaders.find(l=>l.name===CL&&l.party==='Community Strong')||{}).seat||'';
+      const close=CC[CL]||(CL!=='No formal leader'?fillT(CC['Scamps / Ryan / Chaney / Haines']||'',{...pv(CL),seat:cs0.replace(/ \(.*\)$/,'')}):'');
+      wipe.push(fillT(WP('csa')[0],{cind:!!S.cind,before:nums(DATA.current[iCSA])})+(close?' '+close:''));}
+    if(ind===0&&DATA.current[4]>0){wipe.push(fillT(WP('ind')[0],V0()));}
     if(SPLIT&&nt>0) short.push(`The Nationals, running separately from the Liberals for the first time, win ${sN(nt)} (${N0} before the election); the Liberals win ${sN(lib)}.`);
     const sents=body.split(/(?<=\.)\s+(?=[A-Z])/), paras=sents.length<=3?[sents.join(' ')]:[sents.slice(0,2).join(' '),...(sents.length>6?[sents.slice(2,5).join(' '),sents.slice(5).join(' ')]:[sents.slice(2).join(' ')])];
     const pparas=extra.split('¶').map(s=>s.trim()).filter(Boolean), kparas=kmx.split('¶').map(s=>s.trim()).filter(Boolean);
@@ -1316,28 +1510,35 @@ function article(){
       return {when:`${d.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'})}, ${tm}`,rc,lead,days};};
     const CP=callPlan().sort((x,y)=>x.at-y.at),cnt76=new Array(NG).fill(0);let callAt=null,callW=null;for(const p of CP){const w=R.likely[p.i];cnt76[w]++;if(cnt76[w]>=76&&callAt==null){callAt=p.at;callW=w;}}
     const lastP=CP[CP.length-1],lastM=seatMargin(lastP.i),lastS=D.seats[lastP.i];
-    const nightP=`${stage} `+(callAt!=null?`XYZ News called the election for ${callW===0||callW===3?P[callW].n:PN(callW)} at ${clock12(callAt)} AEST, when ${callAt<1200?'the West had not even finished voting':'the count in Western Australia was still under way'}${callAt<1200?'':''}. `:`By ${clock12(lastP.at)} XYZ News had projected a winner in every seat, and no party had reached 76. `)
-      +`The last seat projected was ${lastS.n} in ${STF[lastS.st]}, at ${clock12(lastP.at)}${lastM?`, where ${mapName(lastS,lastM.w,R.base[lastP.i])} led ${mapName(lastS,lastM.r,R.base[lastP.i])} by ${lastM.m<0.5?'just ':''}${lastM.m.toFixed(2)} points`:''}. ${(()=>{const dd=decided.map(DECL),nr=dd.filter(z=>z.rc).length,mx=Math.max(...dd.map(z=>z.days));return `A projection is not a result, though. The closest seats took ${mx>=10?'almost two weeks':'several days'} to be formally declared${nr?`, and ${nums(nr)} went to a recount`:''}:`;})()}`;
+    const stageX=maj&&lead1!=null?fillT(pk(XT.EN_MAJ,'en_maj'),{W:ld(lead1),PW:where(lead1),R:runNm,PR:where(run1),runUp,time:callAt!=null?clock12(callAt):'midnight'})
+      :lead1!=null?fillT(pk(XT.EN_NOMAJ,'en_nomaj'),{L1:ld(lead1),PL1:where(lead1),L2:ld(run1),PL2:where(run1)}):stage;
+    const stageY=stageX.replace(/^At in /,'In ').replace(/^At with party faithful, /,'With party faithful, ').replace(/^Addressing supporters with party faithful/,'Addressing party faithful');
+    const nightP=`${stageY} `+(callAt!=null?fillT(pk(XT.EN_CALL,'en_call'),{party:callW===0||callW===3?P[callW].n:PN(callW),time:clock12(callAt),early:callAt<1200})+' ':fillT(pk(XT.EN_CALLX,'en_callx'),{time:clock12(lastP.at)})+' ')
+      +`The last seat projected was ${lastS.n} in ${STF[lastS.st]}, at ${clock12(lastP.at)}${lastM?`, where ${mapName(lastS,lastM.w,R.base[lastP.i])} led ${mapName(lastS,lastM.r,R.base[lastP.i])} by ${lastM.m<0.5?'just ':''}${lastM.m.toFixed(2)} points`:''}. ${(()=>{const dd=decided.map(DECL),nr=dd.filter(z=>z.rc).length,mx=Math.max(...dd.map(z=>z.days));return fillT(pk(XT.EN_DECL,'decl'),{quick:mx<10,rc:nr>0,n:nums(nr)}).replace(/\bone (formal )?(recount|seat|contest)s\b/,'one $1$2');})()}`;
     const SUB=t=>`<h4 class="news-sub">${t}</h4>`;
     // leadership changes after the election: a leader who loses their seat, or whose party loses badly, is replaced by one of the alternatives
     const SPILLS=(()=>{const out=[],FK={},succ=(pty,j,cur)=>{
-        // parties with factions: the most senior figure still in Parliament from the largest faction left standing
+        // parties with factions: a surviving frontbencher, the largest faction favoured (see FACM.pick)
         const pk=pty==='Labor'?'ALP':pty==='Coalition'?'LIB':pty==='Nationals'?'NAT':null;
-        if(pk){const r=FACM.pick(pk,cur);if(r){FK[pty]=r.k;return r.n;}}
+        if(pk){const r=FACM.pick(pk,cur);if(r){FK[pty]=r;return r.n;}}
         // everyone else: the most senior figure from the party's leadership pool still in Parliament, then its longest-listed MP or senator
         const ok=DATA.leaders.filter(l=>l.party===pty&&l.name!==cur&&!/^No /.test(l.name)&&(/Senat/.test(l.seat||'')||!lostSeat(l.name,j))).sort((x,y)=>(x.rk??99)-(y.rk??99));const okH=ok.filter(l=>!/Senat/.test(l.seat||''));if((c[j]||0)>=5&&okH.length)return okH[0].name;if(ok.length)return ok[0].name;
         const g=j===NATI?NATI:j,mps=D.seats.map((s,i)=>[s,i]).filter(([s,i])=>gOf(s)===g&&R.likely[i]===g&&(HELDBY[s.n]||s.mem)).map(([s])=>HELDBY[s.n]||s.mem);
         const sk=pty==='Labor'?'ALP':pty==='Greens'?'GRN':pty==='One Nation'?'ON':'COA',room=pty==='Nationals'?'N':pty==='Coalition'?'L':null;
         const sens=SENATE.filter(s=>s.k===sk&&(!room||s.room===room)&&s.n!==cur).filter(s=>{const F=senFate(s);return F.cont||F.hold;}).map(s=>s.n);
         const pool=mps.concat(sens).filter(n=>n!==cur);return pool.length?pool[0]:null;};
-      const gv=govSides().gov,nt=c[NATI]||0,senLost=n=>{const sn=SENBY[n];if(!sn)return null;const F=senFate(sn);return !F.cont&&!F.hold?'their Senate seat':null;};
-      const chk=(pty,j,n,room,big,day)=>{if(!n||n==='—')return;const lost=lostSeat(n,j)||senLost(n);if(!lost&&!big)return;const nx=succ(pty,j,n),fk=FK[pty]||null,gone=DATA.leaders.filter(l=>l.party===pty&&l.name!==n&&!/^No /.test(l.name)).map(l=>sur(l.name));out.push({pty,n,next:nx,room,lost,day,gone,fk});};
+      const gv=govSides().gov,nt=c[NATI]||0,senLost=n=>{const sn=SENBY[n];if(!sn)return null;const F=senFate(sn);if(F.retire)return null;return !F.cont&&!F.hold?'their Senate seat':null;};
+      const chk=(pty,j,n,room,big,day)=>{if(!n||n==='—')return;const lost=lostSeat(n,j)||senLost(n);if(!lost&&!big)return;const nx=succ(pty,j,n),fr=FK[pty]||null,fk=fr?fr.k:null,gone=DATA.leaders.filter(l=>l.party===pty&&l.name!==n&&!/^No /.test(l.name)).map(l=>sur(l.name));out.push({pty,n,next:nx,room,lost,day,gone,fk,fr});};
       chk('Labor',0,L,'Labor caucus',gv!==0&&(maj||a<55),6);
       chk('Coalition',1,C,'Liberal party room',gv!==1&&(co<DATA.current[1]-5||co<35),5);
       if(SPLIT)chk('Nationals',NATI,ld(NATI),'Nationals party room',nt<DATA.split.cur[1]-4,5);
       chk('One Nation',3,O,'One Nation',on<DATA.current[3],7);
       chk('Greens',2,G,'Greens party room',gr===0&&DATA.current[2]>0,8);
       return out;})();
+    // how the report describes a new leader: frontbench or backbench, and their faction against the largest one
+    const whoOf=x=>{const r=x.fr,F=r.k?FACN[r.k][0]:null,B=r.big&&FACN[r.big]?FACN[r.big][0]:null;
+      if(r.front)return F?(r.k===r.big?`a frontbencher from the largest faction, the ${F}`:`a frontbencher from the ${F}, who wins the room despite the ${B} having the numbers`):'a senior frontbencher';
+      return F?`a ${F} backbencher, with the frontbench gone`:'a backbencher, with the frontbench gone';};
     // what happens next: a dated timeline from election night to the first sitting
     const tl=(()=>{const add=n=>{const d=new Date(eday);d.setDate(d.getDate()+n);return d.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});};
       const govP=govSides().gov,spG=SPILLS.find(x=>x.next&&(x.pty==='Labor'?0:x.pty==='Coalition'?1:x.pty==='One Nation'?3:x.pty==='Greens'?2:NATI)===govP),pmN=spG?spG.next:ld(govP),hasPM=pmN&&pmN!=='—'&&!noL(govP),it=[];
@@ -1348,7 +1549,7 @@ function article(){
         it.push([10,'Party leaders tell the Governor-General who can win a confidence vote']);
         if(isDead)it.push([60,'If no one can survive a confidence vote, a fresh election becomes likely within months']);}
       else if(!maj)it.push([3,'Formal talks with the crossbench begin in Canberra']);
-      SPILLS.forEach((x,xi)=>it.push([x.day,x.next?`${x.room} meets: <b>${x.next}</b>${x.fk?(xi===0?`, the most senior MP in the largest faction, the ${FACN[x.fk][0]},`:`, from the ${FACN[x.fk][0]}, the party's biggest bloc,`):''} is elected leader, replacing ${sur(x.n)}${x.lost?`, who lost ${x.lost}`:''}`:`${x.room} meets to replace ${sur(x.n)}${x.lost?`, who lost ${x.lost}`:''}, but with ${list(x.gone)} all gone too, there is no obvious successor`]));
+      SPILLS.forEach((x,xi)=>it.push([x.day,x.next&&x.fr&&xi===0?fillT(pk(XT.SPILL1,'spill_report'),{'Party room':x.room,successor:`<b>${x.next}</b>`,who:whoOf(x),surname:sur(x.n),lost:!!x.lost,lostWhat:x.lost||''}):x.next?`${x.room} meets: <b>${x.next}</b>${x.fr?`, ${whoOf(x)},`:''} is elected leader, replacing ${sur(x.n)}${x.lost?`, who lost ${x.lost}`:''}`:`${x.room} meets to replace ${sur(x.n)}${x.lost?`, who lost ${x.lost}`:''}, but with ${list(x.gone)} all gone too, there is no obvious successor`]));
       if(maj||formOK())it.push([maj?9:16,`${hasPM?pmN:'The new Prime Minister'} and the ministry are sworn in at Government House, Yarralumla`]);
       else it.push([17,`Earliest likely date for a ${isGrand?'grand coalition':'minority'} ministry to be sworn in, as in 2010, when it took 17 days`]);
       it.push([19,'The AEC declares the last seats; recounts in the closest contests']);
@@ -1371,17 +1572,24 @@ function article(){
      formShort=(`${hasL?L0:pn} forms a ${FM.arr==='coalition'?`${PN(pm).replace(/^the /,'')}–${ptn.replace(/^the /,'')} coalition`:FM.arr==='cs'?`minority government backed by ${ptn} on confidence and supply`:`${PN(pm).replace(/^the /,'')} minority government`} (${sN(FM.n)}).`);}
     const leadSub=pparas.length?(maj?'What it means for the leaders':'The leaders, and what comes next'):'';
     const kmSub=kparas.length?'The crossbench holds the keys':'';
-    const kmIntro=kparas.length?`<p class="news-p">With no party at 76, the next fortnight belongs to the crossbench. ${kparas.length>1?`${cap(nums(kparas.length))} groups can each decide which way the House falls:`:'One group can decide which way the House falls:'}</p>`:'';
+    const kmIntro=kparas.length?`<p class="news-p">${fillT(pk(XT.XBINTRO,'xb_intro'),{many:kparas.length>1,Number:cap(nums(kparas.length))})}</p>`:'';
     // ABC-style "In short" box: two or three plain sentences, then "What's next?"
     const hon=n=>(SHE.includes(n)?'Ms ':'Mr ')+sur(n), poss=n=>n+(n.endsWith('s')?"'":"'s");
     const gw=govSides().gov,gwL=ld(gw),gwHas=gwL&&gwL!=='—'&&!noL(gw)&&!gwL.startsWith('Collective');
     const sLead=FM?`${gwHas?gwL:cap(PN(gw))} will form government after ${PN(gw)} ${FM.arr==='coalition'?`struck a coalition deal with ${PN(FM.part)}`:FM.arr==='cs'?`secured a confidence-and-supply agreement with ${PN(FM.part)}`:'chose to govern in minority'}, with no party winning the 76 seats needed for a majority.`
-      :maj&&top===0?`${poss(L)} Labor has ${isAlbo?'won a third term in government':'won the federal election'}, with XYZ News projecting it will hold ${a} of the 150 seats in the House of Representatives.`
-      :maj&&top===1?`The Coalition has won the federal election, with ${C} set to become prime minister after XYZ News projected it would win ${co} seats.`
+      :maj&&top===0?fillT(pk(XT.IS.labMaj,'is_lab'),{Leader:L,a,albo:isAlbo})
+      :maj&&top===1?fillT(pk(XT.IS.coaMaj,'is_coa'),{leader:C,co})
       :maj?`${cap(PN(top))} ${top===4||top===2?'have':'has'} won majority government with ${sN(tn)}${gwHas?`, and ${gwL} is set to become prime minister`:''}.`
-      :`No party has won the 76 seats needed for majority government, with ${PN(top)} the largest party on ${tn} seats.`;
+      :fillT(pk(XT.IS.noMaj,'in_short_lead'),{party:PN(top),n:tn});
+    const MS=XT.MILESTONE||{},leyLost=C==='Sussan Ley'&&((S.cand||{}).Farrer||{}).n==='Sussan Ley'&&(()=>{const i=D.seats.findIndex(x=>x.n==='Farrer');return i>=0&&!(R.likely[i]===1||R.likely[i]===NATI);})();
+    const natSen=SPLIT&&top===NATI&&maj&&/Senat/.test((DATA.leaders.find(l=>l.name===(S.ldr['Nationals']||'Matt Canavan')&&l.party==='Nationals')||{}).seat||'');
+    const mile=co>=76&&C==='Sussan Ley'?MS[leyLost?'Sussan Ley majority, lost Farrer':'Sussan Ley majority']:a>=76&&L==='Ed Husic'?MS['Ed Husic majority']
+      :(co>=76&&C==='James Paterson')||natSen?fillT(MS['James Paterson or Senate Nationals leader majority'],{Leader:co>=76?C:(S.ldr['Nationals']||'Matt Canavan')})
+      :a>=76&&L==='Anika Wells'?MS['Anika Wells majority']:top===2&&maj&&G==='Elizabeth Watson-Brown'?MS['Elizabeth Watson-Brown majority']
+      :top===3&&maj&&O==='Pauline Hanson'?MS['Pauline Hanson majority']:top===iCSA&&maj&&CL==='No formal leader'?MS['Community Strong majority, no formal leader']:'';
     const winIn=(n,j)=>{const s0=lostSeat(n,j);if(!s0)return '';const i=D.seats.findIndex(x=>x.n===s0);return mapName(D.seats[i],R.likely[i],R.base[i]);};
-    const twist=cLost?`Opposition Leader ${C} has lost his own seat of ${cLost} to ${(w=>w==='Independent'?'an independent':w)(winIn(C,1))}, the second Opposition leader in a row to lose their own seat after Peter Dutton in 2025.`
+    const twist=cLost&&(co>=76||gw===1)?`${C} has lost ${his(C)} ${NEWL[C]&&NEWL[C].t==='c'?'own bid for':'own seat of'} ${cLost} to ${(w=>w==='Independent'?'an independent':w)(winIn(C,1))}, and will lead the government from outside the House until a by-election can be found.`
+      :cLost?`Opposition Leader ${C} has lost ${his(C)} ${(NEWL[C]&&NEWL[C].t==='c')||/candidate/.test((DATA.leaders.find(l=>l.name===C)||{}).seat||'')?'bid for':'own seat of'} ${cLost} to ${(w=>w==='Independent'?'an independent':w)(winIn(C,1))}, the second Opposition leader in a row to lose their own seat after Peter Dutton in 2025.`
       :lLost?`${isAlbo?'Prime Minister':'Labor leader'} ${L} has lost ${SHE.includes(L)?'her':'his'} own seat of ${lLost}.`
       :sec===3&&maj?`One Nation has won more seats than the Coalition, putting ${O} in line to lead the official Opposition.`
       :on>=15&&top!==3?`One Nation has surged to ${on} seats, up from ${DATA.current[3]} before the election.`:'';
@@ -1402,7 +1610,9 @@ function article(){
         const a1=pick[0],a2=pick.find(x=>x[0]!==a1[0]&&!(([7,23].includes(x[0])&&[7,23].includes(a1[0]))));
         usedK.add(a1[0]);if(a2)usedK.add(a2[0]);
         const top=idx.map((i,x)=>[i,sw[x]]).sort((a,b)=>avg>0?b[1]-a[1]:a[1]-b[1])[0],tp=top[1];
-        out.push(`${cap(nm)}'s ${avg>0?'biggest gains':'heaviest losses'} came in ${a1[1]}${a2?` and ${a2[1]}`:''}, ${avg>0?'peaking':'worst of all'} in ${D.seats[top[0]].n}, where its primary vote ${tp>0?'rose':'fell'} ${Math.abs(tp).toFixed(1)} points.`);});
+        {let k0=0,t=pk(XT.SWUNG,'who_swung|'+nm).replace(/\{group\}/g,()=>'{g'+(++k0)+'}');
+         if(!a2)t=t.replace('From {g1} to {g2}','Across {g1}').replace('{g1} and {g2}','{g1}');
+         out.push(cap(fillT(t,{Party:nm,g1:a1[1],g2:a2?a2[1]:'',seat:D.seats[top[0]].n,n:Math.abs(tp).toFixed(1),up:avg>0})));}});
       return out;})();
     const campP=(()=>{const E=S.ev||{},ps=[],ev=(k)=>E[k]&&E[k]!=='Default'?E[k]:null,g0=(v,d)=>v>=0?d[0]:d[1];
       const EVT={
@@ -1455,29 +1665,28 @@ function article(){
       const evs=Object.keys(E).map(ev).filter(x=>x&&EVT[x]).map(x=>EVT[x]);
       // presets that are stories in their own right
       const pre=S.preset||'';
-      if(pre==='Minor party chaos'){const mp=P.map((_,j)=>j).filter(j=>j>4&&j!==NATI&&c[j]>0).sort((x,y)=>c[y]-c[x]);
-        ps.push(`This was the election the major parties lost together. Labor and the Coalition won just ${a+co+(c[NATI]||0)} of the 150 seats between them, One Nation took ${on}, and the remaining ${150-a-co-(c[NATI]||0)-on} went to a crossbench larger than any in the history of the House. ${mp.length?`${cap(list(mp.map(j=>`${P[j].n} (${c[j]})`)))} all won lower-house seats, several for the first time in their history.`:''} ${c[4]?`Independents won ${sN(c[4])}.`:''}`);
-        ps.push(`In seat after seat, the major-party vote fell below 30 per cent, and preferences, rather than primary votes, decided who won. Counting officials in some divisions were still distributing preferences from eight or nine candidates long after midnight. Whoever governs will need to deal with more parties on the floor of the House than any Australian prime minister has before.`);}
-      if(pre==='Greens–teal alliance'){const gr2=c[2],ti=c[4]+c[iCSA];
-        ps.push(`The Greens and the community independents never formally merged, but in this campaign they might as well have. They swapped preferences, shared volunteers and avoided running against each other in the teal heartland, and the arrangement delivered ${sN(gr2+ti)} between them: ${gr2} for the Greens and ${ti} for the independents and Community Strong.`);
-        ps.push(`Labor, which once relied on Greens preferences arriving almost automatically, found more of them flowing to independents instead. ${a<76?'That alone may have cost it a majority.':'It held on regardless, but the warning is clear.'}`);}
-      if(pre==='Labor leadership spill mid-2027'){ps.push(`The Labor caucus changed leaders in mid-2027, replacing Anthony Albanese with ${L} after a run of bad polls. The new leader had barely a year to make the job their own, and the campaign was dominated by questions about why the change was needed at all.`);}
-      if(pre==='Coalition reunites under Hastie'){ps.push(`After a bruising term, the Liberals and Nationals patched up their differences and went to the election united behind Andrew Hastie. The former SAS captain promised discipline and delivered it, winning back voters who had drifted to One Nation and keeping the Coalition's preference flows tight.`);}
-      if(pre==="Turnbull's teal revolt"){ps.push(`It began with a split. When the Nationals walked out of the Coalition, Malcolm Turnbull saw an opening, took the leadership of Community Strong and recruited the sitting teal independents to his banner. What followed was the most serious challenge to the Liberal Party's hold on its heartland since its founding in 1944.`);}
+      {const PRE=XT.PRESET||{},pkey=Object.keys(PRE).filter(k=>pre===k||pre.startsWith(k+':')||pre.startsWith(k+' (')||pre===k.replace('Recreate ','Recreate '))[0];
+       if(pkey&&!(S.dd&&pkey==='Early double dissolution')){const mp=P.map((_,j)=>j).filter(j=>j>4&&j!==NATI&&c[j]>0).sort((x,y)=>c[y]-c[x]),mj=a+co+(c[NATI]||0);
+         const v={...V0(),...pv(L),maj2:mj,rest:150-mj-on,ind:c[4]?sN(c[4]).replace(/ seats?$/,''):'no',Parties:mp.length?cap(list(mp.map(j=>`${P[j].n} (${c[j]})`))):'Several minor parties',
+           both:c[2]+c[4]+c[iCSA],tn:c[4]+c[iCSA],short:a<76,notAlbo:L!=='Anthony Albanese',hastie:C==='Andrew Hastie'};
+         let t=fillT(PRE[pkey],v);if(pkey==='Minor party chaos'&&!c[4])t=t.replace(/ Independents won no seats\./,'');
+         t.split(/\s+—\s+/).forEach(x=>{if(x.trim())ps.push(x.trim());});}}
+      if(S.dd&&(pre||'').startsWith('Early double dissolution'))ps.push(fillT(XT.PRESET['Early double dissolution'],V0()));
       if(S.dd){ps.push(`This was a double dissolution election, the first since 2016. ${PN(gw)==='Labor'?'The government':'Labor'} sought the dissolution after the Senate twice blocked its legislation, and every one of the 76 Senate seats was up for grabs, with a quota of just 7.7 per cent in each state. That lower bar is good news for minor parties, and the new Senate will reflect it.`);}
+      Object.entries(S.ldr||{}).forEach(([p,n])=>{const r=NEWL[n];if(r&&r.p===p&&r.t==='h')ps.push(fillT(XT.SEAT.handoverCamp,{...pv(n),incumbent:r.inc,year:2027,seat:r.s}));});
       if(S.cind&&pre!=="Turnbull's teal revolt"){ps.push(`The decision by five sitting community independents to join Community Strong before the campaign gave the young party a ready-made base of incumbents, and a platform no new party has had since the Australian Democrats in the 1970s.`);}
       if(evs.length){ps.push(evs.slice(0,3).join(' '));if(evs.length>3)ps.push(evs.slice(3,6).join(' '));}
       // a default campaign paragraph when the sandbox changed nothing that tells its own story
       if(!ps.length){const swing=natCentral(),dl=(swing[0]-DATA.prim25[0])*100,don=(swing[3]-DATA.prim25[3])*100,
         big=P.map((_,j)=>[(swing[j]-DATA.prim25[j])*100,j]).filter(x=>x[1]!==3&&x[1]!==0&&x[1]!==1).sort((x,y)=>y[0]-x[0])[0];
         if(big&&big[0]>8&&big[0]>don)ps.push(`The surprise of the campaign was ${PN(big[1])==='the independents'?'the independents':PN(big[1])}, whose vote climbed ${big[0].toFixed(0)} points as voters tired of the major parties looked elsewhere. Rallies drew crowds no one had predicted, and the major parties spent the final fortnight trying to work out how to respond.`);
-        ps.push(`The campaign was fought, as expected, on the cost of living. Labor ${dl<-3?'struggled to defend its record as power bills and rents kept rising':'pointed to wage growth and cost-of-living relief'}, while ${C} promised ${'lower taxes and cheaper energy'}. ${don>8?`But the story of the campaign was One Nation, whose vote ${don>15?'more than doubled':'climbed steadily'} as ${O} toured the regions and the outer suburbs promising to shake up a system voters had stopped trusting.`:`One Nation, ${O} and the minor parties promised a shake-up, with mixed results.`}`);}
+        ps.push(fillT(pk(XT.DEF,'default_campaign'),{'Coalition leader':C,labBad:dl<-3})+' '+fillT(don>8?XT.DEF_ON:XT.DEF_ONX,{leader:O,dbl:don>15}));}
       return ps;})();
     const specials=short.slice(nGen).filter(x=>!/^Within the Coalition/.test(x));
-    const inShort=[sLead,twist||short[1],formShort||specials[0]].filter(Boolean).filter((x,k,arr)=>arr.indexOf(x)===k).slice(0,3);
+    const inShort=[sLead,twist||short[1],formShort||mile||specials[0]].filter(Boolean).filter((x,k,arr)=>arr.indexOf(x)===k).slice(0,3);
     const lsr=SPILLS.filter(x=>x.next).slice(0,2).map(x=>`${x.room.replace(/^Liberal/,'the Liberal').replace(/^Nationals/,'the Nationals').replace(/^Greens/,'the Greens')} is expected to choose ${x.next} to replace ${hon(x.n)}`);
-    const whatsNext=maj||FM?`${gwHas?hon(gwL):'The new prime minister'} and the ministry are expected to be sworn in at Government House in Yarralumla ${maj?'next week':'once the deal is signed'}. Counting in the closest seats will continue for up to two weeks.`
-      :`Negotiations with the crossbench begin this week. The Governor-General will commission whoever can show they command the confidence of the House, and ${hon(L)} remains caretaker prime minister until then.`;
+    const whatsNext=maj||FM?fillT(pk(XT.IS.nextMaj,'whatsnext_maj'),{PMhon:gwHas?hon(gwL):'The new prime minister',majW:maj})
+      :fillT(pk(XT.IS.nextHung,'whatsnext_hung'),{LabHon:hon(L)});
     const ico={user:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3.5"/><path d="M5.5 19c1.6-2.7 3.8-4 6.5-4s4.9 1.3 6.5 4"/></svg>',
       search:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21" stroke-linecap="round"/></svg>',
       menu:'<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>'};
@@ -1500,13 +1709,13 @@ function article(){
         <div class="cmeta">Declared ${dc.when}${dc.rc?` <span class="crc">${dc.rc.replace(' · ',', ')}</span>`:''}</div></div></div>`;}).join('')}</div>
       ${campP.length?SUB('How the campaign was won'.replace('won',maj?'won':'fought'))+campP.map(p=>`<p class="news-p">${p}</p>`).join(''):''}
       ${demoP.length?SUB('Who swung')+demoP.map(p=>`<p class="news-p">${p}</p>`).join(''):''}
-      ${leadSub?SUB(leadSub):''}${pparas.map(p=>`<p class="news-p">${p}</p>`).join('')}
+      ${leadSub?SUB(leadSub):''}${pparas.map(p=>`<p class="news-p">${p}</p>`).join('')}${cbx?SUB(/^Comeback election/.test(S.preset||'')?'The comeback class':'The comeback candidates')+cbx.split('¶').map(x=>x.trim()).filter(Boolean).map(p=>`<p class="news-p">${p}</p>`).join(''):''}
       <div class="mcard tlcard"><div class="mkick">The days ahead</div><div class="mh">What happens next</div><ol class="tl">${tl}</ol></div>
       ${kmSub?SUB(kmSub)+kmIntro:''}${kparas.map(p=>`<p class="news-p">${p}</p>`).join('')}
       ${formP?SUB('Forming a government')+`<p class="news-p">${formP}</p>`:''}
       ${SPLIT?SUB('Going it alone')+`<p class="news-p">${natPara}</p>`:''}
       ${tbPara?`<p class="news-p">${tbPara}</p>`:""}${swingCard}${SUB('The Senate')}<p class="news-p">${senP.replace(/Coalition/g,"§COA§")}</p>
-      <p class="news-note">Central forecast: Labor ${a} · ${SPLIT?`Liberal ${co} · Nationals ${c[NATI]}`:`Coalition ${co}`} · One Nation ${on}${gr?` · Greens ${gr}`:''}${csa?` · Community Strong ${csa}`:''}${ind?` · Independents ${ind}`:''}. A simulated report; XYZ News and its reporters are fictional.</p>${more}<div class="btns" style="margin-top:12px"><button type="button" class="ghost" onclick="shareImage()">Save result as image</button></div></div></article>`;
+      <p class="news-note">${on2cp>=10?`Non-traditional 2CP contests: ${on2cp} of 150 seats. `:''}Central forecast: Labor ${a} · ${SPLIT?`Liberal ${co} · Nationals ${c[NATI]}`:`Coalition ${co}`} · One Nation ${on}${gr?` · Greens ${gr}`:''}${csa?` · Community Strong ${csa}`:''}${ind?` · Independents ${ind}`:''}. A simulated report; XYZ News and its reporters are fictional.</p>${more}<div class="btns news-save" style="margin-top:12px"><button type="button" class="ghost" onclick="shareImage()">Save result as image</button></div></div></article>`;
   })();
   // Coalition split: the Liberal Party stands where the Coalition used to (phrases about the old Coalition itself are kept)
   const libText=h=>h.replace(/inside the Coalition|Liberal–National Coalition|Coalition splits?|Coalition agreement/g,m=>m.replace('Coalition','§COA§'))
@@ -1549,7 +1758,7 @@ function newsHover(){const root=document.querySelector('#article .news-in');if(!
   const STOPW=['National Right','Barton headquarters'];
   // seats named after people (prime ministers, founders): only linked when the sentence is clearly about the electorate
   const CITY=new Set(['Sydney','Melbourne','Canberra','Brisbane','Adelaide','Perth','Newcastle','Fremantle','Ballarat','Bendigo']);
-  const HIST=new Set(['Sydney','Melbourne','Canberra','Brisbane','Adelaide','Perth','Newcastle','Fremantle','Ballarat','Bendigo','Cunningham','Gippsland','Riverina','New England','Northern Territory','Curtin','Chifley','Menzies','Hawke','Whitlam','Fraser','Holt','Deakin','Barton','Lyons','Scullin','Calwell','Gorton','McEwen','Fadden','Page','Forde','Hughes','Bruce','Cook','Watson','Fisher','Reid','Parkes','Lalor','Kingsford Smith','Swan','Hume','Chisholm','Paterson','Spence','Wills','Kennedy','Dunkley','Bradfield','Banks','Mitchell','Grey','Wright','Herbert','Leichhardt','Dickson','Ryan','Griffith','Hasluck','Tangney','Bean','Moore','Cowan','Sturt','Kingston','Hindmarsh','Flinders','Isaacs','Hotham','Higgins','Casey','Aston','Monash','Goldstein','Wentworth']);
+  const HIST=new Set(['Sydney','Melbourne','Canberra','Brisbane','Adelaide','Perth','Newcastle','Fremantle','Ballarat','Bendigo','Cunningham','Gippsland','Riverina','New England','Northern Territory','Curtin','Chifley','Menzies','Hawke','Whitlam','Fraser','Holt','Deakin','Barton','Lyons','Scullin','Calwell','Gorton','McEwen','Fadden','Page','Forde','Hughes','Bruce','Cook','Watson','Fisher','Reid','Parkes','Lalor','Kingsford Smith','Swan','Hume','Chisholm','Paterson','Spence','Wills','Kennedy','Dunkley','Bradfield','Banks','Mitchell',"O'Donoghue",'Wright','Herbert','Leichhardt','Dickson','Ryan','Griffith','Hasluck','Tangney','Bean','Moore','Cowan','Sturt','Kingston','Hindmarsh','Flinders','Isaacs','Hotham','Higgins','Casey','Aston','Monash','Goldstein','Wentworth']);
   const SEATCTX=/(?:\bseats? of|\b(?:in|won|wins?|winning|holds?|held|holding|loses?|losing|lost|retains?|retained|takes?|took|gains?|gained|from|member for|Member for|recount in|count in|candidate in|contest in))\s+$/;
   const seatOK=(s,i,len,el,prevSeat)=>{if(el&&el.closest('.closecard,.fcgone,.cab,.flipcard:not(.faccard)'))return true;const pre=s.slice(Math.max(0,i-32),i),post=s.slice(i+len,i+len+40);
     if(/^\s*\(/.test(post)||/\(\s*$/.test(pre)||/^['’]s (?:long-serving |new |sitting )?member/.test(post))return true;
@@ -1607,7 +1816,7 @@ function senHemi(tot,cont,w,h,sz,noLab){
   const seats=[];order.forEach(g=>{for(let k=0;k<tot[g];k++)seats.push([g,k<tot[g]-(cont?cont[g]:0)?1:0]);});
   // continuing senators sit on the outer side of each block: list new first then continuing within a party, as above
   let RO=null;try{RO=senRoster();}catch(e){}const used={};
-  const occ=g=>{if(!RO||!RO[g])return '';const L=[...RO[g].el,...RO[g].co],k=used[g]=(used[g]||0)+1,o=L[k-1];return o?(o.n?` data-sn="${o.n.replace(/"/g,'&quot;')}"`:` data-snew="${g}|${o.st}"`):'';};
+  const occ=g=>{if(!RO||!RO[g])return '';const L=[...RO[g].el,...RO[g].co],k=used[g]=(used[g]||0)+1,o=L[k-1];return o?(o.n&&!o.nw?` data-sn="${o.n.replace(/"/g,'&quot;')}"`:` data-snew="${g}|${o.st}${o.n?'|'+o.n.replace(/"/g,'&quot;'):''}"`):'';};
   return pts.slice(0,seats.length).map((p,i)=>`<circle class="sdot" cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${sz}" fill="${scol(seats[i][0])}"${seats[i][1]?'':' fill-opacity=".45"'}${occ(seats[i][0])}/>`).join('')
     +(noLab?'':`<text x="${w/2}" y="${h-10}" text-anchor="middle" font-size="22" font-weight="700" fill="currentColor">76</text><text x="${w/2}" y="${h+10}" text-anchor="middle" font-size="11" fill="currentColor" opacity=".75">39 to pass a bill</text>`);
 }
@@ -1634,10 +1843,10 @@ function senate(){
     return `<div class="sencard"><div class="sch"><b>${stN(st)}</b><span class="status">${n} seats · quota ${q.toFixed(1)}% = 1 Q</span></div>
       <div class="schips">${chips.map(g=>`<i style="background:${scol(g)}" title="${S2.groups[g].n}"></i>`).join('')}</div>
       ${(()=>{// every senator for the state after the election: continuing, re-elected, newly elected and defeated
-        const L=[];SENATE.filter(x=>x.st===st).forEach(x=>{const g=SK.indexOf(x.k),F=senFate(x);L.push({n:x.n,g,tag:F.cont?'Continuing':F.hold?'Re-elected':'Defeated',cls:F.cont?'co':F.hold?'re':'out'});});
-        S2.groups.forEach((_,g)=>{const held=SENATE.filter(x=>x.st===st&&SK.indexOf(x.k)===g&&!senFate(x).cont&&senFate(x).hold).length;for(let i=held;i<(r.won[g]||0);i++)L.push({n:null,g,tag:'New',cls:'nw'});});
+        const L=[];SENATE.filter(x=>x.st===st).forEach(x=>{const g=SK.indexOf(x.k),F=senFate(x);L.push({n:x.n,g,tag:F.cont?'Continuing':F.retire?'Retiring':F.hold?'Re-elected':'Defeated',cls:F.cont?'co':F.hold?'re':'out'});});
+        S2.groups.forEach((_,g)=>{const held=SENATE.filter(x=>x.st===st&&SK.indexOf(x.k)===g&&!senFate(x).cont&&senFate(x).hold).length;for(let i=held;i<(r.won[g]||0);i++){const nm=senNew(st,g,i-held);L.push({n:nm,nw:1,g,tag:'New',cls:'nw'});}});
         const ord={re:0,nw:1,co:2,out:3};L.sort((a,b)=>ord[a.cls]-ord[b.cls]||S2.groups[a.g].pos-S2.groups[b.g].pos);
-        return `<div class="sroster">${L.map(o=>{const pic=o.n?phOf(o.n):null;return `<div class="srow ${o.cls}" ${o.n?`data-sn="${o.n.replace(/"/g,'&quot;')}"`:`data-snew="${o.g}|${st}"`}><span class="spic" style="border-bottom-color:${scol(o.g)}">${pic?`<img src="${pic}" alt="">`:''}</span><span class="snm">${o.n||`New ${S2.groups[o.g].n} senator`}<small>${S2.groups[o.g].n}${o.n&&SINCE[o.n]?` · since ${SINCE[o.n]}`:''}</small></span><em>${o.tag}</em></div>`;}).join('')}</div>`;})()}
+        return `<div class="sroster">${L.map(o=>{const pic=o.n?phOf(o.n):null;return `<div class="srow ${o.cls}" ${o.n&&!o.nw?`data-sn="${o.n.replace(/"/g,'&quot;')}"`:`data-snew="${o.g}|${st}${o.n?'|'+o.n.replace(/"/g,'&quot;'):''}"`}><span class="spic" style="border-bottom-color:${scol(o.g)}">${pic?`<img src="${pic}" alt="">`:''}</span><span class="snm">${o.n||`New ${S2.groups[o.g].n} senator`}<small>${S2.groups[o.g].n}${o.n&&SINCE[o.n]?` · since ${SINCE[o.n]}`:''}</small></span><em>${o.tag}</em></div>`;}).join('')}</div>`;})()}
       <div class="status">${chips.length?S2.groups.map((_,g)=>g).filter(g=>r.won[g]>0).sort((a,b)=>r.won[b]-r.won[a]).map(g=>`${S2.groups[g].n} ${r.won[g]}`).join(' · '):''}</div>
       <div class="squota"><span>First preferences in quotas</span>${(()=>{const sh=ENGINE.senShares(D,LS,NATC,k,null,0);return sh.map((v,g)=>[v,g]).filter(x=>x[0]>0).sort((a,b)=>b[0]-a[0]).slice(0,5).map(([v,g])=>`<span><i style="background:${scol(g)}"></i>${S2.groups[g].n} ${(v/(q/100)).toFixed(2)} Q</span>`).join('');})()}</div>
       <div class="slast"><span>Last seat</span>${lastL.map(([v,g])=>`<span class="lp"><i style="background:${scol(g)}"></i>${S2.groups[g].n} ${Math.round(v*100)}%</span>`).join('')}</div></div>`;}).join('');
@@ -1653,7 +1862,7 @@ function night(){
   const ks=Object.keys(S.called);
   const by=new Array(NG).fill(0);ks.forEach(i=>by[S.called[i]]++);
   $('nightsum').textContent=ks.length?`${ks.length} of 150 called · `+by.map((v,j)=>[v,j]).filter(x=>x[0]).sort((a,b)=>b[0]-a[0]).map(([v,j])=>P[j].n+' '+v).join(', '):'No seats called';
-  $('calls').innerHTML=ks.map(i=>`<button type="button" data-i="${i}" title="Remove call" style="border-color:${col(S.called[i])}">${D.seats[i].n}: ${P[S.called[i]].n} ✕</button>`).join('');
+  $('calls').innerHTML=ks.map(i=>`<button type="button" data-i="${i}" title="Remove call" style="border-color:${col(S.called[i])}">${D.seats[i].n}: ${P[S.called[i]].n} ${ICON('close')}</button>`).join('');
   $('calls').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{delete S.called[b.dataset.i];sync();go();}));
 }
 // seat margin consistent with the most likely winner: the central count's margin when it agrees, otherwise the lead implied by the simulations
@@ -1671,7 +1880,7 @@ function formUI(){const c=R.likeCount,hung=Math.max(...c)<76,f=S.form,tn=j=>j===
   $('fpart').disabled=$('farr').disabled=f.pm<0;$('formbox').classList.toggle('off',!hung);
   const F=formOK();
   $('fnum').innerHTML=!hung?'Someone has a majority in the central forecast, so these choices are ignored.':!F?'The largest party is treated as the government.':
-    `${tn(F.pm)} ${F.part>=0?`+ ${tn(F.part)} `:''}= <b>${F.n}</b> seats ${F.n>=76?'✓ enough to govern':`· ${76-F.n} short, so the government would rely on other crossbenchers or abstentions`}.`;}
+    `${tn(F.pm)} ${F.part>=0?`+ ${tn(F.part)} `:''}= <b>${F.n}</b> seats ${F.n>=76?ICON('check')+' enough to govern':`· ${76-F.n} short, so the government would rely on other crossbenchers or abstentions`}.`;}
 // ---- results-night replay: seats called in the order polls close (AEST), safe seats first, the closest left in doubt
 let REPLAY=null;
 // live count: runs automatically after every simulation. Night 1 runs from 6pm to 12:30am AEST; seats still in doubt wait for
@@ -1696,13 +1905,16 @@ function replayStart(auto){if(REPLAY){replaySkip();return;}
   const lastAt=Math.max(...plan.map(p=>p.at));
   let sp=1;try{sp=+localStorage.getItem('livespeed')||1;}catch(e){}
   REPLAY={speed:sp,R0:R,done:new Set(),plan,raf:0,last:-1,lead:new Map(),sig:'',feed:[],queue:[],feedT:0,stage:'night',lastAt,tm:T0,t0:performance.now(),seg0:T0,seg1:T1,segMs:(ANIM?NIGHT_MS:4000)/sp};markSpeed();
-  $('rfeed').innerHTML='';$('replay').hidden=false;$('rcont').hidden=true;$('replaybtn').textContent='⏭ Skip to results';
+  $('rfeed').innerHTML='';$('replay').hidden=false;$('rcont').hidden=true;$('replaybtn').innerHTML=ICON('skip')+' Skip to results';
   $('rprog').style.width='0%';$('rtally').textContent='Waiting for the first results';$('rsub').textContent='Polls are closing';
   if(!auto)$('h-map').scrollIntoView({behavior:ANIM?'smooth':'auto',block:'start'});
   liveRender();drawMap();REPLAY.raf=requestAnimationFrame(replayStep);}
 const cap0=s=>s[0].toUpperCase()+s.slice(1),SHE0=['Tanya Plibersek','Pauline Hanson','Larissa Waters','Sarah Hanson-Young','Mehreen Faruqi','Sussan Ley',"Clare O'Neil",'Bridget McKenzie','Zali Steggall','Allegra Spender'];
 function clockTxt(tm){const day=Math.floor(tm/1440),mins=tm%1440,hh=Math.floor(mins/60),mm=Math.floor(mins%60),ap=hh>=12?'pm':'am',h12=((hh+11)%12)+1;
-  const t=`${h12}:${String(mm).padStart(2,'0')}${ap}`;return day===0?t+' AEST':`${['','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday'][day]||'Day '+(day+1)} ${t}`;}
+  const t=`${h12}:${String(mm).padStart(2,'0')}${ap}`;
+  // once Western Australia's polls have closed (6pm there, 8pm in the east), show its local time too
+  const wa=mins>=1200?` · ${((hh-2+11)%12)+1}:${String(mm).padStart(2,'0')}${hh-2>=12?'pm':'am'} AWST`:'';
+  return day===0?t+' AEST'+wa:`${['','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday'][day]||'Day '+(day+1)} ${t}`;}
 function replayStep(now){const RP=REPLAY;if(!RP)return;const R0=RP.R0;
   const k=Math.min(1,(now-RP.t0)/RP.segMs),tm=RP.seg0+(RP.seg1-RP.seg0)*k;RP.tm=tm;
   const flips=[],calls=[];
@@ -1711,7 +1923,7 @@ function replayStep(now){const RP=REPLAY;if(!RP)return;const R0=RP.R0;
     const q=Math.min(1,(tm-p.start)/Math.max(10,p.at-p.start)),
       nz=(Math.sin(tm/9+p.ph1)*0.65+Math.sin(tm/23+p.ph2)*0.35)*p.amp*Math.pow(1-q,0.8),ldr=p.m+nz>=0?p.w:p.r,prev=RP.lead.get(p.i);
     if(prev!=null&&prev!==ldr&&q>0.05)flips.push([p,ldr]);RP.lead.set(p.i,ldr);});
-  $('rclock').textContent=clockTxt(tm);
+  $('rclock').innerHTML=clockTxt(tm).replace(/ · (.*)$/,'<small class="rc-wa">$1</small>');
   if(!RP.proj)$('rsub').textContent=tm<1090?'Polls closed in the eastern states':tm<1110?'First results are coming in':tm<1200?'Polls closed in SA and the NT':tm<1380?'Polls closed everywhere, WA counting':'The last close seats are being decided';
   const nm=(p,j)=>mapName(D.seats[p.i],j,R0.base[p.i]),cl=(p,j)=>mapCol(D.seats[p.i],j,R0.base[p.i]);
   // the feed shows one item at a time, so it reads at a steady pace however fast seats fall
@@ -1729,7 +1941,7 @@ function replayStep(now){const RP=REPLAY;if(!RP)return;const R0=RP.R0;
    if(n>=140&&Math.max(...cnt)<76&&Math.max(...R0.likeCount)<76&&!said.hung){said.hung=1;Q('Marcus Teo, chief political correspondent','Nobody is getting to 76 tonight. The crossbench are about to become the most important people in the country.');}
    if(n===150&&!said.end){said.end=1;Q('Dana Whitlock, XYZ election analyst','That\'s every seat called. What a night.');}}
   if(RP.queue.length>6){const qs=RP.queue.filter(x=>x.includes('class="rq"')),rest=RP.queue.filter(x=>!x.includes('class="rq"'));RP.queue=qs.concat(rest.slice(-Math.max(2,6-qs.length)));}
-  if(RP.queue.length&&now-RP.feedT>Math.max(350,FEED_MS/RP.speed)){RP.feedT=now;RP.feed.unshift(`<li><b>${clockTxt(tm).replace(' AEST','')}</b> ${RP.queue.shift()}</li>`);RP.feed=RP.feed.slice(0,4);$('rfeed').innerHTML=RP.feed.join('');}
+  if(RP.queue.length&&now-RP.feedT>Math.max(350,FEED_MS/RP.speed)){RP.feedT=now;RP.feed.unshift(`<li><b>${clockTxt(tm).replace(/ AEST.*$/,'')}</b> ${RP.queue.shift()}</li>`);RP.feed=RP.feed.slice(0,4);$('rfeed').innerHTML=RP.feed.join('');}
   const sig=RP.done.size+'|'+[...RP.lead.entries()].map(e=>e.join(':')).join(',');
   if(sig!==RP.sig){RP.sig=sig;drawMap();}
   if((RP.done.size!==RP.last&&now-(RP.lastR||0)>400)||k>=1){RP.last=RP.done.size;RP.lastR=now;const cnt=liveR().likeCount;liveRender();
@@ -1742,7 +1954,7 @@ function replayStep(now){const RP=REPLAY;if(!RP)return;const R0=RP.R0;
   RP.raf=0;
   if(false){RP.stage='paused';RP.last=-1;liveRender();const left=150-RP.done.size;
     $('rsub').textContent=`Counting stops for the night with ${left} seat${left>1?'s':''} too close to call.`;$('replaylive').textContent=$('rsub').textContent;
-    $('rcont').hidden=false;$('rcont').textContent=`Continue counting (${left} left) ▸`;return;}
+    $('rcont').hidden=false;$('rcont').innerHTML=`Continue counting (${left} left) ${ICON('next')}`;return;}
   replayFinish();}
 function markSpeed(){const s=REPLAY?REPLAY.speed:1;document.querySelectorAll('.rspeed button').forEach(b=>{const on=+b.dataset.sp===s;b.classList.toggle('on',on);b.setAttribute('aria-pressed',String(on));});}
 function setSpeed(s){const RP=REPLAY;if(!RP)return;try{localStorage.setItem('livespeed',s);}catch(e){}
@@ -1763,7 +1975,7 @@ function whatIf(i,x,y){const RP=REPLAY;if(!RP)return;const R0=RP.R0,s=D.seats[i]
 function replayContinue(){const RP=REPLAY;if(!RP||RP.stage!=='paused')return;RP.stage='post';$('rcont').hidden=true;RP.proj=RP.proj||0;
   RP.seg0=RP.tm;RP.seg1=RP.lastAt+5;RP.segMs=ANIM?POST_MS:2500;RP.t0=performance.now();RP.raf=requestAnimationFrame(replayStep);}
 function replayFinish(){const RP=REPLAY;if(!RP)return;$('whatif').hidden=true;cancelAnimationFrame(RP.raf);REPLAY=null;
-  $('replay').hidden=true;$('replaybtn').textContent='▶ Replay results night';R=RP.R0;render();}
+  $('replay').hidden=true;$('replaybtn').innerHTML=ICON('play')+' Replay results night';R=RP.R0;render();if(window.APP&&APP.onReplayEnd){try{APP.onReplayEnd();}catch(e){console.error(e);}}}
 function replaySkip(){replayFinish();}
 function replayStop(){replayFinish();}
 
@@ -1799,17 +2011,21 @@ const SENATE=[
  ['TAS',2028,'ALP',1,'Josh Dolega'],['TAS',2028,'ALP',2,'Helen Polley'],['TAS',2028,'COA',1,'Jonathon Duniam','L'],['TAS',2028,'COA',2,'Chris Gatenby','L'],['TAS',2028,'GRN',1,'Vanessa Bleyer'],['TAS',2028,'TYR',1,'Tammy Tyrrell'],
  ['TAS',2031,'ALP',1,'Carol Brown'],['TAS',2031,'ALP',2,'Richard Dowling'],['TAS',2031,'COA',1,'Richard Colbeck','L'],['TAS',2031,'COA',2,'Claire Chandler','L'],['TAS',2031,'GRN',1,'Nick McKim'],['TAS',2031,'JLN',1,'Jacqui Lambie'],
  ['ACT',2028,'ALP',1,'Katy Gallagher'],['ACT',2028,'POC',1,'David Pocock'],['NT',2028,'ALP',1,'Malarndirri McCarthy'],['NT',2028,'COA',1,'Jacinta Nampijinpa Price','L']].map(([st,term,k,r,n,room])=>({st,term,k,r,n,room}));
+// not recontesting in 2028: their ticket place goes to a new candidate (named below where announced)
+SENATE.forEach(x=>{if(['Ralph Babet','Barbara Pocock','Jonathon Duniam','Matt Canavan'].includes(x.n))x.ret=1;});
+const SENCAND={'NSW|ON':['Barnaby Joyce'],'SA|GRN':['Isaac Astill'],'TAS|COA':['Sarah Courtney']};
+const senNew=(st,g,k)=>{const key=S2.groups[g]?S2.groups[g].k:'';return ((SENCAND[st+'|'+key]||[])[k])||null;};
 const SENBY=Object.fromEntries(SENATE.map(s=>[s.n,s]));
 // a senator's 2028 fate: elected if their ticket position is within the seats their group wins in that state
 function senTipHTML(x){const k=x.n,F=senFate(x),g=SK.indexOf(x.k),pn=x.k==='COA'?(x.room==='N'?'National':x.st==='QLD'?'LNP':x.st==='NT'?'CLP':'Liberal'):S2.groups[g].n,pic=phOf(k);
-  const term=F.cont?`term to ${x.term}`:F.hold?`re-elected, new term to ${S.dd?'2031 or 2034':'2034'}`:`term ends 30 June ${x.term}`;
+  const term=F.cont?`term to ${x.term}`:F.retire?`retiring 30 June ${x.term}`:F.hold?`re-elected, new term to ${S.dd?'2031 or 2034':'2034'}`:`term ends 30 June ${x.term}`;
   return `<div class="tiphead"><div class="tpic" style="border-bottom-color:${scol(g)}">${pic?`<img src="${pic}" alt="">`:''}</div><div><b>${k}</b>${FAC[k]?` <span class="status" style="margin:0;display:inline">(${FACN[FAC[k]][0]})</span>`:''}<span class="status" style="margin:0">Senator for ${stN(x.st)}${SINCE[k]?' · '+heldTxt(k):''}</span><div>${pn} · ${term}</div></div></div>
-    <div class="tfc">${F.cont?'Not up for election in 2028.':`2028: No. ${F.rank} on the ${pn} ticket; party wins ${F.won}. <b style="display:inline">${F.hold?'Re-elected':'Loses seat'}</b>`}</div>`;}
-function senNewTipHTML(g,st){return `<div class="tiphead"><div class="tpic" style="border-bottom-color:${scol(g)}"></div><div><b>New ${S2.groups[g].n} senator</b><span class="status" style="margin:0">Senator-elect for ${stN(st)}</span><div>Elected 2028 · term to ${S.dd?'2031 or 2034':'2034'}</div></div></div><div class="tfc">A seat gained in 2028: the party's next candidate on the ticket takes it.</div>`;}
+    <div class="tfc">${F.cont?'Not up for election in 2028.':F.retire?'Not recontesting in 2028.':`2028: No. ${F.rank} on the ${pn} ticket; party wins ${F.won}. <b style="display:inline">${F.hold?'Re-elected':'Loses seat'}</b>`}</div>`;}
+function senNewTipHTML(g,st,nm){const pic=nm?phOf(nm):null;return `<div class="tiphead"><div class="tpic" style="border-bottom-color:${scol(g)}">${pic?`<img src="${pic}" alt="">`:''}</div><div><b>${nm?nm+' · ':''}New ${S2.groups[g].n} senator</b><span class="status" style="margin:0">Senator-elect for ${stN(st)}</span><div>Elected 2028 · term to ${S.dd?'2031 or 2034':'2034'}</div></div></div><div class="tfc">A seat gained in 2028: the party's next candidate on the ticket takes it.</div>`;}
 // who sits in the Senate after the election, grouped by party: elected this time first, then continuing senators
 function senRoster(){const by={},add=(g,o)=>{(by[g]=by[g]||{el:[],co:[]})[o.cont?'co':'el'].push(o);};
   SENATE.forEach(x=>{const g=SK.indexOf(x.k);if(g<0)return;const F=senFate(x);if(F.cont)add(g,{n:x.n,x,cont:1});else if(F.hold)add(g,{n:x.n,x});});
-  S2.states.forEach((st,k)=>{const W=R.senCentral.st[k].won;W.forEach((w,g)=>{const held=SENATE.filter(x=>x.st===st&&SK.indexOf(x.k)===g&&!senFate(x).cont&&senFate(x).hold).length;for(let i=held;i<w;i++)add(g,{n:null,st,g});});});
+  S2.states.forEach((st,k)=>{const W=R.senCentral.st[k].won;W.forEach((w,g)=>{const held=SENATE.filter(x=>x.st===st&&SK.indexOf(x.k)===g&&!senFate(x).cont&&senFate(x).hold).length;for(let i=held;i<w;i++)add(g,{n:senNew(st,g,i-held),nw:1,st,g});});});
   return by;}
 (()=>{const T=()=>$('ntip');let cur=null;
   const hide=()=>{T().hidden=true;cur=null;};
@@ -1817,7 +2033,7 @@ function senRoster(){const by={},add=(g,o)=>{(by[g]=by[g]||{el:[],co:[]})[o.cont
     const sd=t.closest('#watch [data-i],#path [data-i],#pend [data-i],#states .scell,#cab [data-i]'),sn=t.closest('[data-sn]'),snw=t.closest('[data-snew]'),sth=t.closest('.sth[data-st]');
     const el=sd||sn||snw||sth;if(!el){if(cur)hide();return;}if(el===cur)return;cur=el;const r=el.getBoundingClientRect(),x=e.clientX,y=e.clientY;
     if(sd){showTip(+sd.dataset.i,x,y,'ntip','ntipwrap');return;}
-    let h='';if(sn){const o=SENATE.find(z=>z.n===sn.dataset.sn);if(o)h=senTipHTML(o);}else if(snw){const [g,st]=snw.dataset.snew.split('|');h=senNewTipHTML(+g,st);}else if(sth)h=stateTipHTML(sth.dataset.st);
+    let h='';if(sn){const o=SENATE.find(z=>z.n===sn.dataset.sn);if(o)h=senTipHTML(o);}else if(snw){const [g,st,nm]=snw.dataset.snew.split('|');h=senNewTipHTML(+g,st,nm);}else if(sth)h=stateTipHTML(sth.dataset.st);
     if(!h){hide();return;}const tip=T();tip.innerHTML=h;tip.hidden=false;const w=tip.offsetWidth,hh=tip.offsetHeight;tip.style.left=Math.max(8,Math.min(innerWidth-w-8,x+14))+'px';tip.style.top=Math.max(8,Math.min(innerHeight-hh-8,y+14))+'px';},true);
   addEventListener('scroll',()=>{if(cur)hide();},{passive:true});})();
 function stateTipHTML(st){const sg=v=>v>0?`<span class="up">▲ ${v}</span>`:v<0?`<span class="dn">▼ ${-v}</span>`:'–',t=new Array(NG).fill(0),t0=new Array(NG).fill(0);let n=0;D.seats.forEach((s,i)=>{if(s.st!==st)return;n++;t[R.likely[i]]++;t0[gOf(s)]++;});
@@ -1827,11 +2043,13 @@ function senFate(s){const dd=!!S.dd;if(s.term===2031&&!dd)return {cont:true};
   const k=S2.states.indexOf(s.st),st=R.senCentral.st[k];let key=s.k,rank=s.r;
   if(s.k==='COA'&&SPLIT&&s.room){const same=SENATE.filter(x=>x.st===s.st&&x.k==='COA'&&x.room===s.room&&(dd||x.term===2028)).sort((a,b)=>a.term-b.term||a.r-b.r);rank=same.indexOf(s)+1;if(s.room==='N')key='NAT';}
   else if(dd){const same=SENATE.filter(x=>x.st===s.st&&x.k===s.k).sort((a,b)=>a.term-b.term||a.r-b.r);rank=same.indexOf(s)+1;}
-  const g=SK.indexOf(key),won=g>=0?st.won[g]:0,avg=g>=0&&R.senState[k]?R.senState[k].mean[g]:null;return {won,rank,g,hold:rank<=won,avg,lastSeat:rank===won&&st.last===g};}
+  const g=SK.indexOf(key),won=g>=0?st.won[g]:0,avg=g>=0&&R.senState[k]?R.senState[k].mean[g]:null;
+  if(s.ret)return {won,rank,g,hold:false,retire:true,avg,lastSeat:false};
+  return {won,rank,g,hold:rank<=won,avg,lastSeat:rank===won&&st.last===g};}
 // Wikipedia links for the infobox: known article titles, otherwise a Wikipedia search for the text
 const WIKI={'Labor':'Australian Labor Party','Coalition':'Coalition (Australia)','Liberal':'Liberal Party of Australia','Liberals':'Liberal Party of Australia','Nationals':'National Party of Australia','National':'National Party of Australia',
   'One Nation':"Pauline Hanson's One Nation",'Greens':'Australian Greens','Independents':'Independent politician','Independent':'Independent politician',"Katter's Australian":"Katter's Australian Party",'Centre Alliance':'Centre Alliance',
-  'Trumpet of Patriots':'Trumpet of Patriots','Family First':'Family First Party (2021)','Legalise Cannabis':'Legalise Cannabis Australia','Libertarians':'Libertarian Party (Australia)','People First':'Gerard Rennick People First',
+  'Australian Federation Party':'Australian Federation Party','Family First':'Family First Party (2021)','Legalise Cannabis':'Legalise Cannabis Australia','Libertarians':'Libertarian Party (Australia)','People First':'Gerard Rennick People First',
   'Animal Justice':'Animal Justice Party','Australian Christians':'Australian Christians','Shooters, Fishers & Farmers':'Shooters, Fishers and Farmers Party','Socialist Alliance':'Socialist Alliance (Australia)','Victorian Socialists':'Victorian Socialists',
   'Citizens Party':'Australian Citizens Party','Fusion':'Fusion Party (Australia)','HEART':'Health Environment Accountability Rights Transparency','Australian Democrats':'Australian Democrats','Lambie Network':'Jacqui Lambie Network',
   'United Australia':'United Australia Party (2013)',"Australia's Voice":"Australia's Voice",'Liberal National':'Liberal National Party of Queensland','LNP':'Liberal National Party of Queensland','CLP':'Country Liberal Party',
@@ -1851,10 +2069,10 @@ function wl(s,ti){const txt=String(s),key=ti||txt.replace(/<[^>]+>/g,'').trim();
 let CABV='cab';
 // scoreboard in the dropdown header: losses in each group, always shown, click a tile to open that list
 function cabTiles(){const el=$('dsub-cab');if(!el)return;const hseat=n=>D.seats.findIndex(s=>s.n===n);
-  const grp=(rows,mode)=>{let n=0,lost=[],risk=0;rows.forEach(([nm,,seat])=>{if(seat.startsWith('S:')){const sn=SENBY[nm];if(!sn||mode!=='all')return;const F=senFate(sn);if(F.cont)return;n++;if(!F.hold)lost.push(nm);else if(F.lastSeat)risk++;return;}
+  const grp=(rows,mode)=>{let n=0,lost=[],risk=0;rows.forEach(([nm,,seat])=>{if(seat.startsWith('S:')){const sn=SENBY[nm];if(!sn||mode!=='all')return;const F=senFate(sn);if(F.cont||F.retire)return;n++;if(!F.hold)lost.push(nm);else if(F.lastSeat)risk++;return;}
       const i=hseat(seat);if(i<0)return;n++;const g=gOf(D.seats[i]);if(R.likely[i]!==g)lost.push(nm);else if(R.prob[i][g]<0.65)risk++;});return {n,lost,risk};};
   const xbRows=D.seats.filter(s=>{const g=gOf(s);return g!==0&&g!==1&&g!==NATI;}).map(s=>[HELDBY[s.n]||s.mem,'',s.n]);
-  const sen=(()=>{let n=0,lost=[],risk=0;SENATE.forEach(s=>{const F=senFate(s);if(F.cont)return;n++;if(!F.hold)lost.push(s.n);else if(F.lastSeat)risk++;});return {n,lost,risk};})();
+  const sen=(()=>{let n=0,lost=[],risk=0;SENATE.forEach(s=>{const F=senFate(s);if(F.cont||F.retire)return;n++;if(!F.hold)lost.push(s.n);else if(F.lastSeat)risk++;});return {n,lost,risk};})();
   const T=[['cab','Cabinet',grp(CABINET,'all')],['shad','Shadow cabinet',grp(SHADOW,'all')],['xb','House crossbench',grp(xbRows,'house')],['sen','Senators up in 2028',sen]];
   const sn=n=>n.split(' ').slice(-1)[0];
   el.innerHTML=`<span class="cabtiles">${T.map(([k,l,s])=>{const f=s.n?s.lost.length/s.n:0;return `<button type="button" class="ctile${s.lost.length?' hurt':''}" data-c="${k}"><span class="ctlab">${l}</span><span class="ctn"><b>${s.lost.length}</b> of ${s.n} lose their seat${s.n===1?'':'s'}</span><span class="ctb"><i style="width:${(f*100).toFixed(1)}%"></i><i class="rk" style="width:${(s.n?s.risk/s.n*100:0).toFixed(1)}%"></i></span><span class="ctw">${s.lost.length?s.lost.slice(0,3).map(sn).join(', ')+(s.lost.length>3?` +${s.lost.length-3}`:''):s.risk?`${s.risk} at risk`:'All safe'}</span></button>`;}).join('')}</span>`;
@@ -1862,6 +2080,7 @@ function cabTiles(){const el=$('dsub-cab');if(!el)return;const hseat=n=>D.seats.
 function senRow(sn,who){const ST={NSW:'New South Wales',VIC:'Victoria',QLD:'Queensland',WA:'Western Australia',SA:'South Australia',TAS:'Tasmania',ACT:'the ACT',NT:'the Northern Territory'};
   const F=senFate(sn),gn=g=>S2.groups[g]?S2.groups[g].n:'';
   if(F.cont)return `<tr class="sen"><td>${who}</td><td>Senator for ${ST[sn.st]}</td><td colspan="4" class="status">Term runs to 2031, so not up in 2028</td><td><span class="cabtag sen">Continues</span></td></tr>`;
+  if(F.retire)return `<tr class="sen"><td>${who}</td><td>Senator for ${ST[sn.st]}</td><td colspan="4" class="status">Not recontesting in 2028</td><td><span class="cabtag sen">Retiring</span></td></tr>`;
   sUp++;if(!F.hold)sLose++;else if(F.lastSeat)sRisk++;
   const sz=sn.st==='ACT'||sn.st==='NT'?2:S.dd?12:6;
   return `<tr class="${F.hold?'':'lostrow'}"><td>${who}</td><td>Senator for ${ST[sn.st]} <span class="status">· up in 2028</span></td><td class="r status">—</td><td class="r num">${F.avg!=null?F.avg.toFixed(1):''}<br><small>avg ${gn(F.g)} seats</small></td><td><small>No. ${F.rank} on the ${gn(F.g)} ticket; ${gn(F.g)} wins <b>${F.won}</b> of ${sz} seats</small></td><td class="r status">—</td><td>${F.hold?(F.lastSeat?`<span class="cabtag risk">Wins final seat</span>`:`<span class="cabtag ok">Re-elected</span>`):`<span class="cabtag lost" style="border-color:${scol(F.g)}">Loses seat</span>`}</td></tr>`;}
@@ -1928,7 +2147,7 @@ function pendulum(){
   $('pendsum').innerHTML=lose?`${P[gov].n} holds ${L.length} seats in the central forecast. A uniform swing of <b>${lose.m.toFixed(2)}%</b> against it, enough to lose ${lose.s.n} and everything closer, would cost its majority.`
     :`No party has a majority in the central forecast. ${P[gov].n}, the largest party, holds ${L.length} seats; its closest seats are listed first.`;
   const col1=(arr,isGov)=>{let last='',h='';arr.forEach((x,k)=>{const b=band(x.m);if(b!==last){const nb=arr.filter(y=>band(y.m)===b).length;h+=`<div class="pband"><span>${b}</span><span>${nb}</span></div>`;last=b;}
-      h+=`<div class="prow" data-i="${x.i}" title="${P[x.w].n} v ${P[x.r].n}"><i style="background:${col(x.w)}"></i><span>${x.s.n} <span class="status">${stN(x.s.st)}</span></span><b>${x.m.toFixed(2)}</b></div>`;
+      h+=`<div class="prow" data-i="${x.i}" title="${(P[x.w]||{}).n||''} v ${(P[x.r]||{}).n||'others'}"><i style="background:${col(x.w)}"></i><span>${x.s.n} <span class="status">${stN(x.s.st)}</span></span><b>${x.m.toFixed(2)}</b></div>`;
       if(isGov&&lose&&x===lose)h+=`<div class="pline">Majority lost if every seat above this line falls</div>`;});return h;};
   // columns: every party with 5+ seats by size (largest first), then all smaller parties and independents together
   if(PGROUP==='contest'){const tn=j=>j===1&&SPLIT?'Liberal–National':P[j].n, ks={};
@@ -1947,13 +2166,15 @@ function pendulum(){
 }
 // ---- shareable result card (1080 x 1350 PNG drawn on a canvas)
 let LASTHEAD='';
-async function shareImage(){
+async function shareImage(o){
+  // campaign mode passes its run (leader, party, tier, score) and gets the same card, relabelled for the campaign
+  const CM=o&&o.campaign||null;
   // landscape result card: headline and summary over a seat map with city insets; an infobox-style panel with leaders, numbers, the House and the odds
   const W=1600,H=1900,cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
   const root=getComputedStyle(document.documentElement),css=v=>root.getPropertyValue(v).trim(),rv=v=>{v=String(v||'');return v.startsWith('var(')?css(v.slice(4,-1).split(',')[0]):v;};
   const colr=j=>rv(col(j));
   try{await document.fonts.ready;}catch(e){}
-  const BG=css('--bg')||'#f4efe4',INK=css('--ink')||'#1a1814',MUT=css('--muted')||'#5f584a',LINE=css('--line')||'#cfc4ab',ACC=css('--accent')||'#0f6b5c',CARD=css('--card')||'#fbf8f1';
+  const BG=css('--bg')||'#f4efe4',INK=css('--ink')||'#1a1814',MUT=css('--muted')||'#5f584a',LINE=css('--line')||'#cfc4ab',ACC=css('--accent')||'#0f6b5c',CARD=css('--card')||css('--panel')||'#fbf8f1';
   const SER='Fraunces, Georgia, serif',MONO='"IBM Plex Mono", Menlo, monospace',BODY='"Source Serif 4", Georgia, serif',SANS='"Source Sans 3", Arial, sans-serif';
   const img=src=>new Promise(res=>{if(!src)return res(null);const im=new Image();im.onload=()=>res(im);im.onerror=()=>res(null);im.src=src;});
   const svgImg=async(el,noText)=>{if(!el)return null;const c=el.cloneNode(true);
@@ -1968,15 +2189,15 @@ async function shareImage(){
   x.fillStyle=BG;x.fillRect(0,0,W,H);
   // masthead with the site address
   x.fillStyle=INK;x.font=`900 46px ${SER}`;x.fillText('Australia 2028 Election Simulator',48,76);
-  x.textAlign='right';x.fillStyle=ACC;x.font=`600 20px ${MONO}`;x.fillText('electionsimulator2028.au',W-48,58);x.fillStyle=MUT;x.font=`500 15px ${MONO}`;x.fillText('XYZ NEWS · SIMULATED RESULT',W-48,84);x.textAlign='left';
+  x.textAlign='right';x.fillStyle=ACC;x.font=`600 20px ${MONO}`;x.fillText('electionsimulator2028.au',W-48,58);x.fillStyle=MUT;x.font=`500 15px ${MONO}`;x.fillText(CM?'XYZ NEWS · CAMPAIGN MODE':'XYZ NEWS · SIMULATED RESULT',W-48,84);x.textAlign='left';
   x.fillStyle=INK;x.fillRect(48,104,W-96,3);x.fillRect(48,111,W-96,1.2);
   // left: headline, the two "In short" points
   const LX=48,LW=960;let y=176;
   const head=(document.querySelector('#article h3')||{}).textContent||'';
   const win=R.likeCount.indexOf(Math.max(...R.likeCount)),wc=colr(win),maj=Math.max(...R.likeCount)>=76;
   // kicker tag and label, then a headline with a rule in the winner's colour
-  x.font=`700 15px ${MONO}`;const tag=maj?'RESULT':'HUNG PARLIAMENT',tw=x.measureText(tag).width+22;x.fillStyle=wc;x.fillRect(LX,y-40,tw,28);x.fillStyle='#fff';x.fillText(tag,LX+11,y-20);
-  x.fillStyle=ACC;x.fillText(`FEDERAL ELECTION ${elYear()} · XYZ NEWS`,LX+tw+14,y-20);
+  x.font=`700 15px ${MONO}`;const tag=CM?CM.tier.toUpperCase():maj?'RESULT':'HUNG PARLIAMENT',tw=x.measureText(tag).width+22;x.fillStyle=CM?rv(CM.col):wc;x.fillRect(LX,y-40,tw,28);x.fillStyle='#fff';x.fillText(tag,LX+11,y-20);
+  x.fillStyle=ACC;x.fillText(CM?`CAMPAIGN MODE · ${CM.leader.toUpperCase()} · ${CM.party.toUpperCase()}`:`FEDERAL ELECTION ${elYear()} · XYZ NEWS`,LX+tw+14,y-20);
   const hy0=y+30;x.fillStyle=INK;let hy=wrap(head,`800 48px ${SER}`,LW-26,56,LX+24,hy0,3);x.fillStyle=wc;x.fillRect(LX,hy0-40,6,hy-hy0+22);y=hy;
   const shorts=[...document.querySelectorAll('#article .news-short p')].map(p=>p.textContent.trim()).filter(t=>t&&!/^In short|^What's next/.test(t)).slice(0,2);
   y+=8;shorts.forEach((t,k)=>{x.fillStyle=k?MUT:wc;x.fillRect(LX+24,y+6,9,9);x.fillStyle=k?MUT:INK;y=wrap(t,`${k?400:600} 20px ${SANS}`,LW-48,27,LX+44,y+16,2);});
@@ -2042,7 +2263,7 @@ async function shareImage(){
   {const T=R.senCentral.tot,ix=k=>SK.indexOf(k),g=k=>ix(k)>=0?T[ix(k)]:0,coaS=g('COA')+g('NAT'),oth=76-g('ALP')-coaS-g('ON')-g('GRN');x.fillStyle=INK;x.font=`600 15px ${SANS}`;
     x.fillStyle=MUT;x.font=`600 13px ${MONO}`;ctr('SENATE · ALL 76 SEATS AFTER THE ELECTION',cxR,senY-22);x.fillStyle=INK;x.font=`600 16px ${SANS}`;ctr(`Labor ${g('ALP')} · Coalition ${coaS} · One Nation ${g('ON')} · Greens ${g('GRN')} · Others ${oth}`,cxR,senY);}
   const ow=(RW-28)/3;x.fillStyle=LINE;x.fillRect(RX+14,oy-16,RW-28,1.5);
-  [['LABOR MAJORITY',pct(R.pA),colr(0)],['HUNG',pct(R.pH),INK],['COALITION MAJORITY',pct(R.pC),colr(1)]].forEach((o,k)=>{const ocx=RX+14+k*ow+ow/2;x.fillStyle=MUT;x.font=`600 13px ${MONO}`;ctr(o[0],ocx,oy+8);x.fillStyle=o[2];x.font=`900 44px ${SER}`;ctr(o[1],ocx,oy+58);});
+  (CM?[['YOUR SEATS',String(CM.seats),rv(CM.col)],[CM.tierN,CM.tierV,INK],['SCORE',String(CM.score),ACC]]:[['LABOR MAJORITY',pct(R.pA),colr(0)],['HUNG',pct(R.pH),INK],['COALITION MAJORITY',pct(R.pC),colr(1)]]).forEach((o,k)=>{const ocx=RX+14+k*ow+ow/2;x.fillStyle=MUT;x.font=`600 13px ${MONO}`;ctr(o[0],ocx,oy+8);x.fillStyle=o[2];x.font=`900 44px ${SER}`;ctr(o[1],ocx,oy+58);});
   // numbered list of every seat with the winner's two-candidate share, as on the encyclopedia maps
   {const LY=1386;x.fillStyle=INK;x.fillRect(48,LY-20,W-96,3);const cols=8,perCol=Math.ceil(150/cols),cwL=(W-96)/cols,rhL=19.6;
     num.forEach((i,k)=>{const c2=Math.floor(k/perCol),r2=k%perCol,lx=48+c2*cwL,ly=LY+8+r2*rhL,st=D.seats[i],M=seatMargin(i),w=R.likely[i],cc=rv(mapCol(st,w,R.base[i]));
@@ -2052,16 +2273,18 @@ async function shareImage(){
       x.fillStyle=cc;x.font=`600 12.5px ${SANS}`;x.textAlign='right';x.fillText(M?(50+M.m).toFixed(2)+'%':'',lx+cwL-12,ly);x.textAlign='left';});}
   // disclaimers
   {const dy=H-74;x.fillStyle=LINE;x.fillRect(48,dy-26,W-96,1.5);x.fillStyle=MUT;x.font=`italic 400 15px ${BODY}`;
-    ctr(`A simulation, not a prediction: the central forecast across ${nf(S.trials)} simulated elections with this page's settings. Percentages are each winner's simulated two-candidate-preferred share.`,W/2,dy);
+    ctr(CM?`A campaign-mode result: ${CM.leader}'s campaign for ${CM.party}, counted with the same model as the sandbox. Percentages are each winner's simulated two-candidate-preferred share.`:`A simulation, not a prediction: the central forecast across ${nf(S.trials)} simulated elections with this page's settings. Percentages are each winner's simulated two-candidate-preferred share.`,W/2,dy);
     ctr(`XYZ News and its reporters are fictional, and the story contains no real quotes. Not affiliated with or endorsed by the Parliament of Australia, the AEC or any party.`,W/2,dy+22);
     ctr(`Boundaries: AEC. Census: ABS 2021. Official portraits: AUSPIC / DPS, © Commonwealth of Australia, CC BY-NC-ND 4.0. Other photos: Wikimedia Commons. electionsimulator2028.au`,W/2,dy+44);}
   const url=cv.toDataURL('image/png');
-  const ov=document.createElement('div');ov.className='shareimg';ov.innerHTML=`<img src="${url}" alt="Result card"><p>Long-press (phone) or right-click (computer) the image to save it.</p><div class="btns"><button type="button" id="shsave" class="ghost" style="border-color:#fff;color:#fff" hidden>Save image</button><button type="button" id="shclose">Close</button></div>`;
+  const ov=document.createElement('div');ov.className='shareimg';ov.innerHTML=`<img src="${url}" alt="Result card"><p>Long-press (phone) or right-click (computer) the image to save it.</p><div class="btns"><button type="button" id="shsave" class="ghost" style="border-color:#fff;color:#fff" hidden>Save image</button>${CM&&CM.text?'<button type="button" id="shcopy" class="ghost" style="border-color:#fff;color:#fff">Copy the result as text</button>':''}<button type="button" id="shclose">Close</button></div>`;
+  if(CM)ov.style.zIndex='400';
   document.body.appendChild(ov);
+  if(CM&&CM.text)ov.querySelector('#shcopy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(CM.text);ov.querySelector('p').textContent='Result copied.';}catch(e){ov.querySelector('p').textContent=CM.text;}});
   // saving goes through the viewer's download prompt when the page is allowed to offer files
   try{const dl=window.claude&&claude.use?await claude.use('downloads'):null;const btn=ov.querySelector('#shsave');
-    if(!dl){btn.hidden=false;btn.addEventListener('click',()=>{const l=document.createElement('a');l.href=url;l.download='election-result.png';document.body.appendChild(l);l.click();l.remove();});}
-    if(dl){btn.hidden=false;btn.addEventListener('click',async()=>{const blob=await new Promise(r=>cv.toBlob(r,'image/png'));try{await dl.save({filename:'election-result.png',data:blob});ov.querySelector('p').textContent='Saved.';}catch(e){ov.querySelector('p').textContent=e&&e.code==='declined'?'Not saved.':'Saving is not available here: long-press or right-click the image instead.';}});}}catch(e){}ov.addEventListener('click',e=>{if(e.target===ov||e.target.id==='shclose')ov.remove();});
+    if(!dl){btn.hidden=false;btn.addEventListener('click',()=>{const l=document.createElement('a');l.href=url;l.download=CM?'campaign-result.png':'election-result.png';document.body.appendChild(l);l.click();l.remove();});}
+    if(dl){btn.hidden=false;btn.addEventListener('click',async()=>{const blob=await new Promise(r=>cv.toBlob(r,'image/png'));try{await dl.save({filename:CM?'campaign-result.png':'election-result.png',data:blob});ov.querySelector('p').textContent='Saved.';}catch(e){ov.querySelector('p').textContent=e&&e.code==='declined'?'Not saved.':'Saving is not available here: long-press or right-click the image instead.';}});}}catch(e){}ov.addEventListener('click',e=>{if(e.target===ov||e.target.id==='shclose')ov.remove();});
 }
 function pollChart(){
   const ps=DATA.polls.filter(p=>p.ts).slice().sort((a,b)=>a.ts-b.ts); if(ps.length<3)return '';
@@ -2270,7 +2493,7 @@ function how(){
   <h3 class="art">Results night and the news story</h3>
   <p>The live count replays the central result seat by seat in the order seats would be called. XYZ News, its reporters and its studio guests are fictional, and the story is written automatically from each run. It contains no real quotes.</p>
   <h3 class="art">Factions and new leaders</h3>
-  <p>Labor and Liberal MPs and senators are tagged with the faction they are reported to belong to; the Nationals have no formal factions, so they are grouped by state branch. If a leader loses their seat or their party loses badly, the new leader is the most senior figure still in Parliament from the largest faction left standing. Parties without factions turn to their most senior figure left.</p>
+  <p>Labor and Liberal MPs and senators are tagged with the faction they are reported to belong to; the Nationals have no formal factions, so they are grouped by state branch. If a leader loses their seat or their party loses badly, the party room picks a new leader from its surviving frontbench (the cabinet for Labor, the shadow cabinet for the Coalition), most often from the largest faction but not always. If the whole frontbench is gone, the field opens up to the backbench. Parties without factions turn to their most senior figure left.</p>
   <h3 class="art">Limits</h3>
   <p>It can't know about candidates who haven't been chosen, local campaigns or future boundary changes, and the effects of leaders and events are judgement calls. Treat it as a guide to what could happen, not a prediction.</p>`;
 }
@@ -2299,14 +2522,8 @@ LP.forEach((p,i)=>DESC['l'+i]='Each alternative leader carries an estimated effe
 [0,1].forEach(i=>DESC['da'+i]='Points added per standard deviation above the average seat (negative = the party does worse there).');
 Object.entries(DESC).forEach(([id,txt])=>{const el=$(id);if(!el||!txt)return;const c=el.closest('.ctl');if(!c||c.querySelector('.desc'))return;c.insertAdjacentHTML('beforeend',`<p class="desc">${txt}</p>`);});
 {const mn=document.querySelector('details.sub .stack');if(mn)mn.insertAdjacentHTML('afterbegin','<p class="hint" style="margin:0">A minor party can only gain in seats where it stood in 2025, in proportion to its vote there.</p>');}
-// light / dark / follow the device
-{const MODES=['auto','light','dark'],LAB={auto:'◐ Auto',light:'☀ Light',dark:'☾ Dark'};let m='auto';try{m=localStorage.getItem('theme')||'auto';}catch(e){}
- const apply=()=>{if(m==='auto')delete document.documentElement.dataset.theme;else document.documentElement.dataset.theme=m;$('theme').textContent=LAB[m];if(R)render();};
- apply();$('theme').addEventListener('click',()=>{m=MODES[(MODES.indexOf(m)+1)%3];try{localStorage.setItem('theme',m);}catch(e){}apply();});}
-// colour-blind palette (Okabe–Ito based): party hues chosen to stay distinct under red–green colour-blindness
-{let cb=false;try{cb=localStorage.getItem('cb')==='1';}catch(e){}
- const apply=()=>{if(cb)document.documentElement.dataset.cb='1';else delete document.documentElement.dataset.cb;$('cbbtn').setAttribute('aria-pressed',String(cb));$('cbbtn').textContent=cb?'✓ Colour-blind palette':'Colour-blind palette';if(R){if(typeof chamber==='function'){const ch=$('chamber');if(ch)ch._fills=[];}render();}};
- apply();$('cbbtn').addEventListener('click',()=>{cb=!cb;try{localStorage.setItem('cb',cb?'1':'0');}catch(e){}apply();});}
+// light / dark / follow the device: the switch lives in the site bar (chrome.js); redraw so canvas and SVG colours follow
+window.addEventListener('themechange',()=>{if(R)render();});
 how();
 // ---- methods: known weaknesses and a live check against the 2025 result
 function check2025(){
@@ -2346,5 +2563,35 @@ $('chk25').addEventListener('click',()=>{$('chk25out').textContent='Running…';
  bar.addEventListener('click',e=>{const b=e.target.closest('.tab');if(b)show(b.dataset.pane);});
  window.showTab=hid=>{const p=document.getElementById('pane-'+hid);if(p){show(p.id);$('deep').scrollIntoView({behavior:'smooth',block:'start'});return true;}return false;};
  ['how','about'].forEach(id=>{const el=$(id);if(el)$('aboutin').appendChild(el);});
- ['g-ldr','g-ev'].forEach(id=>{const d=$(id);if(d)d.open=false;});}
+ ['g-ev'].forEach(id=>{const d=$(id);if(d)d.open=false;});}
 sync(); go();
+// ---- sandbox drawer: open and close, docked beside the page on wide screens
+{const sb=$('sandbox'),tab=$('sbxtab'),scrim=$('sbxscrim'),inn=$('sbxin'),mq=matchMedia('(min-width:1500px)');
+ if(sb&&tab){
+  const set=(o,save)=>{sb.dataset.open=o?'1':'0';tab.setAttribute('aria-expanded',o?'true':'false');tab.querySelector('.sbx-tablabel').textContent=o?'Close':'Sandbox';
+    tab.setAttribute('aria-label',o?'Close the sandbox':'Open the sandbox');inn.inert=!o;scrim.hidden=!o||mq.matches;document.body.classList.toggle('sbx-docked',o&&mq.matches);
+    if(save)try{localStorage.setItem('sbxOpen',o?'1':'0');}catch(e){}};
+  let init=null;try{init=localStorage.getItem('sbxOpen');}catch(e){}
+  set(init==null?mq.matches:init==='1',false);
+  tab.addEventListener('click',()=>set(sb.dataset.open!=='1',true));
+  scrim.addEventListener('click',()=>set(false,true));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sb.dataset.open==='1'&&!mq.matches){set(false,true);tab.focus();}});
+  mq.addEventListener('change',()=>set(sb.dataset.open==='1',false));
+  document.querySelectorAll('a[href="#h-sand"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();set(true,true);setTimeout(()=>{const h=$('h-sand');if(h)h.focus({preventScroll:true});},300);}));}}
+
+// ---- hooks for campaign mode (assets/js/campaign-*.js): read and swap the sandbox state, project seats quickly, run the full count
+window.APP={BASE,D,P,NATI,LP,DATA,phOf,phCred:n=>PHCREDIT[n]||'',col,mapCol,SK,senNames:S2.groups.map(g=>g.n),HEX:HEXGEO,GEO:GEO0,
+  getS:()=>S, setS:x=>{S=x;}, getR:()=>R,
+  // campaign mode fixes the count's seed, so a daily challenge's election night is the same for everyone
+  setSeed:v=>{seed=(v>>>0)||1;},
+  // the results-night replay and the news report, borrowed by campaign mode for its own count and final page
+  replay:{start(){if(!REPLAY&&R)replayStart(true);},skip(){if(REPLAY)replaySkip();},active:()=>!!REPLAY,done:()=>REPLAY?REPLAY.done:null,lead:()=>REPLAY?REPLAY.lead:null},
+  article(){if(REPLAY||!R)return;article();},
+  withS(x,fn){const k=S;S=x;try{return fn();}finally{S=k;}},
+  ldrCands, sync, go, settings, tpp:()=>tppPair(0,1),
+  // the three two-party contests as the sandbox counts them (Labor v Coalition is the swingometer's figure)
+  senBefore:S2.before, shareImage:o=>shareImage(o),
+  tpps(){if(!R)return null;return {ac:twoPP().a*100,ao:tppPair(0,3)*100,co:tppPair(1,3)*100};},
+  // the central (no polling error) result for a sandbox state: winner of each seat, seats by party, national first preferences
+  project(x){return this.withS(x,()=>{const ls=settings();const r=ENGINE.simulate(D,{...ls,centralOnly:true});const nat=new Array(NG).fill(0);let W=0;
+    D.seats.forEach((s,i)=>{const b=r.base[i];W+=s.fv;b.forEach((v,j)=>nat[DATA.colG[j]]+=v*s.fv);});return {central:r.central,count:r.cenCount,nat:nat.map(v=>v/W),margin:r.margin};});}};

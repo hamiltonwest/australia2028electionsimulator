@@ -15,64 +15,53 @@
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;600&display=swap">
 <link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/campaign.css">
+<script src="assets/js/chrome.js"></script>
 </head>
 <body>
-<nav class="sitebar" aria-label="Site"><span class="sb-links"><a href="index.html" aria-current="page">Simulator</a><a href="how-it-works.html">How it works</a><a href="data.html">Polls and data</a><a href="about.html">About</a></span><span class="mast-tools"><button type="button" id="theme" class="ghost themebtn" aria-label="Colour theme">◐ Auto</button><button type="button" id="cbbtn" class="ghost themebtn" aria-pressed="false" title="Swap party colours for a palette that stays distinct with colour-blindness">Colour-blind palette</button></span></nav>
-
-
-<div class="wrap">
-  <header class="mast">
+<section id="front" class="front" aria-labelledby="fr-h" hidden>
+  <div class="fr-in">
+    <div class="fr-date" aria-hidden="true"><span>Vol. 2028 · No. 1</span><span id="frdate">&nbsp;</span><span>Free edition</span></div>
+    <header class="fr-mast fr-a">
+      <div class="fr-kick">Australia 2028 · The next federal election</div>
+      <h1 id="fr-h" tabindex="-1">The Election Simulator</h1>
+      <p class="fr-dek">All 150 seats. Every vote counted. Your call.</p>
+    </header>
+    <div class="fr-odds fr-a" id="frodds" role="status" aria-live="polite"><span class="fo-k" data-ih="forecast">Today’s forecast</span><span class="fo-v" id="frov"><span class="fo-wait">Counting every seat…</span></span></div>
+    <div class="fr-pick">
+      <button type="button" class="fr-card fr-a" data-go="sim" aria-describedby="fr-d1">
+        <span class="fr-art fr-mapart"><span class="fr-hex" id="frhex" aria-hidden="true"></span><span class="fr-tally" id="frtally" aria-hidden="true"></span><span class="fr-cap">One election night, a fresh result every visit</span></span>
+        <span class="fr-tag">The Sandbox</span><b class="fr-t">Run the election</b>
+        <span class="fr-d" id="fr-d1">Move the polls, swap the leaders, throw in a scandal or a rate rise, then watch all 150 seats counted live on results night.</span>
+        <span class="fr-feat"><span><b>150</b> seats</span><span><b>Live</b> count</span><span><b>Senate</b> too</span></span>
+        <span class="fr-go"><span class="gl">Open the sandbox</span><span class="gs">Open</span> <i aria-hidden="true">→</i></span></button>
+      <button type="button" class="fr-card fr-a" data-go="campaign" aria-describedby="fr-d2">
+        <span class="fr-art fr-ldrart"><span class="fr-faces" id="frfaces" aria-hidden="true"></span><span class="fr-cap">Five weeks. Twenty-five calls. One count.</span></span>
+        <span class="fr-tag">Campaign mode</span><b class="fr-t">Fight the campaign</b>
+        <span class="fr-d" id="fr-d2">Lead one of 65 leaders through debates, doorstops, scandals and a hung parliament. Every call moves the vote, and the full model counts the result.</span>
+        <span class="fr-feat"><span><b>65</b> leaders</span><span><b>152</b> honours</span><span><b>Daily</b> challenge</span></span>
+        <span class="fr-go"><span class="gl">Start a campaign</span><span class="gs">Play</span> <i aria-hidden="true">→</i></span></button>
+    </div>
+    <div class="fr-quick fr-a" id="frquick">
+      <div class="frq-row"><span class="frq-k" data-ih="playas">Play as</span><span class="frq-btns" id="frlead"></span></div>
+      <div class="frq-row"><span class="frq-k" data-ih="scenario">Sandbox scenario</span><span class="frq-btns"><label class="sr" for="frpre">Sandbox scenario</label><select id="frpre" class="frq-sel"></select><button type="button" class="frq-b go" data-go="preset">Open <i aria-hidden="true">→</i></button></span></div>
+      <p class="frq-note" id="frnote" hidden>Starting a new campaign replaces the one you have in progress.</p>
+    </div>
     
-    <h1>Australia 2028 Election Simulator</h1>
-    <nav class="mast-nav" aria-label="Sections"><a href="#h-odds">Forecast</a><a href="#h-sand">Sandbox</a><a href="#h-map">Seat map</a><a href="#h-art">The result</a><a href="#h-watch">Seats to watch</a><a href="#h-sen">Senate</a><a href="#h-night">Election night</a><a href="#about">About</a></nav>
-  </header>
+  </div>
+</section>
+<script>if(!location.hash||location.hash==='#home'){document.getElementById('front').hidden=false;document.documentElement.classList.add('fr-on');}</script>
+<div data-topbar></div>
 
-  <section class="panel lead" aria-labelledby="h-odds">
-    <div class="lead-top">
-      <div class="lead-head">
-        <div class="kicker" id="h-odds">The forecast</div>
-        <h2 class="lede" id="lede">Counting…</h2>
-      </div>
-      <div class="lead-copy">
-        <p class="sub">Each run simulates the election thousands of times, seat by seat, with full preference counts. Change the polls or add events in the sandbox; everything recalculates.</p>
-      </div>
-      <div class="lead-odds">
-    <div class="odds">
-      <div class="odd alp"><span class="v num" id="pA">-</span><span class="l">Labor majority</span></div>
-      <div class="odd hung"><span class="v num" id="pH">-</span><span class="l">Hung parliament</span></div>
-      <div class="odd coa"><span class="v num" id="pC">-</span><span class="l">Coalition majority</span></div>
-    </div>
-      </div>
-    </div>
-    <div class="lead-grid">
-      <div class="lead-cham">
-        <div class="strip-head"><strong><span class="fig">Fig. 2</span> The House if each seat goes to its most likely winner</strong><span class="status num" id="chamcap"></span></div>
-    <div id="chwrap" style="position:relative"><svg id="chamber" viewBox="0 0 520 260" style="max-width:760px;margin-inline:auto" role="img" aria-label="House of Representatives seating chart"></svg><div class="maptip" id="chtip" hidden></div></div>
-    <div class="legend num" id="legend"></div>
-      </div>
-      <div class="lead-side">
-        <div class="strip-head"><strong><span class="fig">Fig. 1</span> Two-party preferred</strong><span class="status num" id="swinghd"></span></div>
-        <figure class="swing"><svg id="swingsvg" viewBox="0 0 340 200" role="img" aria-label="Swingometer"></svg><figcaption class="figcap"><span id="swingcap"></span><span class="infotip" id="swinginfo" tabindex="0" role="button" aria-describedby="swingnote" hidden><span class="ii" aria-hidden="true">i</span><span class="tipbox" role="tooltip" id="swingnote"></span></span></figcaption></figure>
-      </div>
-    </div>
-  </section>
 
-  <details class="panel drop cabdrop" aria-labelledby="h-cab">
-    <summary><h2 id="h-cab"><span class="fig">Fig. 2a</span> Who keeps their seat</h2><span class="dsub cabsub" id="dsub-cab">Cabinet, shadow cabinet and crossbench in the central forecast. Senators are counted against the 2028 half-Senate result.</span></summary>
-    <div class="pgrp cabsw" role="group" aria-label="Show"><button type="button" class="chip on" data-c="cab" aria-pressed="true">Cabinet</button><button type="button" class="chip" data-c="shad" aria-pressed="false">Shadow cabinet</button><button type="button" class="chip" data-c="xb" aria-pressed="false">House crossbench</button><button type="button" class="chip" data-c="sen" aria-pressed="false">Senate (all 76)</button></div>
-    <p class="status" id="cabsum"></p>
-    <div class="tablewrap cabwrap"><table class="cabt"><thead id="cabhead"><tr><th>Member</th><th>Seat</th><th class="r">2025 2PP<br><small>Labor v Coalition</small></th><th class="r">Primary vote<br><small>forecast (change)</small></th><th>Forecast two-candidate</th><th class="r">Chance<br><small>of holding</small></th><th>Result</th></tr></thead><tbody id="cabbody"></tbody></table></div>
-    <p class="figcap" id="cabcap"></p>
-  </details>
-
-  <div class="main">
-    <aside class="panel controls" aria-labelledby="h-sand">
-      <div><div class="kicker">Sandbox</div><h2 id="h-sand">Change the election</h2></div>
+<aside id="sandbox" class="sbx" aria-labelledby="h-sand" data-open="0">
+  <div class="sbx-in controls" id="sbxin">
+    <header class="sbx-head"><div class="sbx-flag">The Sandbox</div><h2 id="h-sand" tabindex="-1">Change the election</h2><p class="sbx-dek">Polls, events, preferences and the model. Party leaders are set beside the map.</p></header>
       <div class="btns"><button id="run" type="button">Run again</button><button id="reset" class="ghost" type="button">Reset to baseline</button></div>
-      <details class="sub" id="g-rand"><summary>🎲 Randomise the election</summary>
+      <details class="sub" id="g-rand"><summary><svg class="ic ic-dice" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="8.5" cy="8.5" r="1.3" class="f"/><circle cx="15.5" cy="8.5" r="1.3" class="f"/><circle cx="12" cy="12" r="1.3" class="f"/><circle cx="8.5" cy="15.5" r="1.3" class="f"/><circle cx="15.5" cy="15.5" r="1.3" class="f"/></svg> Randomise the election</summary>
         <p class="hint">Pick what to shake up, then roll. Anything left unticked stays as it is.</p>
-        <div class="randchk"><label><input type="checkbox" data-r="prim" checked> First preferences</label><label><input type="checkbox" data-r="ldr" checked> Party leaders</label><label><input type="checkbox" data-r="ev" checked> Events</label><label><input type="checkbox" data-r="demo" checked> Demographic swings</label><label><input type="checkbox" data-r="pref"> Preferences</label><label><input type="checkbox" data-r="unc"> Uncertainty</label><label><input type="checkbox" data-r="cont"> Minor parties and independents standing</label><label class="chaos"><input type="checkbox" data-r="chaos"> 🌪 Chaos mode: huge swings, upheaval everywhere</label></div>
-        <button id="randbtn" type="button" class="ghost">🎲 Randomise and run</button></details>
+        <div class="randchk"><label><input type="checkbox" data-r="prim" checked> First preferences</label><label><input type="checkbox" data-r="ldr" checked> Party leaders</label><label><input type="checkbox" data-r="ev" checked> Events</label><label><input type="checkbox" data-r="demo" checked> Demographic swings</label><label><input type="checkbox" data-r="pref"> Preferences</label><label><input type="checkbox" data-r="unc"> Uncertainty</label><label><input type="checkbox" data-r="cont"> Minor parties and independents standing</label><label class="chaos"><input type="checkbox" data-r="chaos"> <svg class="ic ic-storm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5 6h17M5.5 10h13M8 14h9M10 18h5M12 21.5v-1.5"/></svg> Chaos mode: huge swings, upheaval everywhere</label></div>
+        <button id="randbtn" type="button" class="ghost"><svg class="ic ic-dice" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="8.5" cy="8.5" r="1.3" class="f"/><circle cx="15.5" cy="8.5" r="1.3" class="f"/><circle cx="12" cy="12" r="1.3" class="f"/><circle cx="8.5" cy="15.5" r="1.3" class="f"/><circle cx="15.5" cy="15.5" r="1.3" class="f"/></svg> Randomise and run</button></details>
       <p class="pendmsg" id="pendmsg" hidden>Changes made. Press <b>Run with changes</b> to see the new result.</p>
       <label class="skiplive"><input type="checkbox" id="skiplive"> Skip the live count (show results instantly)</label>
       <div class="status" id="status" role="status"></div>
@@ -84,8 +73,7 @@
       <details class="grp" open id="g-prim"><summary><span>First preferences</span><em class="chg" data-g="prim"></em></summary>
         <p class="hint">Points added to each party's national vote, on top of the current poll average.</p>
         <div id="sliders" class="stack"></div></details>
-      <details class="grp" open id="g-ldr"><summary><span>Party leaders</span><em class="chg" data-g="ldr"></em></summary>
-        <div id="leaders" class="stack"></div></details>
+
       <details class="grp" open id="g-ev"><summary><span>Events</span><em class="chg" data-g="ev"></em></summary>
         <p class="sublbl">Politics</p><div id="ev-pol" class="stack"></div>
         <p class="sublbl">Economy and the world</p><div id="ev-eco" class="stack"></div></details>
@@ -116,6 +104,9 @@
           <div class="ctl"><label for="peInd">Independents' polling miss <output id="peIndO"></output></label><input id="peInd" type="range" min="0" max="3" step="0.1"></div>
           <div class="ctl"><label for="big">Chance of a 2019-style miss <output id="bigO"></output></label><input id="big" type="range" min="0" max="0.4" step="0.05"></div>
         </div></details>
+      <details class="grp" id="g-cand"><summary><span>Sandbox candidates</span><em class="chg" data-g="cand"></em></summary>
+        <p class="hint">Former leaders and premiers who have not declared. All off by default. Picking one as party leader switches their candidacy on; switching it off while they lead restores the current leader. Load the "Comeback election" scenario to run them all at once.</p>
+        <div id="speccands" class="stack"></div></details>
       <details class="grp" id="g-sen"><summary><span>Senate</span><em class="chg" data-g="sen"></em></summary>
         <div class="stack"><div class="ctl"><label for="dd">Senate election</label><select id="dd"><option value="0">Half-Senate (40 seats; 36 senators continue)</option><option value="1">Double dissolution (all 76 seats)</option></select><p class="desc">A double dissolution puts every senator up for election: 12 per state, with a quota of 7.7% instead of 14.3%, which is much easier for minor parties.</p></div></div>
         <p class="hint">Points added to a party's Senate vote only, on top of its House swing. Senate voters back minor parties and personal brands more than House voters do.</p>
@@ -126,18 +117,75 @@
           <div class="ctl"><label for="mrp">Weight on the MRP seat poll <output id="mrpO"></output></label><input id="mrp" type="range" min="0" max="1" step="0.05"></div>
           <div class="ctl"><label for="trials">Simulations per run <output id="trialsO"></output></label><input id="trials" type="range" min="500" max="5000" step="500"></div>
         </div></details>
+  </div>
+  <button type="button" id="sbxtab" class="sbx-tab" aria-controls="sandbox" aria-expanded="false"><span class="sbx-tablabel">Sandbox</span><span class="sbx-arrow" aria-hidden="true">▸</span><span class="sbx-badge" id="sbxbadge" hidden></span></button>
+</aside>
+<div class="sbx-scrim" id="sbxscrim" hidden></div>
+<div class="wrap">
+  <header class="mast">
+    <div class="ph-kick">Australia 2028 · The sandbox</div>
+    <h1>Run the election</h1>
+    <p class="ph-dek">Move the polls, swap the leaders, add events. Every seat recalculates.</p>
+    <nav class="mast-nav" aria-label="On this page"><span class="mn-k">On this page</span><a href="#h-odds">Forecast</a><a href="#h-map">Seat map</a><a href="#h-art">The result</a><a href="#h-watch">Seats to watch</a><a href="#h-sen">Senate</a></nav>
+  </header>
+
+  <section class="panel lead" aria-labelledby="h-odds">
+    <div class="lead-top">
+      <div class="lead-head">
+        <div class="kicker" id="h-odds" data-ih="forecast">The forecast</div>
+        <h2 class="lede" id="lede">Counting…</h2>
+      </div>
+      <div class="lead-copy">
+        <p class="sub">Each run simulates the election thousands of times, seat by seat, with full preference counts. Change the polls or add events in the sandbox; everything recalculates.</p>
+      </div>
+      <div class="lead-odds">
+    <div class="odds">
+      <div class="odd alp"><span class="v num" id="pA">-</span><span class="l"><span data-info="@majority">Labor majority</span></span></div>
+      <div class="odd hung"><span class="v num" id="pH">-</span><span class="l"><span data-info="@hung">Hung parliament</span></span></div>
+      <div class="odd coa"><span class="v num" id="pC">-</span><span class="l"><span data-info="@majority">Coalition majority</span></span></div>
+    </div>
+      </div>
+    </div>
+    <div class="lead-grid">
+      <div class="lead-cham">
+        <div class="strip-head"><strong><span class="fig">Fig. 2</span> The House if each seat goes to its most likely winner</strong><span class="status num" id="chamcap"></span></div>
+    <div id="chwrap" style="position:relative"><svg id="chamber" viewBox="0 0 520 260" style="max-width:760px;margin-inline:auto" role="img" aria-label="House of Representatives seating chart"></svg><div class="maptip" id="chtip" hidden></div></div>
+    <div class="legend num" id="legend"></div>
+      </div>
+      <div class="lead-side">
+        <div class="strip-head"><strong><span class="fig">Fig. 1</span> Two-party preferred</strong><span class="status num" id="swinghd"></span></div>
+        <figure class="swing"><svg id="swingsvg" viewBox="0 0 340 200" role="img" aria-label="Swingometer"></svg><figcaption class="figcap"><span id="swingcap"></span><span class="infotip" id="swinginfo" tabindex="0" role="button" aria-describedby="swingnote" hidden><span class="ii" aria-hidden="true">i</span><span class="tipbox" role="tooltip" id="swingnote"></span></span></figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <details class="panel drop cabdrop" aria-labelledby="h-cab">
+    <summary><h2 id="h-cab"><span class="fig">Fig. 2a</span> Who keeps their seat</h2><span class="dsub cabsub" id="dsub-cab">Cabinet, shadow cabinet and crossbench in the central forecast. Senators are counted against the 2028 half-Senate result.</span></summary>
+    <div class="pgrp cabsw" role="group" aria-label="Show"><button type="button" class="chip on" data-c="cab" aria-pressed="true">Cabinet</button><button type="button" class="chip" data-c="shad" aria-pressed="false">Shadow cabinet</button><button type="button" class="chip" data-c="xb" aria-pressed="false">House crossbench</button><button type="button" class="chip" data-c="sen" aria-pressed="false">Senate (all 76)</button></div>
+    <p class="status" id="cabsum"></p>
+    <div class="tablewrap cabwrap"><table class="cabt"><thead id="cabhead"><tr><th>Member</th><th>Seat</th><th class="r">2025 2PP<br><small>Labor v Coalition</small></th><th class="r">Primary vote<br><small>forecast (change)</small></th><th>Forecast two-candidate</th><th class="r">Chance<br><small>of holding</small></th><th>Result</th></tr></thead><tbody id="cabbody"></tbody></table></div>
+    <p class="figcap" id="cabcap"></p>
+  </details>
+
+  <div class="main">
+    <aside class="panel controls ldrcol" aria-labelledby="h-ldr">
+      <div><div class="kicker">The contenders</div><h2 id="h-ldr" data-ih="leaders">Who leads each party</h2></div>
+      <p class="ldnote">Pick a portrait to change a party's leader. The line under each shows their faction (the Nationals by state branch); hover for the estimated effect on the vote.</p>
+      <ul class="ldkey" aria-label="Faction colours"><li><i style="--fc:#b3202a"></i>Labor Left</li><li><i style="--fc:#ef7d84"></i>Labor Right</li><li><i style="--fc:#c9a3a6"></i>Unaligned</li><li><i style="--fc:#6a9be0"></i>Moderates</li><li><i style="--fc:#3a72c0"></i>Centre Right</li><li><i style="--fc:#14336a"></i>National Right</li><li><i style="--fc:#2f8a55"></i>NSW Nats</li><li><i style="--fc:#7cbf86"></i>Vic Nats</li><li><i style="--fc:#145c3a"></i>Qld LNP</li></ul>
+      <details class="grp" open id="g-ldr"><summary><span>Party leaders</span><em class="chg" data-g="ldr"></em></summary>
+        <div id="leaders" class="stack"></div></details>
     </aside>
 
     <section aria-labelledby="h-art" class="article" id="article"></section>
 
     <div class="right">
       <section class="panel" aria-labelledby="h-map">
-        <div class="maphead"><h2 id="h-map">Seat map</h2><span class="status">Pinch, scroll or use the buttons to zoom into the cities. Paler = less certain. Select a seat.</span></div>
+        <div class="maphead"><h2 id="h-map" data-ih="seatmap">Seat map</h2><span class="status">Pinch, scroll or use the buttons to zoom into the cities. Paler = less certain. Select a seat.</span></div>
         <div class="mapsearch"><input id="mapq" list="seatlist" type="search" placeholder="Find a seat, e.g. Corangamite" aria-label="Find a seat on the map" autocomplete="off"><button type="button" id="mapgo">Find</button><span class="status" id="mapqmsg"></span></div>
-        <div class="mapbar"><div id="mapviews" class="chips"></div><button type="button" id="replaybtn" class="ghost rbtn" title="Watch seats being called in the order the count would come in">▶ Replay results night</button><div class="zoom"><button id="zin" type="button" class="ghost" aria-label="Zoom in">+</button><button id="zout" type="button" class="ghost" aria-label="Zoom out">−</button></div></div>
+        <div class="mapbar"><div id="mapviews" class="chips"></div><button type="button" id="replaybtn" class="ghost rbtn" title="Watch seats being called in the order the count would come in"><svg class="ic ic-play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.5 5.5l11 6.5-11 6.5z" class="f"/></svg> Replay results night</button><div class="zoom"><button id="zin" type="button" class="ghost" aria-label="Zoom in">+</button><button id="zout" type="button" class="ghost" aria-label="Zoom out">−</button></div></div>
         <div class="chips regions" id="mapregions" aria-label="Regions"></div>
         <div class="mapmode"><select id="mlayout" aria-label="Map layout"><option value="geo">Geographic</option><option value="hex">Hex (equal seats)</option></select><select id="mmode" aria-label="Map shows"><option value="win">Most likely winner</option><option value="chance">Chance of winning</option><option value="share">First-preference vote</option><option value="swing">Swing since 2025</option><option value="tpp">Forecast two-party preferred</option><option value="tswing">Two-party swing since 2025 (Labor v Coalition)</option></select><select id="mparty" aria-label="Party" hidden></select></div>
-        <div id="map"><svg id="mapsvg" role="img" aria-label="Map of Australia's 150 electorates"></svg><div class="maptip" id="maptip" hidden></div><div class="whatif" id="whatif" hidden></div><div class="replay" id="replay" hidden><div class="rclock" id="rclock">6:00pm</div><div class="rsub" id="rsub"></div><div class="rbar"><i id="rprog"></i></div><div class="rtally" id="rtally"></div><ul class="rfeed" id="rfeed" aria-hidden="true"></ul><p class="rtip">Tip: click any seat to call it yourself.</p><div class="rspeed" role="group" aria-label="Count speed"><span>Speed</span><button type="button" data-sp="0.5">½×</button><button type="button" data-sp="1">1×</button><button type="button" data-sp="2">2×</button><button type="button" data-sp="4">4×</button><button type="button" data-sp="8">8×</button></div><div class="rbtns"><button type="button" id="rcont" class="ghost" hidden>Continue counting ▸</button><button type="button" id="rskip" class="ghost">Skip to results ⏭</button></div></div></div>
+        <div id="map"><svg id="mapsvg" role="img" aria-label="Map of Australia's 150 electorates"></svg><div class="maptip" id="maptip" hidden></div><div class="whatif" id="whatif" hidden></div><div class="replay" id="replay" hidden><div class="rclock" id="rclock">6:00pm</div><div class="rsub" id="rsub"></div><div class="rbar"><i id="rprog"></i></div><div class="rtally" id="rtally"></div><ul class="rfeed" id="rfeed" aria-hidden="true"></ul><p class="rtip">Tip: click any seat to call it yourself.</p><div class="rspeed" role="group" aria-label="Count speed"><span>Speed</span><button type="button" data-sp="0.5">½×</button><button type="button" data-sp="1">1×</button><button type="button" data-sp="2">2×</button><button type="button" data-sp="4">4×</button><button type="button" data-sp="8">8×</button></div><div class="rbtns"><button type="button" id="rcont" class="ghost" hidden>Continue counting <svg class="ic ic-next" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8.5 6l6 6-6 6"/></svg></button><button type="button" id="rskip" class="ghost">Skip to results <svg class="ic ic-skip" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4.5 6.5l7 5.5-7 5.5zM11.5 6.5l7 5.5-7 5.5z" class="f"/><path d="M19.5 6v12"/></svg></button></div></div></div>
         <p class="sr-only" id="replaylive" aria-live="polite"></p><p class="sr-only" id="srsum" aria-live="polite" aria-atomic="true"></p>
         <div class="status"><span id="mapkey"></span><span id="mapkeylay"></span></div>
         <div class="insets" id="insets"></div>
@@ -147,13 +195,13 @@
         <h2 id="h-seat">Select a seat</h2>
       </section>
       <details class="panel drop" aria-labelledby="h-watch">
-        <summary><h2 id="h-watch">Seats to watch</h2><span class="dsub" id="dsub-watch">The 20 closest seats in the simulations</span></summary>
+        <summary><h2 id="h-watch" data-ih="watch">Seats to watch</h2><span class="dsub" id="dsub-watch">The 20 closest seats in the simulations</span></summary>
         <p class="status">Select a seat for detail.</p>
         <p class="figcap" id="watchcap"></p>
         <div class="watch" id="watch"></div>
       </details>
       <details class="panel drop" aria-labelledby="h-path">
-        <summary><h2 id="h-path">Path to 76</h2><span class="dsub" id="dsub-path">The seats each party needs, in order</span></summary>
+        <summary><h2 id="h-path" data-ih="path76">Path to 76</h2><span class="dsub" id="dsub-path">The seats each party needs, in order</span></summary>
         <div class="maphead" style="margin-top:6px"><label for="pathp" class="status">Party</label><select id="pathp" aria-label="Party" style="width:auto"></select></div>
         <p class="figcap" id="pathsum"></p>
         <div class="watch" id="path"></div>
@@ -167,7 +215,7 @@
         <div class="btns" style="margin-top:8px"><button id="callclear" type="button" class="ghost">Clear all calls</button></div>
       </details>
       <details class="panel drop" aria-labelledby="h-gov">
-        <summary><h2 id="h-gov">Who forms government?</h2><span class="dsub" id="dsub-gov">Likely governments across all simulations</span></summary>
+        <summary><h2 id="h-gov" data-ih="gov">Who forms government?</h2><span class="dsub" id="dsub-gov">Likely governments across all simulations</span></summary>
         <div class="bars" id="gov" style="margin-top:10px"></div>
         <p class="status" id="opp"></p>
         <p class="figcap" id="govcap"></p>
@@ -177,7 +225,7 @@
           <p class="status" id="fnum" aria-live="polite"></p></div>
       </details>
       <details class="panel drop" aria-labelledby="h-dist">
-        <summary><h2 id="h-dist">How many seats?</h2><span class="dsub" id="dsub-dist">Range of seats for each party across all simulations</span></summary>
+        <summary><h2 id="h-dist" data-ih="dist">How many seats?</h2><span class="dsub" id="dsub-dist">Range of seats for each party across all simulations</span></summary>
         <p class="figcap" id="distcap"></p>
         <div class="dists" id="dists"></div>
       </details>
@@ -188,17 +236,17 @@
     <div class="kicker">Behind the result</div><h2 id="h-deep">More from this run</h2>
     <div class="tabs" role="tablist" id="deeptabs" aria-label="Analysis"></div>
     <div id="deeppanes"></div>
-    <section class="panel" aria-labelledby="h-res" id="ressec"><h2 id="h-res">Projected results by party</h2><div id="restab"></div></section>
+    <section class="panel" aria-labelledby="h-res" id="ressec"><h2 id="h-res" data-ih="results">Projected results by party</h2><div id="restab"></div></section>
   </section>
   <details class="panel aboutdrop" id="aboutdrop"><summary><h2>How it works, sources and credits</h2><span class="dsub">The model, the data behind it and photo credits</span></summary><div id="aboutin"></div></details>
   <section class="panel" aria-labelledby="h-states">
-    <div class="maphead"><h2 id="h-states">State by state</h2><span class="status">Most likely winner in each seat. Hover over a state's name for its totals, or select a seat for detail.</span></div>
+    <div class="maphead"><h2 id="h-states" data-ih="states">State by state</h2><span class="status">Most likely winner in each seat. Hover over a state's name for its totals, or select a seat for detail.</span></div>
     <p class="figcap" id="statecap"></p>
     <div class="states" id="states"></div>
   </section>
 
   <section class="panel" aria-labelledby="h-pend">
-    <div class="maphead"><h2 id="h-pend">Electoral pendulum</h2><span class="status">Two-candidate margins after preferences, most likely winner</span></div>
+    <div class="maphead"><h2 id="h-pend" data-ih="pendulum">Electoral pendulum</h2><span class="status">Two-candidate margins after preferences, most likely winner</span></div>
     <div class="pgrp" role="group" aria-label="Group the pendulum by"><span class="fig">Group by</span><button type="button" class="chip on" data-g="party" aria-pressed="true">Party</button><button type="button" class="chip" data-g="contest" aria-pressed="false">Contest (who v who)</button></div>
     <p class="status" id="pendsum"></p>
     <p class="figcap" id="pendcap"></p>
@@ -206,7 +254,7 @@
   </section>
 
   <section class="panel" aria-labelledby="h-sen">
-    <div class="maphead"><h2 id="h-sen">Senate</h2><span class="status" id="senmode"></span></div>
+    <div class="maphead"><h2 id="h-sen" data-ih="senate">Senate</h2><span class="status" id="senmode"></span></div>
     <svg id="senchamber" viewBox="0 0 520 300" role="img" aria-label="Senate seating chart" style="max-width:640px;margin:8px auto 0;display:block;width:100%;height:auto"></svg>
     <div class="legend num" id="senlegend"></div>
     <p class="figcap" id="sencap"></p>
@@ -249,15 +297,28 @@
     <div class="tablewrap"><table><thead><tr><th data-s="n">Seat</th><th data-s="st">State</th><th data-s="inc">Held (2025)</th><th data-s="fav">Favourite</th><th data-s="pf">Chance</th><th>All parties</th></tr></thead><tbody id="tbody"></tbody></table></div>
   </section>
 
-  <footer>
+  <div class="methnote">
     <p><a href="#about">About this page</a> · Prototype built from the Excel simulator (v35). Senate: party-level count in each state using the spreadsheet's Senate vote shares and preference assumptions; continuing senators from the 2025 election. Baseline: AEC 2025 results, national polls to early November 2026, and the DemosAU MRP (Aug-Sep 2026) seat estimates scaled to the current poll average; survey-based preference flows. Event sizes are judgement-based. The full model has more settings than this page. Not affiliated with any party or pollster.</p>
-  </footer>
+  </div>
 <div id="ntipwrap" style="position:fixed;inset:0;pointer-events:none;z-index:70"><div class="maptip" id="ntip" hidden></div></div>
 </div>
 
-<footer class="sitefoot"><p><b>Australia 2028 Election Simulator</b> is an independent, non-commercial hobby project. It is not affiliated with or endorsed by the Parliament of Australia, the Australian Electoral Commission, any party or any media organisation. XYZ News and its reporters are fictional, and every result shown is a simulation, not a prediction.</p><p class="credit">Official portraits of Members and Senators: &copy; Commonwealth of Australia, AUSPIC / Department of Parliamentary Services, sourced from the <a href="https://www.aph.gov.au/Senators_and_Members/Members/Members_Photos">Parliament of Australia website</a> and used under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" rel="license">CC BY-NC-ND 4.0</a>. Photos are shown as published, without changes; hover over a photo to see its credit. Candidates and others outside federal Parliament are shown with illustrated placeholders. <a href="about.html#photo-credits">Full photo credits</a>.</p><p><a href="how-it-works.html">How it works</a> · <a href="data.html">Polls and data</a> · <a href="about.html">About and credits</a></p></footer>
+<div data-footer></div>
 <script src="assets/js/sim-data.js"></script>
 <script src="assets/js/engine.js"></script>
+<script src="assets/js/news-text.js"></script>
+<script src="assets/js/traits.js"></script>
 <script src="assets/js/app.js"></script>
+<script src="assets/js/campaign-data.js"></script>
+<script src="assets/js/campaign-data2.js"></script>
+<script src="assets/js/campaign-data3.js"></script>
+<script src="assets/js/campaign-data4.js"></script>
+<script src="assets/js/campaign-achievements.js"></script>
+<script src="assets/js/campaign-engine.js"></script>
+<script src="assets/js/tierlist-data.js"></script>
+<script src="assets/js/campaign-board.js"></script>
+<script src="assets/js/card-art.js"></script>
+<script src="assets/js/campaign-ui.js"></script>
+<script src="assets/js/front.js"></script>
 </body>
 </html>
