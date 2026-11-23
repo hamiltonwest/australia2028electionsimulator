@@ -5,7 +5,7 @@
 body.cmp-open{overflow:hidden}
 .cmp{position:fixed;inset:0;z-index:200;background:var(--bg);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 .cmp[hidden]{display:none}
-.cmp-in{max-width:1220px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-left,0px)) 64px}
+.cmp-in{max-width:1220px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-right,0px)) 64px max(16px,env(safe-area-inset-left,0px))}
 .cmp button{border-radius:0;letter-spacing:normal;text-transform:none}
 .cmp .kick{font:600 11px/1.3 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
 .cmp .kick small{font:400 12px var(--body);letter-spacing:0;text-transform:none;color:var(--muted);margin-left:6px}
@@ -1167,14 +1167,21 @@ details.lo-col>summary strong::after{content:' +';font:400 18px var(--mono);colo
 .tcard.r-D{--foil:linear-gradient(135deg,#5e3416,#d99a5b 24%,#8c5428 44%,#f2c094 58%,#7a4520 78%,#c98a4e);--rk:#7a4520}
 .tcard.r-E,.tcard.r-F,.tcard.r-N{--rk:var(--pd)}
 /* 3D: tilt on the outer layer, flip on the inner */
-.tc-3d{transform-style:preserve-3d;transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.tc-3d{transform-style:flat;transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .6s cubic-bezier(.2,.8,.2,1)}
 .tcard.tilting .tc-3d{transition:transform .1s linear}
-.tc-flip{display:grid;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.35,1.35,.45,1)}
-.tcard.flipped .tc-flip{transform:rotateY(180deg)}
-.tc-face{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;position:relative;display:flex;flex-direction:column;border-radius:14px;padding:7px;background:var(--foil);background-size:220% 220%;
+.tc-flip{display:grid;transform-style:flat;transform:none;transition:none}
+.tcard.flipped .tc-flip{transform:none}
+.tc-face{grid-area:1/1;backface-visibility:visible;-webkit-backface-visibility:visible;position:relative;display:flex;flex-direction:column;border-radius:14px;padding:7px;background:var(--foil);background-size:220% 220%;
   box-shadow:0 1px 0 rgba(255,255,255,.4) inset,0 6px 14px -6px rgba(0,0,0,.35),0 2px 3px rgba(0,0,0,.18);transition:box-shadow .3s}
 .tcard:hover .tc-face{box-shadow:0 1px 0 rgba(255,255,255,.4) inset,0 18px 30px -12px rgba(0,0,0,.45),0 4px 8px rgba(0,0,0,.2)}
-.tc-back{transform:rotateY(180deg)}
+.tc-front{transform:perspective(1100px) rotateY(0deg);opacity:1;visibility:visible;pointer-events:auto;z-index:2;
+  transition:transform .7s cubic-bezier(.35,1.25,.45,1),opacity .05s linear .22s,visibility 0s linear .22s,box-shadow .3s}
+.tc-back{transform:perspective(1100px) rotateY(-180deg);opacity:0;visibility:hidden;pointer-events:none;z-index:1;
+  transition:transform .7s cubic-bezier(.35,1.25,.45,1),opacity .05s linear .22s,visibility 0s linear .27s,box-shadow .3s}
+.tcard.flipped .tc-front{transform:perspective(1100px) rotateY(180deg);opacity:0;visibility:hidden;pointer-events:none;z-index:1;
+  transition:transform .7s cubic-bezier(.35,1.25,.45,1),opacity .05s linear .22s,visibility 0s linear .27s,box-shadow .3s}
+.tcard.flipped .tc-back{transform:perspective(1100px) rotateY(0deg);opacity:1;visibility:visible;pointer-events:auto;z-index:2;
+  transition:transform .7s cubic-bezier(.35,1.25,.45,1),opacity .05s linear .22s,visibility 0s linear .22s,box-shadow .3s}
 .tc-front>*,.tc-back>*{position:relative}
 .tc-front::before,.tc-back::before{content:"";position:absolute;inset:7px;border-radius:9px;background:var(--stock);box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);z-index:0}
 .tcard.r-A .tc-face{animation:none}
@@ -1249,8 +1256,8 @@ details.lo-col>summary strong::after{content:' +';font:400 18px var(--mono);colo
 .cmp-pcols.compact .tc-chips{display:none}
 .cmp .cmp-pcols.compact .cmp-ltile.tcard{grid-template-columns:none;padding:0}
 .cmp-pcols.compact .tcard .lt-mates{display:flex}
-.cmp.nomotion .tc-flip,.cmp.nomotion .tc-3d{transition:none}
-@media (prefers-reduced-motion:reduce){.tc-flip,.tc-3d{transition:none}.tcard.dealt{animation:none}}
+.cmp.nomotion .tc-flip,.cmp.nomotion .tc-3d,.cmp.nomotion .tc-front,.cmp.nomotion .tc-back{transition:none}
+@media (prefers-reduced-motion:reduce){.tc-flip,.tc-3d,.tc-front,.tc-back{transition:none}.tcard.dealt{animation:none}}
 
 .cmp .tcard .pk::before,.cmp .tcard .pk::after{content:none;display:none}
 .tcard footer.tc-foot{border:0;background:none}
@@ -1473,7 +1480,7 @@ details.lo-col>summary strong::after{content:' +';font:400 18px var(--mono);colo
   background:radial-gradient(circle at 50% 45%,#3a2b6b,#141a33 70%),repeating-linear-gradient(45deg,rgba(255,255,255,.04) 0 6px,transparent 6px 12px);background-blend-mode:overlay}
 .pkb-in b{font:900 54px/1 var(--display)}.pkb-in small{font:700 11px var(--mono);letter-spacing:.42em;text-transform:uppercase}
 .pkb-in svg{width:90px;height:90px;margin-top:14px;fill:#f7d97c;filter:drop-shadow(0 0 10px rgba(247,217,124,.6))}
-.pk-ov.up:not(.revealed) .pk-card:not(.shown):hover .pk-flip{transform:rotateY(170deg) translateY(-4px)}
+@media (hover:hover){.pk-ov.up:not(.pk3):not(.revealed) .pk-card:not(.shown):hover .pk-flip{transform:rotateY(170deg) translateY(-4px)}}
 .pk-front .tcard{margin:0}.pk-front .tc-hint{display:none}
 /* the burst */
 .pk-rays{position:absolute;left:50%;top:50%;width:700px;height:700px;margin:-350px 0 0 -350px;border-radius:50%;pointer-events:none;opacity:0;
@@ -1764,11 +1771,14 @@ html:not(.claude-host) .cmp [data-a="board"],html:not(.claude-host) .pf-cloud{di
 .pk3 .pk-card{position:relative;left:auto;top:auto;margin:0;width:340px;flex:none;opacity:0;pointer-events:none}
 .pk3.up .pk-card{opacity:1;pointer-events:auto;animation:pkSlide3 .9s cubic-bezier(.25,.8,.3,1) both;animation-delay:calc(var(--k) * .14s)}
 @keyframes pkSlide3{0%{opacity:0;transform:translateY(160px) scale(.6)}55%{opacity:1;transform:translateY(-24px) scale(.95)}100%{opacity:1;transform:none}}
-.pk3 .pk-card .pk-flip{transform:rotateY(180deg)}
-.pk3 .pk-card.shown .pk-flip{transform:none}
-.pk3.revealed .pk-flip{transform:none}
+.pk3 .pk-card .pk-flip{transform-style:flat;transform:none;transition:none}
+.pk3 .pk-card .pk-back,.pk3 .pk-card .pk-front{backface-visibility:visible;-webkit-backface-visibility:visible}
+.pk3 .pk-card .pk-back{transform:perspective(1400px) rotateY(0deg);opacity:1;visibility:visible;z-index:2;transition:transform .72s cubic-bezier(.3,1.25,.45,1),opacity .06s linear .24s,visibility 0s linear .3s}
+.pk3 .pk-card .pk-front{transform:perspective(1400px) rotateY(-180deg);opacity:0;visibility:hidden;pointer-events:none;z-index:1;transition:transform .72s cubic-bezier(.3,1.25,.45,1),opacity .06s linear .24s,visibility 0s linear .24s}
+.pk3 .pk-card.shown .pk-back{transform:perspective(1400px) rotateY(180deg);opacity:0;visibility:hidden;pointer-events:none;z-index:1}
+.pk3 .pk-card.shown .pk-front{transform:perspective(1400px) rotateY(0deg);opacity:1;visibility:visible;pointer-events:auto;z-index:2}
 .pk3 .pk-card:not(.shown){cursor:pointer}
-.pk3 .pk-card:not(.shown):hover .pk-flip{transform:rotateY(170deg) translateY(-6px)}
+@media (hover:hover){.pk3 .pk-card:not(.shown):hover .pk-back{transform:perspective(1400px) rotateY(10deg) translateY(-6px)}}
 .pk-new{position:absolute;top:-12px;left:50%;z-index:6;transform:translateX(-50%) scale(0);padding:4px 14px;border-radius:14px;background:linear-gradient(180deg,#ffd77a,#e8a12e);color:#3a2402;font:800 12px var(--mono);letter-spacing:.14em;text-transform:uppercase;box-shadow:0 4px 12px rgba(0,0,0,.4);transition:transform .35s cubic-bezier(.3,1.6,.5,1) .35s}
 .pk-new.dup{background:#e9e4d6;color:#5f5a4e}
 .pk3 .pk-card.shown .pk-new{transform:translateX(-50%) scale(1)}
@@ -1801,7 +1811,7 @@ html:not(.claude-host) .cmp [data-a="board"],html:not(.claude-host) .pf-cloud{di
 .tcard.locked .tc-ring{display:none}
 @keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
 .tcard.shake .tc-3d{animation:shake .4s ease-in-out}
-.pk3.up .pk-pack{opacity:0!important;transition:opacity .5s ease .3s}
+.pk-pack.gone{display:none!important}
 .tcard .h-lock,.tcard.locked .h-own{display:none}.tcard.locked .h-lock{display:inline}
 .cmp .lf-tabs .lf-tab{padding-left:11px;padding-right:11px}
 @media (min-width:641px){.cmp .lf-tabs{flex-wrap:nowrap}.cmp .lf-tabs .lf-tab{flex:0 1 auto;white-space:nowrap;padding-left:clamp(4px,.7vw,11px);padding-right:clamp(4px,.7vw,11px);font-size:clamp(13px,1.32vw,17px);gap:3px}.cmp .lf-tabs .lf-tab small{font-size:10px}}
@@ -1821,7 +1831,12 @@ html:not(.claude-host) .cmp [data-a="board"],html:not(.claude-host) .pf-cloud{di
 .cmp .cmp-pcols.one .lt-out .tc-front .tc-art{height:172px}
 .cmp .cmp-pcols:not(.one) .lt-out .cmp-ltile.tcard{width:100%;max-width:100%}
 .cmp .cmp-pcols:not(.one) .lt-out .tc-front .tc-art{height:168px}
-@media (max-width:420px){.cmp .cmp-pcols.one .lt-out>.lt-mg{grid-template-columns:minmax(0,1fr)}.cmp .cmp-pcols.one .lt-out .cmp-ltile.tcard{width:100%;max-width:100%}}
+@media (max-width:700px){
+  .cmp-pcols:not(.one),.cmp-pcols.one .cmp-pcol,.cmp-pcols.one .lt-mg,.cmp .cmp-pcols.one .lt-out>.lt-mg{grid-template-columns:minmax(0,1fr)}
+  .cmp-pcols:not(.one) .cmp-pcol{min-width:0}
+  .cmp .cmp-ltile.tcard{width:min(340px,100%);max-width:100%;margin-left:auto;margin-right:auto;justify-self:center}
+  .cmp .cmp-pcols.one .lt-out .cmp-ltile.tcard,.cmp .cmp-pcols:not(.one) .lt-out .cmp-ltile.tcard{width:min(320px,100%);max-width:100%;margin-left:auto;margin-right:auto;justify-self:center}
+}
 .cmp-pcols.one .cmp-pcol>.lt-grp{grid-column:1/-1;align-self:start}
 /* Mark Latham's grade wears an L plate (2004 "Latham and the economy" billboards) */
 .lt-grade.g-lplate,.cmp .tcard .lt-grade.g-lplate{border-radius:3px!important;background:#ffd400!important;color:#111!important;font:900 17px/1 Arial,Helvetica,sans-serif!important;box-shadow:0 0 0 2px #111,0 1px 3px rgba(0,0,0,.4)!important;text-shadow:none!important}

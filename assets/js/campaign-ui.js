@@ -1124,7 +1124,7 @@
     const flipOne = k => { const pc = ov.querySelectorAll('.pk-card')[k]; if (!pc || pc.classList.contains('shown')) return; pc.classList.add('shown'); pc.removeAttribute('role'); pc.removeAttribute('tabindex'); pc.removeAttribute('aria-label'); sfx(RO.indexOf(rarOf(ids[k])) <= 2 ? 'chime' : 'good');
       const shown = ov.querySelectorAll('.pk-card.shown').length;
       if (shown === ids.length) done();
-      else { const rem = ids.length - shown; ov.querySelector('.pk-msg').textContent = `${shown} of ${ids.length} revealed · click ${rem === 1 ? 'the last card' : 'each card'} to reveal`; } };
+      else { const rem = ids.length - shown; ov.querySelector('.pk-msg').textContent = `${shown} of ${ids.length} revealed · tap ${rem === 1 ? 'the last card' : 'each card'} to reveal`; } };
     const done = () => { if (ov.classList.contains('revealed')) return; ov.classList.add('revealed'); try { if (navigator.vibrate) navigator.vibrate(best === 'A' ? [20, 40, 20, 40, 60] : 20); } catch (e) {}
       const nm = id => (C.leaders.find(L => L.id === id) || {}).name || id, nNew = ids.filter(isNew).length;
       ov.querySelector('.pk-msg').innerHTML = `<b>${nNew === 3 ? 'Three new leaders!' : nNew ? nNew + ' new leader' + (nNew === 1 ? '' : 's') : 'All duplicates'}</b>${ids.map(nm).map(esc).join(' · ')}<small>Tap a card to flip it · hold to play</small>`;
@@ -1132,8 +1132,8 @@
       ov.querySelector('.pk-acts').hidden = false; const sk = ov.querySelector('.pk-skip'); if (sk) sk.remove(); };
     const open = () => { if (ov.classList.contains('torn')) return; ov.classList.add('torn'); claim(); sfx('page'); ov.querySelector('.pk-msg').textContent = 'Pulling your cards…';
       const sk = ov.querySelector('.pk-skip'); if (sk) sk.remove();
-      setTimeout(() => { ov.classList.add('out', 'up'); ov.querySelector('.pk-msg').textContent = 'Click each card to reveal it'; }, T(520)); };
-    ov._skip = () => { if (!ov.classList.contains('torn')) { ov.classList.add('torn'); claim(); } ov.classList.add('instant', 'out', 'up'); const sk = ov.querySelector('.pk-skip'); if (sk) sk.remove(); ov.querySelector('.pk-msg').textContent = 'Click each card to reveal it'; };
+      setTimeout(() => { ov.classList.add('out', 'up'); ov.querySelector('.pk-msg').textContent = 'Tap each card to reveal it'; setTimeout(() => { if (pack.isConnected) pack.classList.add('gone'); }, T(520)); }, T(520)); };
+    ov._skip = () => { if (!ov.classList.contains('torn')) { ov.classList.add('torn'); claim(); } pack.classList.add('gone'); ov.classList.add('instant', 'out', 'up'); const sk = ov.querySelector('.pk-skip'); if (sk) sk.remove(); ov.querySelector('.pk-msg').textContent = 'Tap each card to reveal it'; };
     ov.querySelectorAll('.pk-card').forEach(pc => {
       pc.addEventListener('pointerdown', e => { if (ov.classList.contains('up') && !pc.classList.contains('shown')) e.stopPropagation(); }, true);
       pc.addEventListener('click', e => { if (ov.classList.contains('up') && !pc.classList.contains('shown')) { e.stopPropagation(); flipOne(+pc.dataset.k); } }, true);
