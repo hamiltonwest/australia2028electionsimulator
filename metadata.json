@@ -1,0 +1,5 @@
+{
+  "name": "Australia 2028 Election Simulator",
+  "description": "Simulate the next Australian federal election seat by seat: change the polls, leaders and events, then watch the count come in on results night.",
+  "requestFramePermissions": []
+}

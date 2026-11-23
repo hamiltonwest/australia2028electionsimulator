@@ -952,7 +952,7 @@
 
   function applyLF() { const q = ldrQ.trim().toLowerCase(), mine = prefs.party === 'own', act = !!q || ldrF !== 'all' || mine; let n = 0;
     inn.querySelectorAll('.cmp-ltile').forEach(b => { const ok = (!q || (b.dataset.q || '').includes(q)) && (ldrF === 'all' || (b.dataset.tags || '').split(' ').includes(ldrF)) && (!mine || (b.dataset.tags || '').split(' ').includes('owned')); b.hidden = !ok; if (ok) n++; });
-    inn.querySelectorAll('.lt-more').forEach(d => { if (act) d.open = !!d.querySelector('.cmp-ltile:not([hidden])'); d.hidden = act && !d.querySelector('.cmp-ltile:not([hidden])'); d.querySelectorAll('.lt-grp').forEach(h => { let x = h.nextElementSibling, any = false; while (x && !x.classList.contains('lt-grp')) { if (!x.hidden) any = true; x = x.nextElementSibling; } h.hidden = !any; }); });
+    inn.querySelectorAll('.lt-more').forEach(d => { const vis = d.querySelectorAll('.cmp-ltile:not([hidden])').length; if (act) d.open = !!vis; d.hidden = act && !vis; const cnt = d.querySelector('.lo-n'); if (cnt) cnt.textContent = `${vis} leader${vis === 1 ? '' : 's'}`; d.querySelectorAll('.lt-grp').forEach(h => { let x = h.nextElementSibling, any = false; while (x && !x.classList.contains('lt-grp')) { if (!x.hidden) any = true; x = x.nextElementSibling; } h.hidden = !any; }); });
     inn.querySelectorAll('.cmp-pcol > .lt-grp').forEach(h => { let x = h.nextElementSibling, any = false; while (x && x.classList.contains('cmp-ltile')) { if (!x.hidden) any = true; x = x.nextElementSibling; } if (h.classList.contains('lt-inp') && x && x.classList.contains('lt-grp')) any = any || !![...h.parentNode.querySelectorAll(':scope > .cmp-ltile')].some(t => !t.hidden); h.hidden = !any; });
     const one = !q && !!C.PARTIES[prefs.party]; const pc = inn.querySelector('.cmp-pcols'); if (pc) pc.classList.toggle('one', one);
     inn.querySelectorAll('.cmp-pcol').forEach(c => { c.hidden = !c.querySelector('.cmp-ltile:not([hidden])') || (one && c.dataset.p !== prefs.party); });
@@ -1038,9 +1038,21 @@
     try { const got = JSON.parse(localStorage.getItem(KA) || '{}') || {}; A.list.forEach(x => { if (!got[x.id]) got[x.id] = { at: now, by: 'cheat', w: 'Unlocked with CheatMachine' }; }); localStorage.setItem(KA, JSON.stringify(got)); } catch (e) {}
     try { const lo = JSON.parse(localStorage.getItem(KL) || '{}') || {}; (C.LO || []).forEach(o => { if (!lo[o.lo]) lo[o.lo] = Date.now(); }); localStorage.setItem(KL, JSON.stringify(lo)); } catch (e) {}
     const c = coll(); C.leaders.forEach(L => { if (!c.owned[L.id]) c.owned[L.id] = Date.now(); }); collSave(c); }
+  // the ResetProfile phrase: clears all saved campaign progress, honours, runs, answers, unlocked cards and active run
+  function resetProfile() {
+    ['es2028_campaign_achievements_v1', 'es2028_campaign_hof_v1', 'es2028_campaign_daily_v1', 'es2028_campaign_lo_v1', CKEY, 'es2028_campaign_run_v2'].forEach(k => { try { localStorage.removeItem(k); } catch (e) {} });
+    st = null; fb = null; achOpen = null; prefs.scen = 'std'; savePrefs();
+    const note = $('frnote'); if (note) note.hidden = true;
+  }
+  let cheatsOpen = false;
+  const CHEATS = [
+    ['PackRippers', 'Unlocks every leader pack so you can open all remaining packs on the Choose your leader page.'],
+    ['CheatMachine', 'Unlocks everything: all honours, all leaders, every opening scenario and every leader-only answer.'],
+    ['ResetProfile', 'Clears all honours, Hall of Fame runs, daily results, leader-only answers, unlocked cards and any saved run back to a fresh start.']
+  ];
   function profilePanel() { const h = E.hall().filter(x => !x.ab), d = Object.keys(E.daily()).length, best = h.reduce((m, x) => Math.max(m, x.score || 0), 0);
     return `<section class="pf"><div class="cmp-fighead"><strong>Your profile</strong><small>Your honours, Hall of Fame, daily results and leader-only answers live in this browser. Save them to keep a copy or move to another device.</small></div>
-      <div class="pf-card"><div class="pf-side"><span class="pf-h">${ICON('check')}<b>Save your profile</b></span>
+      <div class="pf-card"><div class="pf-side"><span class="pf-h"><button type="button" class="pf-tick" data-a="pfcheats" aria-expanded="${cheatsOpen ? 'true' : 'false'}" aria-controls="pfcheats" aria-label="Show profile cheats">${ICON('check')}</button><b>Save your profile</b></span>
           <div class="pf-stats"><span><b class="num">${achCount()}<small>/${A.list.length}</small></b>honours</span><span><b class="num">${h.length}</b>campaigns</span><span><b class="num">${d}</b>daily challenges</span><span><b class="num">${best.toLocaleString()}</b>best score</span></div>
           <div class="pf-acts"><button type="button" data-a="pfdl">Download profile (.txt)</button><button type="button" class="ghost" data-a="pfcopy">Copy profile code</button></div>
           <p class="cmp-note">The file and the code hold the same thing. Keep either somewhere safe.</p></div>
@@ -1049,6 +1061,11 @@
           <textarea id="pfcode" rows="3" spellcheck="false" placeholder="Paste a code starting ES28-PROFILE-1:" aria-label="Profile code"></textarea>
           <div class="pf-acts"><label class="pf-file">Open a .txt file<input type="file" id="pffile" accept=".txt,text/plain"></label><button type="button" data-a="pfload">Load profile</button></div>
           <p class="cmp-note">Loading adds to what this browser already has, so nothing is lost.</p></div></div>
+      ${cheatsOpen ? `<div class="pf-cheats" id="pfcheats" role="region" aria-label="Profile cheats">
+        <div class="pf-ch-hd"><strong>Profile cheats</strong><button type="button" class="pf-ch-x" data-a="pfcheats" aria-label="Close cheats">&times;</button></div>
+        <p class="cmp-note">Paste or tap any code below to fill it into “Load a profile”, then press Load profile.</p>
+        <ul class="pf-ch-list">${CHEATS.map(([code, desc]) => `<li><button type="button" class="pf-ch-code" data-cheat="${code}">${code}</button><span>${esc(desc)}</span></li>`).join('')}</ul>
+      </div>` : ''}
       <p class="pf-msg" id="pfmsg" role="status"></p></section>`; }
   async function fillBoard() { const note = $('lbnote'), list = $('lblist'), B = window.CampaignBoard; if (!note || !list) return; const key = lbKey();
     if (!B) { note.textContent = 'Leaderboards aren’t available here.'; return; }
@@ -1094,7 +1111,7 @@
           <span class="pk-title"><b>Leader Pack</b><em>Three leaders inside</em></span>
           <span class="pk-odds">New leaders first · ${C.leaders.length} to collect<br>Pack ${(c0.opened || 0) + 1} of ${PACKAT.length}</span></span>
         <span class="pk-strip" aria-hidden="true"><span class="pk-strip-in"><span class="pk-crimp t"></span><i>Tear here</i></span></span></div>
-      <div class="pk-row">${ids.map((id, k) => `<div class="pk-card r-${rarOf(id)}" style="--k:${k}" data-k="${k}">${isNew(id) ? '<span class="pk-new">New!</span>' : '<span class="pk-new dup">Duplicate</span>'}<div class="pk-flip"><div class="pk-back" aria-hidden="true"><span class="pkb-in"><b>2028</b><small>Australia</small><svg viewBox="0 0 120 120"><path d="M60 22l9.4 19 21 3-15.2 14.8 3.6 20.9L60 69.8 41.2 79.7l3.6-20.9L29.6 44l21-3z"/></svg></span></div><div class="pk-front"></div></div></div>`).join('')}</div>
+      <div class="pk-row">${ids.map((id, k) => `<div class="pk-card r-${rarOf(id)}" style="--k:${k}" data-k="${k}" role="button" tabindex="0" aria-label="Reveal card ${k + 1} of ${ids.length}">${isNew(id) ? '<span class="pk-new">New!</span>' : '<span class="pk-new dup">Duplicate</span>'}<div class="pk-flip"><div class="pk-back" aria-hidden="true"><span class="pkb-in"><b>2028</b><small>Australia</small><svg viewBox="0 0 120 120"><path d="M60 22l9.4 19 21 3-15.2 14.8 3.6 20.9L60 69.8 41.2 79.7l3.6-20.9L29.6 44l21-3z"/></svg></span></div><div class="pk-front"></div></div></div>`).join('')}</div>
       <span class="pk-sparks" aria-hidden="true">${Array.from({ length: 26 }, (_, k) => `<i style="--a:${Math.round(k * 360 / 26 + Math.random() * 12)}deg;--d:${(110 + Math.random() * 150).toFixed(0)}px;--t:${(Math.random() * .25).toFixed(2)}s"></i>`).join('')}</span></div>
       <p class="pk-msg" role="status">Swipe across the top to tear it open</p><button type="button" class="pk-skip" data-a="pkskip">Skip ${ICON('skip')}</button>
       <div class="pk-acts" hidden><button type="button" data-a="pkagain" class="ghost pk-again">${ICON('star')} Open another</button><button type="button" data-a="pkclose" class="ghost">Done</button></div></div>`;
@@ -1104,16 +1121,24 @@
     const T = ms => prefs.motion && !ov.classList.contains('instant') ? ms : 0;
     // the pack is used up the moment it is torn, so the three leaders are yours even if you close early
     const claim = () => { const c = coll(); ids.forEach(id => { if (!c.owned[id]) c.owned[id] = Date.now(); }); c.opened = (c.opened || 0) + 1; collSave(c); };
-    const flipOne = k => { const pc = ov.querySelectorAll('.pk-card')[k]; if (!pc || pc.classList.contains('shown')) return; pc.classList.add('shown'); sfx(RO.indexOf(rarOf(ids[k])) <= 2 ? 'chime' : 'good'); if (ov.querySelectorAll('.pk-card.shown').length === ids.length) done(); };
+    const flipOne = k => { const pc = ov.querySelectorAll('.pk-card')[k]; if (!pc || pc.classList.contains('shown')) return; pc.classList.add('shown'); pc.removeAttribute('role'); pc.removeAttribute('tabindex'); pc.removeAttribute('aria-label'); sfx(RO.indexOf(rarOf(ids[k])) <= 2 ? 'chime' : 'good');
+      const shown = ov.querySelectorAll('.pk-card.shown').length;
+      if (shown === ids.length) done();
+      else { const rem = ids.length - shown; ov.querySelector('.pk-msg').textContent = `${shown} of ${ids.length} revealed · click ${rem === 1 ? 'the last card' : 'each card'} to reveal`; } };
     const done = () => { if (ov.classList.contains('revealed')) return; ov.classList.add('revealed'); try { if (navigator.vibrate) navigator.vibrate(best === 'A' ? [20, 40, 20, 40, 60] : 20); } catch (e) {}
       const nm = id => (C.leaders.find(L => L.id === id) || {}).name || id, nNew = ids.filter(isNew).length;
       ov.querySelector('.pk-msg').innerHTML = `<b>${nNew === 3 ? 'Three new leaders!' : nNew ? nNew + ' new leader' + (nNew === 1 ? '' : 's') : 'All duplicates'}</b>${ids.map(nm).map(esc).join(' · ')}<small>Tap a card to flip it · hold to play</small>`;
       const left = packsLeft(), ag = ov.querySelector('.pk-again'); if (ag) { if (left) ag.innerHTML = `${ICON('star')} Open another (${left} left)`; else ag.remove(); }
       ov.querySelector('.pk-acts').hidden = false; const sk = ov.querySelector('.pk-skip'); if (sk) sk.remove(); };
     const open = () => { if (ov.classList.contains('torn')) return; ov.classList.add('torn'); claim(); sfx('page'); ov.querySelector('.pk-msg').textContent = 'Pulling your cards…';
-      setTimeout(() => { ov.classList.add('out', 'up'); setTimeout(() => { ov.querySelector('.pk-msg').textContent = 'Tap a card to turn it over'; }, T(700)); ids.forEach((_, k) => setTimeout(() => flipOne(k), T(1500 + k * 550))); }, T(520)); };
-    ov._skip = () => { if (!ov.classList.contains('torn')) { ov.classList.add('torn'); claim(); } ov.classList.add('instant', 'out', 'up'); ids.forEach((_, k) => flipOne(k)); };
-    ov.querySelectorAll('.pk-card').forEach(pc => pc.addEventListener('click', e => { if (ov.classList.contains('up') && !pc.classList.contains('shown')) { e.stopPropagation(); flipOne(+pc.dataset.k); } }, true));
+      const sk = ov.querySelector('.pk-skip'); if (sk) sk.remove();
+      setTimeout(() => { ov.classList.add('out', 'up'); ov.querySelector('.pk-msg').textContent = 'Click each card to reveal it'; }, T(520)); };
+    ov._skip = () => { if (!ov.classList.contains('torn')) { ov.classList.add('torn'); claim(); } ov.classList.add('instant', 'out', 'up'); const sk = ov.querySelector('.pk-skip'); if (sk) sk.remove(); ov.querySelector('.pk-msg').textContent = 'Click each card to reveal it'; };
+    ov.querySelectorAll('.pk-card').forEach(pc => {
+      pc.addEventListener('pointerdown', e => { if (ov.classList.contains('up') && !pc.classList.contains('shown')) e.stopPropagation(); }, true);
+      pc.addEventListener('click', e => { if (ov.classList.contains('up') && !pc.classList.contains('shown')) { e.stopPropagation(); flipOne(+pc.dataset.k); } }, true);
+      pc.addEventListener('keydown', e => { if (ov.classList.contains('up') && !pc.classList.contains('shown') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); e.stopPropagation(); flipOne(+pc.dataset.k); } });
+    });
     let drag = null; const w = () => pack.getBoundingClientRect().width;
     pack.addEventListener('pointerdown', e => { if (ov.classList.contains('torn')) return; drag = { x: e.clientX, f: 0 }; try { pack.setPointerCapture(e.pointerId); } catch (x) {} });
     pack.addEventListener('pointermove', e => { if (!drag) return; drag.f = Math.max(0, Math.min(1, Math.abs(e.clientX - drag.x) / (w() * 0.8))); strip.style.setProperty('--tear', drag.f); if (drag.f > 0.08) strip.classList.add('tearing'); if (drag.f >= 0.7) { drag = null; open(); } });
@@ -1171,6 +1196,7 @@
     if (b.dataset.back) { negBack = b.dataset.back; const y = root.scrollTop; render(); root.scrollTop = y; keepFocus('back', negBack); return; }
     if (b.dataset.ask) { negAsk = +b.dataset.ask; const y = root.scrollTop; render(); root.scrollTop = y; keepFocus('ask', b.dataset.ask); return; }
     if (b.dataset.pace) { tourHard = b.dataset.pace === '1'; inn.querySelectorAll('[data-pace]').forEach(x => { const on = x.dataset.pace === (tourHard ? '1' : '0'); x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); }); return; }
+    if (b.dataset.cheat) { const ta = $('pfcode'), m = $('pfmsg'); if (ta) { ta.value = b.dataset.cheat; ta.focus(); } if (m) m.textContent = `Entered ${b.dataset.cheat}: press “Load profile” to apply it.`; return; }
     const a = b.dataset.a;
     if (a === 'randlead') { const own = C.leaders.filter(L => owns(L.id)); const L = own[Math.floor(Math.random() * own.length)]; if (L) start(L.id); return; }
     if (a === 'pack') { if (packsLeft() > 0) openPack(); else { const n = nextPackAt(); notice('Packs', n == null ? 'You have every leader' : `Next pack at ${n} honour${n === 1 ? '' : 's'}. You have ${achCount()}.`); } return; }
@@ -1182,12 +1208,14 @@
     else if (a === 'sound') { prefs.sound = prefs.sound ? 0 : 1; savePrefs(); render(); if (prefs.sound) sfx(); refocus('sound'); }
     else if (a === 'motion') { prefs.motion = prefs.motion ? 0 : 1; savePrefs(); render(); refocus('motion'); }
     else if (a === 'sandbox') toSandbox();
-    else if (a === 'hall') { view = 'hall'; render(); root.scrollTop = 0; focusTitle(); }
-    else if (a === 'board') { view = 'board'; render(); root.scrollTop = 0; focusTitle(); }
+    else if (a === 'hall') { cheatsOpen = false; view = 'hall'; render(); root.scrollTop = 0; focusTitle(); }
+    else if (a === 'board') { cheatsOpen = false; view = 'board'; render(); root.scrollTop = 0; focusTitle(); }
+    else if (a === 'pfcheats') { cheatsOpen = !cheatsOpen; const y = root.scrollTop; render(); root.scrollTop = y; const box = $('pfcheats'); if (box) box.scrollIntoView({ block: 'nearest', behavior: prefs.motion ? 'smooth' : 'auto' }); }
     else if (a === 'pfdl') { const m = $('pfmsg'); window.CampaignBoard.download().then(() => { if (m) m.textContent = 'Profile file downloaded. Keep it somewhere safe.'; }).catch(e => { if (m) m.textContent = e && e.code === 'declined' ? 'Download cancelled.' : (e && e.message) || 'The download didn’t work: copy the code instead.'; }); }
     else if (a === 'pfcopy') { const c = window.CampaignBoard.code(), m = $('pfmsg'), ta = $('pfcode'); if (ta) { ta.value = c; ta.select(); } (navigator.clipboard ? navigator.clipboard.writeText(c) : Promise.reject()).then(() => { if (m) m.textContent = 'Profile code copied. Paste it into “Load a profile” on your other device.'; }).catch(() => { if (m) m.textContent = 'Select the code in the box and copy it.'; }); }
     else if (a === 'pfload' && $('pfcode') && $('pfcode').value.trim() === 'PackRippers') { const c = coll(); c.allPacks = true; collSave(c); render(); const m2 = $('pfmsg'); if (m2) m2.textContent = `Every pack unlocked: ${packsLeft()} pack${packsLeft() === 1 ? '' : 's'} waiting on the Choose your leader page.`; }
     else if (a === 'pfload' && $('pfcode') && $('pfcode').value.trim() === 'CheatMachine') { unlockAll(); render(); const m2 = $('pfmsg'); if (m2) m2.textContent = `Everything unlocked: all ${A.list.length} honours, all ${C.leaders.length} leaders, every opening and every leader-only answer.`; }
+    else if (a === 'pfload' && $('pfcode') && $('pfcode').value.trim() === 'ResetProfile') { resetProfile(); render(); const m2 = $('pfmsg'); if (m2) m2.textContent = 'Profile reset: all honours, runs, daily results, leader-only answers and unlocked cards cleared back to a fresh start.'; }
     else if (a === 'pfload') { const m = $('pfmsg'), ta = $('pfcode'); try { const r = window.CampaignBoard.merge(window.CampaignBoard.parse(ta ? ta.value : '')); render(); const m2 = $('pfmsg'); if (m2) m2.textContent = `Profile loaded: ${r.honours} honours and ${r.runs} runs now on this device.`; } catch (e) { if (m) m.textContent = e.message || 'That code didn’t work.'; } }
     else if (a === 'pfcloud') { const m = $('pfmsg'); window.CampaignBoard.cloudLoad().then(d => { if (!d || !d.code) { if (m) m.textContent = 'No profile is saved to your account yet.'; return; } const r = window.CampaignBoard.merge(window.CampaignBoard.parse(d.code)); if (m) m.textContent = `Restored from your account: ${r.honours} honours, ${r.runs} runs.`; }).catch(() => { if (m) m.textContent = 'Couldn’t reach your account.'; }); }
     else if (a === 'pfsave') { const m = $('pfmsg'); window.CampaignBoard.cloudSave().then(ok => { if (m) m.textContent = ok ? 'Saved to your account.' : 'Couldn’t save to your account from here.'; }); }
