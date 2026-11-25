@@ -310,12 +310,12 @@ window.CAMPAIGN_COLL = (() => {
             <p class="bd-packnote">${leftPacks > 0
               ? (packOwnedCount >= packPoolCount
                 ? `You have <b>${leftPacks} pack${leftPacks === 1 ? '' : 's'}</b> ready — every pack-pool leader is collected, so opening packs now converts all 3 cards straight into <b>Card Dust</b> (+20 pack-seal bonus).`
-                : (() => { const dc = EC && EC.packDupChance ? EC.packDupChance(packOwnedCount, packPoolCount) : 0; return dc > 0
-                  ? `You have <b>${leftPacks} leader pack${leftPacks === 1 ? '' : 's'}</b> ready (3 cards per pack · ~${Math.round(dc * 100)}% duplicate chance per card, converting dupes into Card Dust).`
-                  : `You have <b>${leftPacks} leader pack${leftPacks === 1 ? '' : 's'}</b> ready (3 cards per pack — duplicate-free until 33% of Series One is collected, then 20–30% dupes for Card Dust).`; })())
+                : (cData.opened || 0) === 0
+                  ? `You have <b>${leftPacks} leader pack${leftPacks === 1 ? '' : 's'}</b> ready (3 cards per pack — your first pack is all new leaders; subsequent packs include at least 1 duplicate that converts into Card Dust).`
+                  : `You have <b>${leftPacks} leader pack${leftPacks === 1 ? '' : 's'}</b> ready (3 cards per pack · at least 1 duplicate per pack converting into Card Dust, plus +20 pack-seal bonus).`)
               : nextAt != null
-                ? `Next pack unlocks at <b>${nextAt} honour${nextAt === 1 ? '' : 's'}</b> — you currently have ${ctx.achCount()}. You also earn Card Dust from completed campaigns (+30/+50) and honours (+15).`
-                : 'Every pack milestone has been reached. Continue earning Card Dust from completed campaigns to finish crafting and foil upgrades.'}</p>
+                ? `Earn a new pack for every honour unlocked — next pack at <b>${nextAt} honour${nextAt === 1 ? '' : 's'}</b> (you currently have ${ctx.achCount()}). You also earn Card Dust from completed campaigns (+30/+50) and honours (+15).`
+                : 'Every honour pack has been earned. Continue earning Card Dust from completed campaigns to finish crafting and foil upgrades.'}</p>
           </div>
           <div class="bd-breakdowns">
             <div class="bd-bk">

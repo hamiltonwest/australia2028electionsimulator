@@ -181,7 +181,7 @@ window.CAMPAIGN = (() => {
     return !u || (u.n < o.cap && st.turn - u.last >= o.cd); }
   function eligible(c, st) {
     const L = ldrOf(st);
-    return topicOK(c, st) && !c.mile && (!c.minTurn || st.turn >= c.minTurn) && (!c.party || c.party === st.party) && (!c.only || c.only === L.id) && !st.used.includes(c.id) && (!c.mate || (L.mates && L.mates.length))
+    return topicOK(c, st) && !c.mile && (!c.minTurn || st.turn >= c.minTurn) && (!c.party || c.party === st.party) && (!c.notParty || !c.notParty.includes(st.party)) && (!c.only || c.only === L.id) && !st.used.includes(c.id) && (!c.mate || (L.mates && L.mates.length))
       && (!c.req || c.req.every(f => st.flags.includes(f) && st.turn >= (st.flagTurn[f] || 0) + (c.after || 0))) && (!c.not || !c.not.some(f => st.flags.includes(f)));
   }
   function drawCard(st) {
@@ -230,14 +230,14 @@ window.CAMPAIGN = (() => {
   // your job: Labor governs; the Coalition is the Opposition; One Nation sits on the crossbench
   function role(st) { return st.phase === 'BYELECTION' ? 'Candidate' : st.phase === 'SPILL' && !st.spillWon ? 'Challenger' : st.party === 'ALP' ? 'Prime Minister' : st.party === 'LNP' ? 'Opposition Leader' : st.party === 'KAP' ? 'KAP leader' : 'Crossbench leader'; }
   // out of government you can only promise: shared cards' government actions read as promises for the Opposition and crossbench
-  const ACTS = new Set(['commit', 'fund', 'guarantee', 'enforce', 'expand', 'ban', 'freeze', 'cut', 'halt', 'repeal', 'restore', 'abolish', 'lift', 'build', 'inject', 'open', 'underwrite', 'introduce', 'mandate', 'extend', 'co-fund', 'phase', 'scrap', 'exempt', 'tie', 'allow', 'deny', 'double', 'triple', 'reinstate', 'proceed', 'protect', 'uphold', 'lower', 'complete', 'redirect', 'block', 'raise', 'halve', 'wipe', 'boost', 'establish', 'accelerate', 'fast-track', 'cap', 'impose', 'lock', 'enshrine', 'legislate', 'tighten', 'curb', 'offer', 'pair', 'convert', 'subsidise', 'audit', 'match', 'maintain', 'keep', 'hold', 'focus', 'prioritise', 'emphasise', 'invest', 'tax', 'regulate', 'expand']);
-  function promiseFor(party, x, c) { if (party === 'ALP' || c.party || !/^CAMP_/.test(c.id) || c.mile === 1) return x; const w = x.split(' '), v = w[0].toLowerCase();
+  const ACTS = new Set(['commit', 'fund', 'guarantee', 'enforce', 'expand', 'ban', 'freeze', 'cut', 'halt', 'repeal', 'restore', 'abolish', 'lift', 'build', 'inject', 'open', 'underwrite', 'introduce', 'mandate', 'extend', 'co-fund', 'co-invest', 'phase', 'scrap', 'exempt', 'tie', 'allow', 'deny', 'double', 'triple', 'reinstate', 'proceed', 'protect', 'uphold', 'lower', 'complete', 'redirect', 'block', 'raise', 'halve', 'wipe', 'boost', 'establish', 'accelerate', 'fast-track', 'cap', 'impose', 'lock', 'enshrine', 'legislate', 'tighten', 'curb', 'offer', 'pair', 'convert', 'subsidise', 'audit', 'match', 'maintain', 'focus', 'prioritise', 'emphasise', 'invest', 'regulate', 'create', 'deliver', 'provide', 'require', 'launch', 'set', 'strengthen', 'write', 'streamline', 'replace', 'remove', 'enact', 'support', 'roll', 'order', 'bring', 'shelve', 'ease', 'crack', 'link', 'include', 'defer', 'suspend', 'refocus', 'balance', 'partner', 'carve', 'grant', 'move', 'press', 'trim', 'rationalise', 'underground', 'offset', 'close', 'appoint', 'empower']);
+  function promiseFor(party, x, c, o) { if (party === 'ALP' || c.party || !/^CAMP_/.test(c.id) || c.mile === 1 || c.mile === 5 || (o && (o.only || o.noPromise)) || /\b(promise|pitch|speech|rallies|rallying)\b/i.test(x)) return x; const w = x.split(' '), v = w[0].toLowerCase();
     return ACTS.has(v) ? 'Promise to ' + v + ' ' + w.slice(1).join(' ') : x; }
-  const promiseText = (st, x, c) => promiseFor(st.party, x, c);
+  const promiseText = (st, x, c, o) => promiseFor(st.party, x, c, o);
   function cardFor(st) { const c = cardById(st.cur, st); if (!c) return null;
     const L = ldrOf(st), mate = (L.mates || [])[0] || 'Your deputy', riv = incOf(rivalOf(st)), rn = riv ? riv.name.split(' ').slice(-1)[0] : 'your rival';
     const fill = s => typeof s === 'string' ? s.replace(/\{mate\}/g, mate).replace(/\{leader\}/g, L.name).replace(/\{seat\}/g, st.disSeat || 'a marginal seat').replace(/\{bn\}/g, Math.round((st.ledger || {}).bn || 0)).replace(/\{rival\}/g, rn).replace(/\{surname\}/g, sname(st)).replace(/\{byseat\}/g, (st.by || {}).seat || 'the seat').replace(/\{again\}/g, L.again ? ' again' : '') : s;
-    return { ...c, role: role(st), t: fill(c.t), q: fill(c.q), opts: c.opts.map((o, i) => ({ ...o, x: promiseText(st, fill(o.x), c), h: fill(o.h), i })).filter(o => !o.only || o.only === L.id) }; }
+    return { ...c, role: role(st), t: fill(c.t), q: fill(c.q), opts: c.opts.map((o, i) => ({ ...o, x: promiseText(st, fill(o.x), c, o), h: fill(o.h), i })).filter(o => !o.only || o.only === L.id) }; }
 
   // ---- checks
   function debate(st, tag) { const L = ldrOf(st); let d = L.deb + ((L.debTag || {})[tag] || 0) + (st.unity >= 75 ? 1 : 0) - (st.stamina < 30 ? 1 : 0);
@@ -384,13 +384,39 @@ window.CAMPAIGN = (() => {
     return out;
   }
   // a headline for cards that came without one: the leader's surname and the option, turned into a news verb
+  const HL_IRR = { have: 'has', do: 'does', go: 'goes', be: 'is' };
+  const HL_VERBS = new Set([...ACTS, 'back', 'keep', 'hold', 'put', 'scale', 'promise', 'target', 'take', 'warn', 'deflect', 'defend', 'attack', 'champion', 'deploy', 'avoid', 'reject', 'oppose', 'ignore', 'let', 'run', 'rule', 'signal', 'urge', 'threaten', 'brush', 'pivot', 'blame', 'accuse', 'wear', 'soften', 'convene', 'reassure', 'stand', 'insist', 'embrace', 'split', 'blitz', 'restrict', 'pull', 'replace', 'buy', 'charter', 'thank', 'fire', 'adopt', 'surge', 'stay', 'lead', 'crack', 'front', 'claim', 'point', 'dismiss', 'tailor', 'counter-attack', 'demand', 'seek', 'send', 'wait', 'make', 'release', 'turn', 'process', 'have', 'do', 'go', 'shout', 'talk', 'skip', 'cook', 'bring', 'play', 'hang', 'complain', 'correct', 'laugh', 'accept', 'decline', 'agree', 'refuse', 'give', 'drop', 'find', 'name', 'say', 'concede', 'tell', 'unveil', 'announce', 'deliver', 'spend', 'pour', 'call', 'end', 'start', 'pass', 'stop', 'join', 'water', 'rely', 'stick', 'rein', 'broker', 'crush', 'pause', 'reward', 'publish', 'use', 'pitch', 'win', 'issue', 'invite', 'denounce', 'propose', 'pursue', 'argue', 'direct', 'negotiate', 'delay', 'reserve', 'relocate', 'train', 'apologise', 'privatise', 'slash', 'tax', 'deport', 'seal', 'upgrade', 'speed', 'ring-fence', 'fix']);
+  const HL_CONJ = v => { const lc = v.toLowerCase(); if (HL_IRR[lc]) return HL_IRR[lc]; return /(s|sh|ch|x|z|o)$/.test(lc) ? lc + 'es' : /[^aeiou]y$/.test(lc) ? lc.slice(0, -1) + 'ies' : lc + 's'; };
+  const HL_KEEP_CAP = /^(ACCC|AFP|AI|AUKUS|ABC|SBS|ACT|ADF|APS|CPI|DVA|EPA|EV|FBT|FOI|GDP|GP|GST|HECS|ID|IR|KAP|LNP|M1|NACC|NDIS|NSW|NT|ONP|PALM|PBO|PBS|QLD|RBA|SA|TAFE|TAS|WA|Australian|Indo-Pacific|Torrens|Canberra|Geelong|Darwin|Brisbane|Adelaide|Perth|Hobart|Sydney|Melbourne|Medicare|CopperString|Snowy|Marinus|Whyalla|Collie|Kemerton|Derwent|Bruce|Princes|Western|Far|Northern|South-West|Great|Pacific|Asia|Labor|Coalition|Nationals|Greens|Teals|Joyce|Hanson|Future|National|People’s|Your|Fee-Free)\b/;
+  const HL_NOUNY = new Set(['support', 'water', 'fire', 'lower', 'lead', 'use', 'point', 'claim', 'demand', 'signal', 'pitch', 'pass', 'cut', 'cap', 'tax', 'fund', 'grant', 'boost', 'lift', 'lock', 'link', 'match', 'stand', 'turn', 'call', 'scale', 'offset', 'trim', 'drop', 'rule', 'blame', 'play', 'name', 'run', 'focus', 'open', 'close', 'press', 'pause', 'set', 'stay', 'end', 'start', 'stop', 'back', 'build', 'put', 'roll', 'rein', 'wait', 'talk', 'hang', 'give', 'find', 'say']);
   function headline(st, x) {
-    const sn = ldrOf(st).name.split(' ').slice(-1)[0], w = x.replace(/\.$/, '').split(' '), v = w[0], lc = v.toLowerCase();
-    const NOT = new Set(['strict', 'federal', 'ironclad', 'stronger', 'tougher', 'permanent', 'targeted', 'immediate', 'independent', 'mandatory', 'national', 'deep', 'emergency', 'joint', 'voluntary', 'temporary', 'tax', 'binding', 'windfall', 'direct', 'tough', 'flexible', 'community', 'publicly', 'sovereign', 'annual', 'compulsory', 'total', 'quad', 'big', 'minimum', 'moderate', 'progressive', 'zero', 'free', 'early', 'massive', 'regional', 'lower', 'emotional', 'unifying', 'unfiltered', 'steady', 'practical', 'line-by-line', 'detailed', 'supply', 'super', 'household', 'smaller', 'per-km', 'australian', 'policy', 'student', 'onshore', '6-month', 'house']);
-    if (/^[A-Z][a-z'’-]+$/.test(v) && !NOT.has(lc) && !/^\d/.test(v) && !/^(A|An|The)$/.test(v)) {
-      const v3 = /(s|sh|ch|x|z|o)$/.test(lc) ? lc + 'es' : /[^aeiou]y$/.test(lc) ? lc.slice(0, -1) + 'ies' : lc + 's';
-      return `${sn} ${v3} ${w.slice(1).join(' ')}`.replace(/\s+/g, ' ').trim(); }
-    return `${sn} backs ${x.charAt(0).toLowerCase() + x.slice(1).replace(/\.$/, '')}`;
+    const sn = ldrOf(st).name.split(' ').slice(-1)[0];
+    const clean = x.replace(/\.$/, '').trim();
+    const w = clean.split(' '), v = w[0], lc = v.toLowerCase();
+    if (/^[A-Z][a-z'’-]+$/.test(v) && HL_VERBS.has(lc)) {
+      let rest = w.slice(1).join(' ').replace(/\byour\b/g, 'their');
+      // conjugate clear second/third imperative verbs after " and " or ", " (skipping hyphenated modifiers and noun-phrase tails)
+      if (lc !== 'promise') {
+        const conjClause = (m, lead, sep, v2, next) => {
+          if (!HL_VERBS.has(v2)) return m;
+          const phrasal = (v2 === 'focus' && next === 'on') || (v2 === 'lock' && next === 'in') || (v2 === 'rule' && next === 'out') || (v2 === 'crack' && next === 'down') || (v2 === 'roll' && next === 'out') || (v2 === 'press' && next === 'ahead') || (v2 === 'fire' && next === 'back') || (v2 === 'brush' && next === 'off') || (v2 === 'back' && next === 'down') || (v2 === 'stand' && /^(with|by|firm)$/.test(next)) || (v2 === 'run' && /^(a|an|open|targeted)$/.test(next)) || (v2 === 'open' && /^(up|routes|the|a|\d)/.test(next)) || (v2 === 'close' && /^(offshore|family|the|a)/.test(next));
+          if (v2 === 'fund') {
+            if (/^(and|or|for|of|in|to|on|with|from|by|at|as)$/i.test(next)) return m;
+            return lead + sep + HL_CONJ(v2);
+          }
+          if (!phrasal && HL_NOUNY.has(v2) && /^(and|or|for|of|in|to|on|with|from|by|at|as|into|without|while|until|over|under|through|across|before|after|interest|rates|cuts|caps|grants|funds|rules|laws|reform|relief|offsets|credits|incentives|levies|taxes|charges|prices|bills|hubs|plans|deals|targets|schemes|programs|standards|mandates|settings|permits|approvals|upgrades|projects|services|jobs|homes|places|training|measures|powers|checks|audits|reviews|inquiries|subsidies|rebates|reserves|corridors|estates|zones|stations|lines|plants|networks|systems|markets|sectors|exports|imports|stocks|works|sites|centres|clinics|beds|wards|schools|loans|fees|fines|penalties|tests|checks|caps|limits|quotas|targets|bonuses|payments|packages|programs|initiatives|reforms|strategies|agreements|compacts|accords|pacts|policies|legislation|bills|acts|laws|rules|codes|guidelines|benchmarks|targets|thresholds|exemptions|carve-outs|safeguards|protections|guarantees|commitments|promises|pledges|proposals|measures|steps|actions|efforts|drives|pushes|campaigns|blitzes|tours|rallies|events|forums|summits|roundtables|panels|committees|commissions|inquiries|audits|reviews|reports|studies|trials|pilots|tests|checks)$/i.test(next)) return m;
+          return lead + sep + HL_CONJ(v2);
+        };
+        rest = rest.replace(/(^| )(and )([a-z-]+)(?= ([A-Za-z0-9$“‘][A-Za-z0-9’'-]*))/g, conjClause);
+        rest = rest.replace(/(, )([a-z-]+) (?=[^,]*and )/g, (m, sep, v2) => {
+          if (!HL_VERBS.has(v2) || (HL_NOUNY.has(v2) && !/^(boost|speed|apologise)$/.test(v2))) return m;
+          return sep + HL_CONJ(v2) + ' ';
+        });
+      }
+      return `${sn} ${HL_CONJ(v)} ${rest}`.replace(/\s+/g, ' ').trim();
+    }
+    const body = HL_KEEP_CAP.test(clean) ? clean : clean.charAt(0).toLowerCase() + clean.slice(1);
+    return `${sn} backs ${body}`;
   }
 
   // the clipping's colour follows the seat change it reports; only when the seats do not move does it judge the pick against the card's typical answer
@@ -478,7 +504,7 @@ window.CAMPAIGN = (() => {
         // your rival plays the same milestone, picking what suits them best (with a little noise)
         const best = base.opts.filter(x => !x.only && !x.cost).map(x => [x, wf(x) + gauss(st) * 0.15]).sort((a, b) => b[1] - a[1])[0];
         const amt = +clamp(Math.max(0.05, wf(best[0])) * 0.55 * VSCALE * dOf(st).rival, 0.05, 0.8).toFixed(2); addPty(st.acc.n, riv, amt);
-        const R = incOf(riv); entry.rival = { p: riv, who: R ? R.name : C.PARTIES_N(riv), x: promiseFor(riv, best[0].x, base), amt, t: pick(st, C.rival[riv] || ['']) };
+        const R = incOf(riv); entry.rival = { p: riv, who: R ? R.name : C.PARTIES_N(riv), x: promiseFor(riv, best[0].x, base, best[0]), amt, t: pick(st, C.rival[riv] || ['']) };
         if (c.mile === 3 || c.mile === 5) { const ex = { fx: [], notes: [], endorse: [] }; endorse(st, ex); if (ex.endorse.length) { entry.endorse = ex.endorse; fx.push(...ex.fx); notes.push(...ex.notes); } } }
       const pr = project(st); notes.push(...autoSpirits(st, pr));
       st.minUnity = Math.min(st.minUnity, st.unity);

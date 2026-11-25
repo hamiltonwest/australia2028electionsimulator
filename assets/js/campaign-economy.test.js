@@ -165,44 +165,58 @@ test('mergeCardProfiles preserves max dust, max foil tier per leader, and union 
   assert.ok(merged.crafted.paul_keating);
 });
 
-test('packDupChance is 0% below 33% owned, ramps 20%-30% from 33% upward, and 100% when full', () => {
-  assert.equal(E.packDupChance(5, 65), 0);
-  assert.equal(E.packDupChance(21, 65), 0); // 32.3% < 33.3%
-  assert.equal(E.packDupChance(22, 65), 0.2008); // 33.8% -> ~20%
-  assert.equal(E.packDupChance(1, 3), 0.2); // exact 33.3% -> 20%
-  const mid = E.packDupChance(43, 65); // 66.2% -> ~25%
+test('packDupChance is 0% on first pack, ramps 20%-30% after first pack, and 100% when full', () => {
+  assert.equal(E.packDupChance(5, 65, 0), 0);
+  assert.equal(E.packDupChance(30, 65, 0), 0);
+  const afterFirstLow = E.packDupChance(8, 65, 1);
+  assert.ok(afterFirstLow >= 0.20 && afterFirstLow <= 0.22, `expected ~0.21, got ${afterFirstLow}`);
+  const mid = E.packDupChance(33, 65, 3);
   assert.ok(mid >= 0.24 && mid <= 0.26, `expected ~0.25, got ${mid}`);
-  const nearFull = E.packDupChance(64, 65); // 98.5% -> ~30%
+  const nearFull = E.packDupChance(64, 65, 10);
   assert.ok(nearFull >= 0.29 && nearFull <= 0.30, `expected ~0.30, got ${nearFull}`);
-  assert.equal(E.packDupChance(65, 65), 1);
+  assert.equal(E.packDupChance(65, 65, 10), 1);
 });
 
-test('drawPackLeaders draws 3 distinct cards with dupes only once >=33% owned', () => {
+test('drawPackLeaders is duplicate-free on first pack and guarantees at least 1 dupe on every pack after', () => {
   const pool = Array.from({ length: 65 }, (_, i) => ({ id: `L${i}` }));
   const pickFirst = (list, n) => list.slice(0, n);
 
-  // Below 33% (20 owned): even rng=0 produces 0 duplicates
-  const owned20 = Object.fromEntries(pool.slice(0, 20).map(x => [x.id, 1]));
-  const below = E.drawPackLeaders(pool, owned20, pickFirst, () => 0, 3);
-  assert.equal(below.dupChance, 0);
-  assert.equal(below.ids.length, 3);
-  assert.equal(new Set(below.ids).size, 3);
-  assert.ok(below.ids.every(id => !owned20[id]));
+  // First pack (opened = 0): even with rng=0 and 8 owned starters, produces 0 duplicates
+  const owned8 = Object.fromEntries(pool.slice(0, 8).map(x => [x.id, 1]));
+  const firstPack = E.drawPackLeaders(pool, owned8, pickFirst, () => 0, 3, 0);
+  assert.equal(firstPack.dupChance, 0);
+  assert.equal(firstPack.guaranteedDup, 0);
+  assert.equal(firstPack.ids.length, 3);
+  assert.equal(new Set(firstPack.ids).size, 3);
+  assert.ok(firstPack.ids.every(id => !owned8[id]));
 
-  // At >=33% (22 owned): rng below dupChance draws owned duplicate, rng above draws fresh
-  const owned22 = Object.fromEntries(pool.slice(0, 22).map(x => [x.id, 1]));
-  const seq = [0.05, 0.90, 0.15];
-  let idx = 0;
-  const mixed = E.drawPackLeaders(pool, owned22, pickFirst, () => seq[idx++], 3);
-  assert.ok(mixed.dupChance >= 0.20 && mixed.dupChance <= 0.21);
-  assert.equal(mixed.ids.length, 3);
-  assert.equal(new Set(mixed.ids).size, 3);
-  assert.equal(mixed.ids.filter(id => !!owned22[id]).length, 2);
-  assert.equal(mixed.ids.filter(id => !owned22[id]).length, 1);
+  // After first pack (opened >= 1): even with rng=0.99, ALWAYS guarantees at least 1 duplicate
+  const secondPackHighRng = E.drawPackLeaders(pool, owned8, pickFirst, () => 0.99, 3, 1);
+  assert.equal(secondPackHighRng.guaranteedDup, 1);
+  assert.equal(secondPackHighRng.ids.length, 3);
+  assert.equal(new Set(secondPackHighRng.ids).size, 3);
+  assert.equal(secondPackHighRng.ids.filter(id => !!owned8[id]).length, 1);
+  assert.equal(secondPackHighRng.ids.filter(id => !owned8[id]).length, 2);
+
+  // After first pack (opened >= 1) with low rng: can produce >1 duplicate while staying distinct
+  const secondPackLowRng = E.drawPackLeaders(pool, owned8, pickFirst, () => 0.05, 3, 2);
+  assert.equal(secondPackLowRng.ids.length, 3);
+  assert.equal(new Set(secondPackLowRng.ids).size, 3);
+  assert.ok(secondPackLowRng.ids.filter(id => !!owned8[id]).length >= 2);
+
+  // Monte Carlo check across 50 subsequent packs: every single pack has >= 1 dupe
+  let seed = 42;
+  const prng = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+  for (let i = 1; i <= 50; i++) {
+    const res = E.drawPackLeaders(pool, owned8, pickFirst, prng, 3, i);
+    const dupCount = res.ids.filter(id => !!owned8[id]).length;
+    assert.ok(dupCount >= 1, `pack ${i + 1} had ${dupCount} dupes`);
+    assert.equal(new Set(res.ids).size, 3);
+  }
 
   // At 100% (65 owned): draws 3 distinct owned duplicates (Dust Pack)
   const ownedAll = Object.fromEntries(pool.map(x => [x.id, 1]));
-  const full = E.drawPackLeaders(pool, ownedAll, pickFirst, () => 0.99, 3);
+  const full = E.drawPackLeaders(pool, ownedAll, pickFirst, () => 0.99, 3, 20);
   assert.equal(full.dupChance, 1);
   assert.equal(full.ids.length, 3);
   assert.equal(new Set(full.ids).size, 3);

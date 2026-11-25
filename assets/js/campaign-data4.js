@@ -38,7 +38,7 @@
 
   LD({ id: 'tony_burke', name: 'Tony Burke', party: 'ALP', inc: false, mates: ['Tanya Plibersek'], deb: 2, pp: 0, unityAdj: -6,
       plus: ['The counter-puncher', 'Debate skill 2, the best in the Labor ranks.'], minus: ['Canberra bubble', 'Scandal setbacks hit 30% harder; starts with 6 less unity.'], neg: { tag: { CRISIS: 1.3 } } },
-    [3, 'Give the Press Club a Western Sydney speech: Lakemba, Punchbowl and the price of everything.', 'Burke takes the Press Club to Western Sydney', { r: { OUT: 1.2 }, m: 1 }],
+    [3, 'Turn the mid-campaign spotlight into a Western Sydney pitch: Lakemba, Punchbowl and the price of everything.', 'Burke turns the spotlight on Western Sydney', { r: { OUT: 1.2 }, m: 1 }],
     [4, 'Treat the debate like Question Time, standing orders and all.', 'Burke plays the debate like Question Time', ['d', 3, { m: 2, o: 0.3 }, { o: -0.9, m: -2 }]],
     ['Workplace laws', 'Business groups say the government’s workplace changes went too far. The unions want more.', 'IR', [
       E('Promise a pause: no new workplace laws next term.', 'Burke promises an industrial-relations pause', { r: { IN: 0.3, OUT: 0.3 }, u: -3 }),
@@ -93,7 +93,7 @@
       plus: ['Mates with the miners', 'Energy setbacks hit 25% softer; +3 Political Power a turn.'], minus: ['Eastern-seaboard blind spot', 'Setbacks in NSW and Victoria hit 25% harder.'],
       neg: { tag: { ENERGY: 0.75 }, st: { NSW: 1.25, VIC: 1.25 } } },
     [1, 'Launch in the Pilbara with a critical-minerals jobs plan.', 'King launches in the Pilbara', { s: { WA: 1.4 }, r: { PROV: 0.6, RUR: 0.4 } }, 'ENERGY'],
-    [3, 'Tell the Press Club that gas will be needed until 2050 and beyond.', 'King backs gas to 2050', ['d', 3, { r: { PROV: 0.8, RUR: 0.8 } }, { r: { IN: -1.4 }, n: { GRN: 0.8 }, m: -2 }], 'ENERGY', 'fossil+'],
+    [3, 'Use the mid-campaign spotlight to insist gas will be needed until 2050 and beyond.', 'King backs gas to 2050', ['d', 3, { r: { PROV: 0.8, RUR: 0.8 } }, { r: { IN: -1.4 }, n: { GRN: 0.8 }, m: -2 }], 'ENERGY', 'fossil+'],
     ['The gas reservation fight', 'East-coast manufacturers want gas kept for local use. The exporters threaten to walk away.', 'ENERGY', [
       E('Reserve a quarter of all new gas for Australian users.', 'King reserves gas for local users', { r: { OUT: 0.6, PROV: 0.4 } }),
       E('Strike a voluntary deal with the exporters.', 'King does a deal with gas exporters', { s: { WA: 0.6 }, pp: 5 }),
@@ -104,7 +104,7 @@
       plus: ['Straight talker', '+1 on economy checks; +2 Political Power a turn.'], debTag: { ECONOMY: 1 },
       minus: ['Off message', 'Starts with 4 less unity, and unity drifts down 1 a turn.'] },
     [2, 'Release the costings with a sovereign tech fund: chips, quantum and AI made here.', 'Husic’s tech fund adds up', { o: 0.6, r: { OUT: 0.5 }, pp: 5 }],
-    [3, 'Use the Press Club to criticise your own government’s foreign policy.', 'Husic breaks ranks at the Press Club', ['d', 3, { r: { OUT: 1.2 }, m: 2 }, { u: -10, o: -0.6, m: -2 }]],
+    [3, 'Use the mid-campaign spotlight to criticise your own government’s foreign policy.', 'Husic breaks ranks on foreign policy', ['d', 3, { r: { OUT: 1.2 }, m: 2 }, { u: -10, o: -0.6, m: -2 }]],
     ['The Western Sydney revolt', 'Community independents are running in Labor heartland seats across Western Sydney.', '', [
       E('Campaign street by street with local community leaders.', 'Husic works the streets of Western Sydney', { r: { OUT: 1 } }),
       E('Promise a Western Sydney jobs fund.', 'Husic promises a jobs fund for the west', { r: { OUT: 0.6 }, pp: -5 }),
@@ -124,7 +124,7 @@
   LD({ id: 'kristina_keneally', name: 'Kristina Keneally', party: 'ALP', inc: false, cb: true, votes0: 40, mates: ['Carmel Tebbutt'], deb: 2, pp: 0, unityAdj: -4,
       plus: ['Born campaigner', 'Debate skill 2.'], minus: ['Parachute candidate', 'Setbacks in NSW hit 25% harder; starts the spill on 40%.'], neg: { st: { NSW: 1.25 } } },
     [1, 'Launch in Barton after a month of knocking on every door in the seat.', 'Keneally’s door-knock launch', { r: { OUT: 0.8 }, s: { NSW: 0.6 }, m: 1 }],
-    [3, 'Use the Press Club to argue for lower migration, against your party’s line.', 'Keneally breaks with Labor on migration', ['d', 3, { r: { OUT: 1 }, n: { ONP: -0.6 } }, { u: -8, r: { IN: -1 }, m: -2 }], 'MIGRATION', 'migration-'],
+    [3, 'Use the mid-campaign spotlight to argue for lower migration, against your party’s line.', 'Keneally breaks with Labor on migration', ['d', 3, { r: { OUT: 1 }, n: { ONP: -0.6 } }, { u: -8, r: { IN: -1 }, m: -2 }], 'MIGRATION', 'migration+'],
     ['The NSW Labor ghosts', 'Your opponents are dredging up old scandals from your time in state politics.', 'CRISIS', [
       G('Front it: a long press conference on what you changed.', 'Keneally fronts the past', 'd', 2, { m: 2, o: 0.3 }, { o: -0.5, m: -1 }),
       E('Promise more powers for the national anti-corruption commission.', 'Keneally promises a stronger anti-corruption body', { r: { IN: 0.6 }, m: 1 }),
@@ -143,7 +143,7 @@
 
   LD({ id: 'bill_shorten', name: 'Bill Shorten', party: 'ALP', inc: false, cb: true, votes0: 42, mates: ['Tanya Plibersek'], deb: 2, pp: 0, unityAdj: -2,
       plus: ['Blue-collar hero', 'Debate skill 2; +1 on workplace checks.'], debTag: { IR: 1 }, minus: ['The ghost of 2019', 'Tax-scare setbacks hit twice as hard.'], neg: { tag: { TAX: 2 } } },
-    [3, 'Make the Press Club about the NDIS: the scheme you started, fixed.', 'Shorten’s Press Club is all about the NDIS', { o: 0.7, r: { OUT: 0.5 } }, 'HEALTH'],
+    [3, 'Make the mid-campaign showcase all about the NDIS: the scheme you started, fixed.', 'Shorten makes the showcase all about the NDIS', { o: 0.7, r: { OUT: 0.5 } }, 'HEALTH'],
     [2, 'Bring back changes to franking credits in the costings.', 'Shorten revives the franking-credits fight', ['d', 4, { o: 0.4, pp: 8 }, { o: -1.4, r: { PROV: -0.8, OUT: -0.6 }, m: -3 }], 'TAX', 'tax+'],
     ['The one-liner', 'Your team has written a one-liner for tonight’s interview. It is either brilliant or terrible.', '', [
       G('Use it.', 'Shorten’s one-liner lands, or does it?', 'm', 2, { m: 3, o: 0.3 }, { m: -2, o: -0.3 }),
@@ -162,11 +162,11 @@
       G('Fly to Washington and seek a better price.', 'Smith goes to Washington', 'd', 2, { o: 0.5 }, { o: -0.4 })]],
     ['THE_STEADY_HAND', 'The Steady Hand', 'As Stephen Smith, form government without caucus unity ever falling below 50.', (st, r) => won(st, r) && st.minUnity >= 50, 'hand']);
 
-  LD({ id: 'kevin_rudd', name: 'Kevin Rudd', party: 'ALP', inc: false, cb: true, votes0: 52, mates: ['Julia Gillard'], deb: 1, pp: 2, unityAdj: -4, unityDrift: -1,
+  LD({ id: 'kevin_rudd', name: 'Kevin Rudd', party: 'ALP', inc: false, cb: true, votes0: 52, mates: ['Anthony Albanese'], deb: 1, pp: 2, unityAdj: -4, unityDrift: -1,
       plus: ['The comeback kid', 'Starts the spill on 52%; +1 on security checks.'], debTag: { NATIONAL_SECURITY: 1 },
       minus: ['Micromanager', 'Starts with 4 less unity, and unity drifts down 1 a turn.'] },
     [1, 'Launch in Brisbane with a Queensland jobs plan and a message to the region in Mandarin.', 'Rudd launches in Brisbane', { s: { QLD: 1.2 }, m: 2 }],
-    [3, 'Deliver a 70-minute Press Club address with 40 slides.', 'Rudd’s 70-minute Press Club', ['d', 3, { o: 0.5, r: { IN: 0.6 } }, { o: -1, m: -3 }]],
+    [3, 'Deliver a 70-minute policy presentation with 40 slides.', 'Rudd’s 70-minute, 40-slide marathon', ['d', 3, { o: 0.5, r: { IN: 0.6 } }, { o: -1, m: -3 }]],
     ['The ghosts of 2010', 'The party remembers the last spills. Some MPs refuse to campaign with you.', '', [
       E('Call every one of them and make peace.', 'Rudd makes peace with caucus', { u: 8, pp: -5 }),
       E('Campaign without them.', 'Rudd goes it alone', { u: -4, m: 1 }),
@@ -187,7 +187,7 @@
       plus: ['Pride of the West', 'Setbacks in WA hit half as hard; +3 Political Power a turn.'], minus: ['Unknown over east', 'Setbacks in NSW, Victoria and Queensland hit 20% harder.'],
       neg: { st: { WA: 0.5, NSW: 1.2, VIC: 1.2, QLD: 1.2 } } },
     [1, 'Launch in Perth with a guarantee on the West’s share of the GST.', 'McGowan launches with a GST guarantee', { s: { WA: 1.6, NSW: -0.2 } }, 'TAX'],
-    [3, 'Tell the Press Club you would close the state borders again in a pandemic.', 'McGowan would shut the borders again', ['d', 3, { s: { WA: 1 } }, { o: -1, s: { VIC: -0.8, NSW: -0.6 }, m: -2 }]],
+    [3, 'Use the mid-campaign spotlight to say you would close the state borders again in a pandemic.', 'McGowan would shut the borders again', ['d', 3, { s: { WA: 1 } }, { o: -1, s: { VIC: -0.8, NSW: -0.6 }, m: -2 }]],
     ['The GST deal', 'The eastern states want Western Australia’s GST deal scrapped.', 'TAX', [
       E('Guarantee the WA deal for good.', 'McGowan locks in the GST deal', { s: { WA: 1, NSW: -0.4, VIC: -0.4 } }),
       E('Top up the other states so nobody loses.', 'McGowan tops up the states', { o: 0.3, pp: -5 }, 'spending+'),
@@ -198,7 +198,7 @@
   LD({ id: 'sussan_ley', name: 'Sussan Ley', party: 'LNP', inc: false, mates: ["Ted O'Brien", 'Matt Canavan'], deb: 1, pp: 2, unityAdj: -10,
       plus: ['Teal whisperer', 'Teal-seat preferences 3 points stronger; +2 Political Power a turn.'], pf: { ind: 3 }, minus: ['The revolving door', 'Starts with 10 less caucus unity.'] },
     [1, 'Fly yourself to the launch in a light plane and make it about the regions.', 'Ley flies in for the launch', { r: { RUR: 1, PROV: 0.6 }, m: 2 }],
-    [3, 'Promise the Press Club the Liberals will go back to Net Zero.', 'Ley takes the Liberals back to Net Zero', ['d', 3, { r: { IN: 1.4 }, pf: { ind: 2 } }, { u: -10, r: { RUR: -1 }, m: -2 }], 'ENERGY', 'fossil-'],
+    [3, 'Use the mid-campaign spotlight to promise the Liberals will go back to Net Zero.', 'Ley takes the Liberals back to Net Zero', ['d', 3, { r: { IN: 1.4 }, pf: { ind: 2 } }, { u: -10, r: { RUR: -1 }, m: -2 }], 'ENERGY', 'fossil-'],
     ['Women in the party room', 'Only a handful of Liberal MPs are women, and preselections are under fire.', '', [
       E('Set a target of half women by 2030.', 'Ley sets a target for women MPs', { r: { IN: 0.8 }, u: -4 }),
       E('Fund a mentoring program for candidates.', 'Ley funds a mentoring program', { r: { IN: 0.3 } }),
@@ -208,7 +208,7 @@
   LD({ id: 'ted_obrien', name: "Ted O'Brien", party: 'LNP', inc: false, mates: ['Sussan Ley', 'Matt Canavan'], deb: 1, pp: 0, unityAdj: -4,
       plus: ['The cheap-power promise', '+1 on energy checks; energy choices land 30% harder for you.'], debTag: { ENERGY: 1 }, pos: { tag: { ENERGY: 1.3 } },
       minus: ['Nuclear liability', 'Energy setbacks in inner-metro seats hit 40% harder.'], neg: { tagR: { ENERGY: { IN: 1.4 } } } },
-    [3, 'Give the Press Club a costed plan for small modular reactors, site by site.', 'O’Brien costs his reactors', { r: { OUT: 0.6, PROV: 0.6 }, m: 1 }, 'ENERGY'],
+    [3, 'Unveil a costed plan for small modular reactors, site by site.', 'O’Brien costs his reactors', { r: { OUT: 0.6, PROV: 0.6 }, m: 1 }, 'ENERGY'],
     [5, 'End the campaign at the gates of a proposed nuclear site.', 'O’Brien ends at a nuclear site', ['m', 3, { r: { PROV: 1, RUR: 0.8 }, m: 2 }, { r: { IN: -1.4, OUT: -0.6 }, m: -3 }], 'ENERGY'],
     ['Where would the reactors go?', 'Every interview asks the same thing: which towns get a reactor?', 'ENERGY', [
       E('Name all seven sites again.', 'O’Brien names the sites', { r: { RUR: -0.5, OUT: 0.5 } }),
@@ -219,7 +219,7 @@
   LD({ id: 'julian_leeser', name: 'Julian Leeser', party: 'LNP', inc: false, mates: ['Tim Wilson', 'Matt Canavan'], deb: 0, pp: 0, unityAdj: 5,
       plus: ['A principled stand', 'Teal-seat preferences 4 points stronger; +5 unity on taking the job.'], pf: { ind: 4 },
       minus: ['Soft on the fight', 'Debate skill 0; One Nation preferences 3 points weaker.'], pfMinus: { on: -3 } },
-    [3, 'Use the Press Club to set out a plan for constitutional recognition the country could agree on.', 'Leeser’s recognition plan', { r: { IN: 1 }, pf: { ind: 2 } }],
+    [3, 'Use the mid-campaign spotlight to set out a plan for constitutional recognition the country could agree on.', 'Leeser’s recognition plan', { r: { IN: 1 }, pf: { ind: 2 } }],
     [4, 'Spend your debate time praising your opponent’s best idea.', 'Leeser praises his opponent', ['d', 3, { o: 0.5, r: { IN: 0.8 } }, { o: -0.8, m: -2, u: -3 }]],
     ['Religious freedom', 'Faith schools want protection in law; equality groups want the opposite.', '', [
       E('Legislate protections for faith schools.', 'Leeser protects faith schools', { r: { OUT: 0.5, IN: -0.4 } }),
@@ -252,7 +252,7 @@
       plus: ['The 2019 upset', '+1 on economy checks.'], debTag: { ECONOMY: 1 },
       minus: ['Trust deficit', 'Starts the spill on 22%; 16 less unity; scandal setbacks hit 60% harder; teal-seat preferences 4 points weaker.'], neg: { tag: { CRISIS: 1.6 } }, pfMinus: { ind: -4 } },
     [5, 'Spend the last day in hi-vis on a Sydney building site, then at a suburban barbecue.', 'Morrison’s hi-vis final day', { r: { OUT: 1.2 }, m: 2 }],
-    [3, 'Tell the Press Club you would take on extra ministries yourself to get things done.', 'Morrison would run extra ministries', ['d', 4, { o: 0.3 }, { o: -1.3, r: { IN: -1.2 }, m: -3, u: -5 }]],
+    [3, 'Declare that you would take on extra ministries yourself again to get things done.', 'Morrison would run extra ministries', ['d', 4, { o: 0.3 }, { o: -1.3, r: { IN: -1.2 }, m: -3, u: -5 }]],
     ['The weekend away', 'A bushfire breaks out while you are on a long-planned family weekend away.', 'CRISIS', [
       E('Fly back at once and go to the fire ground.', 'Morrison flies back to the fires', { o: 0.4, m: 1 }),
       G('Send your deputy and stay.', 'Morrison stays away', 'm', 3, { o: 0 }, { o: -1.2, m: -3 }),
@@ -273,7 +273,7 @@
   LD({ id: 'dominic_perrottet', name: 'Dominic Perrottet', party: 'LNP', inc: false, cb: true, votes0: 38, mates: ['Matt Kean', 'Matt Canavan'], deb: 1, pp: 3, unityAdj: 0,
       plus: ['Economic credibility', '+1 on economy and tax checks; +3 Political Power a turn.'], debTag: { ECONOMY: 1, TAX: 1 }, minus: ['Federal novice', 'Starts the spill on 38%.'] },
     [2, 'Release a plan to swap stamp duty for land tax, with federal money to help the states switch.', 'Perrottet’s stamp-duty swap', { r: { OUT: 0.8, IN: 0.6 }, pp: 5 }, 'TAX'],
-    [3, 'Promise the Press Club you will sell a major federal asset to pay for tax cuts.', 'Perrottet would sell assets for tax cuts', ['d', 3, { o: 0.4, r: { IN: 0.6 } }, { o: -1, r: { OUT: -0.8 }, m: -2 }], 'TAX'],
+    [3, 'Promise to sell a major federal asset to pay for income-tax cuts.', 'Perrottet would sell assets for tax cuts', ['d', 3, { o: 0.4, r: { IN: 0.6 } }, { o: -1, r: { OUT: -0.8 }, m: -2 }], 'TAX'],
     ['The Bradfield fight', 'You are contesting Bradfield against the teal who won it in 2025.', '', [
       E('Match the teals with a 2035 emissions target.', 'Perrottet matches the teals on climate', { r: { IN: 0.9 }, u: -4 }, 'fossil-'),
       E('Campaign on housing for young families.', 'Perrottet campaigns on housing', { r: { IN: 0.5, OUT: 0.4 } }),
@@ -284,7 +284,7 @@
       plus: ['Teal whisperer', 'Teal-seat preferences 5 points stronger; +1 on security checks.'], pf: { ind: 5 }, debTag: { NATIONAL_SECURITY: 1 },
       minus: ['Party-room grudges', 'Starts with 10 less unity; One Nation preferences 3 points weaker.'], pfMinus: { on: -3 } },
     [4, 'Meet every interruption in the debate with a long, cold silence.', 'Bishop stares down the debate', { m: 2, o: 0.4 }],
-    [3, 'Tell the Press Club the party room got it wrong in 2018.', 'Bishop reopens 2018', ['d', 3, { r: { IN: 1.2 } }, { u: -12, m: -2 }]],
+    [3, 'Use the mid-campaign spotlight to say the party room got it wrong in 2018.', 'Bishop reopens 2018', ['d', 3, { r: { IN: 1.2 } }, { u: -12, m: -2 }]],
     ['Curtin', 'You are contesting your old seat, now held by the teal Kate Chaney.', '', [
       E('Run a positive local campaign.', 'Bishop runs a local campaign', { s: { WA: 0.6 }, r: { IN: 0.4 } }),
       G('Hit the teal on climate and donors.', 'Bishop goes after the teal', 'd', 2, { r: { IN: 0.7 } }, { r: { IN: -0.5 } }),
@@ -295,7 +295,7 @@
       plus: ['The Gladys effect', '+3 Political Power a turn; teal-seat preferences 2 points stronger.'], pf: { ind: 2 },
       minus: ['Integrity questions', 'Scandal setbacks hit 60% harder.'], neg: { tag: { CRISIS: 1.6 } } },
     [1, 'Launch in Bennelong with a plain daily press conference, on time, every day.', 'Berejiklian brings back the daily briefing', { m: 2, s: { NSW: 0.8 } }],
-    [3, 'Answer every question about the past at the Press Club, for as long as it takes.', 'Berejiklian takes every question', ['d', 3, { m: 2, o: 0.4 }, { o: -1.2, m: -3 }]],
+    [3, 'Stay on stage and answer every question about your past, for as long as it takes.', 'Berejiklian takes every question', ['d', 3, { m: 2, o: 0.4 }, { o: -1.2, m: -3 }]],
     ['Bennelong', 'Bennelong has big Korean- and Chinese-Australian communities, and Labor holds it.', '', [
       E('Campaign in Korean and Mandarin with local leaders.', 'Berejiklian campaigns in community languages', { s: { NSW: 0.5 }, r: { OUT: 0.4 } }),
       E('Promise a new metro line.', 'Berejiklian promises a metro line', { s: { NSW: 0.6 }, pp: -5 }),
@@ -317,7 +317,7 @@
       plus: ['Adelaide’s favourite', 'Setbacks in South Australia hit 40% softer; teal-seat preferences 3 points stronger.'], neg: { st: { SA: 0.6 } }, pf: { ind: 3 },
       minus: ['Lost South Australia', 'Starts the spill on 36%.'] },
     [1, 'Launch at Adelaide’s space-industry precinct with a high-tech jobs plan.', 'Marshall launches with a space-industry plan', { s: { SA: 1 }, r: { IN: 0.5 } }],
-    [3, 'Promise the Press Club a national nuclear-waste store in South Australia.', 'Marshall puts nuclear waste in SA', ['d', 4, { o: 0.3 }, { s: { SA: -1.5 }, m: -2 }]],
+    [3, 'Promise a national nuclear-waste store in South Australia.', 'Marshall puts nuclear waste in SA', ['d', 4, { o: 0.3 }, { s: { SA: -1.5 }, m: -2 }]],
     ['The Adelaide hospital', 'Ambulances are ramping outside Adelaide’s hospitals again.', 'HEALTH', [
       E('Fund a new hospital for Adelaide’s north.', 'Marshall funds a hospital', { s: { SA: 0.8 }, pp: -5 }),
       E('Pay for more paramedics and beds.', 'Marshall funds paramedics', { s: { SA: 0.5 } }),
@@ -340,7 +340,7 @@
       plus: ['Mates with the miners', 'Rural and provincial setbacks hit 30% softer; One Nation preferences 4 points stronger.'], pf: { on: 4 },
       minus: ['Climate sceptic', 'Inner-metro setbacks hit 50% harder; teal-seat preferences 4 points weaker.'], neg: { r: { RUR: 0.7, PROV: 0.7, IN: 1.5 } }, pfMinus: { ind: -4 } },
     [1, 'Launch in Rockhampton: coal, beef and dams.', 'Canavan launches in Rockhampton', { r: { RUR: 1.4, PROV: 0.8 }, s: { QLD: 0.6 }, m: 1 }],
-    [3, 'Tell the Press Club the Coalition would leave the Paris Agreement.', 'Canavan would quit Paris', ['d', 3, { r: { RUR: 1.2 }, n: { ONP: -1 } }, { r: { IN: -2, OUT: -0.8 }, pf: { ind: -3 }, m: -3 }], 'ENERGY', 'fossil+'],
+    [3, 'Use the mid-campaign spotlight to declare the Coalition would leave the Paris Agreement.', 'Canavan would quit Paris', ['d', 3, { r: { RUR: 1.2 }, n: { ONP: -1 } }, { r: { IN: -2, OUT: -0.8 }, pf: { ind: -3 }, m: -3 }], 'ENERGY', 'fossil+'],
     ['Dams for the north', 'Northern Queensland wants water. Economists say the big schemes do not add up.', '', [
       E('Promise a scheme to turn the northern rivers inland.', 'Canavan promises to turn the rivers', { s: { QLD: 0.7 }, r: { RUR: 0.6 }, pp: -5 }),
       E('Fund three smaller dams.', 'Canavan funds three dams', { r: { RUR: 0.5 } }),
@@ -351,7 +351,7 @@
       plus: ['Electable moderate', 'Teal-seat preferences 4 points stronger; inner-metro setbacks hit 20% softer.'], pf: { ind: 4 }, neg: { r: { IN: 0.8 } },
       minus: ['Party-room outcast', 'Starts the spill on 34%.'] },
     [1, 'Launch in Gippsland with a bushfire-recovery and veterans’ plan.', 'Chester launches in Gippsland', { r: { RUR: 0.8, PROV: 0.6 }, s: { VIC: 0.5 } }],
-    [3, 'Tell the Press Club you back a 2035 emissions target.', 'Chester backs a 2035 target', ['d', 3, { r: { IN: 1.2 }, pf: { ind: 2 } }, { u: -12, r: { RUR: -0.8 }, m: -2 }], 'ENERGY', 'fossil-'],
+    [3, 'Use the mid-campaign spotlight to back a 2035 emissions target.', 'Chester backs a 2035 target', ['d', 3, { r: { IN: 1.2 }, pf: { ind: 2 } }, { u: -12, r: { RUR: -0.8 }, m: -2 }], 'ENERGY', 'fossil-'],
     ['Veterans', 'A royal commission into veterans’ suicide has reported, and families want action.', '', [
       E('Fund every recommendation in the first budget.', 'Chester funds the veterans’ report in full', { o: 0.5, pp: -5 }),
       E('Appoint a veterans’ commissioner.', 'Chester appoints a commissioner', { o: 0.2 }),
@@ -373,7 +373,7 @@
       plus: ['Champion of the bush', 'Rural setbacks hit 30% softer; +3 Political Power a turn.'], neg: { r: { RUR: 0.7 } },
       minus: ['Split the Coalition', 'Starts with 10 less unity; One Nation preferences 3 points weaker.'], pfMinus: { on: -3 } },
     [1, 'Launch in Warwick with a drought-proofing fund.', 'Littleproud launches in Warwick', { r: { RUR: 1.2 }, s: { QLD: 0.5 }, m: 1 }],
-    [3, 'Tell the Press Club the Nationals may walk out of the Coalition again.', 'Littleproud threatens another split', ['d', 3, { r: { RUR: 1.4 }, m: 1 }, { u: -14, r: { IN: -0.8, OUT: -0.6 }, m: -3 }]],
+    [3, 'Warn publicly that the Nationals may walk out of the Coalition again.', 'Littleproud threatens another split', ['d', 3, { r: { RUR: 1.4 }, m: 1 }, { u: -14, r: { IN: -0.8, OUT: -0.6 }, m: -3 }]],
     ['The Coalition agreement', 'The Liberals want the Coalition agreement signed before polling day.', '', [
       E('Sign a new agreement with guaranteed cabinet seats.', 'The Coalition signs a new deal', { u: 8 }),
       E('Demand a veto over energy policy.', 'Littleproud wants an energy veto', { r: { RUR: 0.6 }, u: -5 }),
@@ -416,7 +416,7 @@
   LD({ ...N, id: 'john_barilaro', name: 'John Barilaro', cb: true, votes0: 38, mates: ['Michael McCormack', 'Angus Taylor'], deb: 2, pp: 3, unityAdj: -4, unityDrift: -1,
       plus: ['Bare-knuckle brawler', 'Debate skill 2; +3 Political Power a turn.'], minus: ['Integrity questions', 'Scandal setbacks hit 60% harder; unity drifts down 1 a turn.'], neg: { tag: { CRISIS: 1.6 } } },
     [1, 'Launch in Queanbeyan with a new dam for every regional city.', 'Barilaro launches with a dam for every city', { r: { RUR: 0.8, PROV: 0.8 }, s: { NSW: 0.4 }, m: 2 }],
-    [3, 'Threaten at the Press Club to blow up the Coalition if the Liberals block your plan.', 'Barilaro threatens the Coalition', ['d', 3, { r: { RUR: 1.2 }, m: 2 }, { u: -12, o: -0.6, m: -2 }]],
+    [3, 'Threaten publicly to blow up the Coalition if the Liberals block your plan.', 'Barilaro threatens the Coalition', ['d', 3, { r: { RUR: 1.2 }, m: 2 }, { u: -12, o: -0.6, m: -2 }]],
     ['Eden-Monaro again', 'You are running for Eden-Monaro, the seat you almost contested in 2020.', '', [
       E('Make it about bushfire rebuilding.', 'Barilaro runs on bushfire recovery', { s: { NSW: 0.4 }, r: { RUR: 0.5 } }),
       E('Promise a new hospital in Queanbeyan.', 'Barilaro promises a hospital', { s: { NSW: 0.5 }, pp: -5 }),
@@ -428,7 +428,7 @@
       plus: ['Culture warrior', '+1 on migration checks; +3 Political Power a turn.'], debTag: { MIGRATION: 1 },
       minus: ['A failed party founder', 'Starts the spill on 36%; unity drifts down 1 a turn.'] },
     [1, 'Launch in Adelaide with a conservative manifesto.', 'Bernardi’s conservative manifesto', { s: { SA: 1 }, r: { OUT: 0.6 }, m: 1 }],
-    [3, 'Announce at the Press Club that you are starting yet another new party.', 'Bernardi starts a new party, again', ['d', 4, { m: 3, o: 0.4 }, { u: -15, o: -1, m: -3 }]],
+    [3, 'Use the mid-campaign spotlight to announce you are starting yet another new party.', 'Bernardi starts a new party, again', ['d', 4, { m: 3, o: 0.4 }, { u: -15, o: -1, m: -3 }]],
     ['Conservatives unite?', 'Small conservative parties want a joint ticket with One Nation.', 'PREFS', [
       E('Merge the tickets.', 'The right unites behind One Nation', { o: 0.5, u: -4 }),
       E('Swap preferences only.', 'One Nation swaps preferences', { pf: { on: 2 } }),
@@ -471,7 +471,7 @@
   LD({ id: 'mehreen_faruqi', name: 'Mehreen Faruqi', party: 'GRN', inc: false, votes0: 42, mates: ['David Shoebridge'], deb: 1, pp: 3, unityAdj: 0,
       plus: ['Inner-city darling', 'Housing choices land 20% harder for you; +3 Political Power a turn.'], pos: { tag: { HOUSING: 1.2 } },
       minus: ['Radical reputation', 'Outer-suburban setbacks hit 40% harder.'], neg: { r: { OUT: 1.4 } } },
-    [3, 'Give a Press Club speech on free university and TAFE.', 'Faruqi’s free-education speech', { r: { IN: 1.2 }, m: 1 }],
+    [3, 'Turn the mid-campaign spotlight into a pitch for free university and TAFE.', 'Faruqi’s free-education pitch', { r: { IN: 1.2 }, m: 1 }],
     [4, 'Spend the debate attacking Labor harder than the Coalition.', 'Faruqi goes after Labor', ['d', 3, { r: { IN: 1.2 } }, { pf: { grn: -3 }, o: -0.6, m: -2 }]],
     ['Free education', 'Student debt is rising faster than wages.', '', [
       E('Promise to wipe all student debt.', 'Faruqi wipes student debt', { r: { IN: 1 }, pp: -5 }, 'spending+'),
@@ -483,7 +483,7 @@
       plus: ['Teacher’s pet', '+6 unity on taking the job; +2 Political Power a turn.'],
       minus: ['The miners’ enemy', 'Setbacks in Queensland and rural seats hit 35% harder.'], neg: { st: { QLD: 1.35 }, r: { RUR: 1.35 } } },
     [1, 'Launch at a public school in Gladstone with a fully funded schools plan.', 'Allman-Payne launches at a public school', { s: { QLD: 0.6 }, r: { PROV: 0.6 } }],
-    [3, 'Tell the Press Club coal mining in Queensland should end by 2030.', 'Allman-Payne sets a 2030 end for coal', ['d', 4, { r: { IN: 1 } }, { s: { QLD: -1.4 }, r: { RUR: -1 }, m: -2 }], 'ENERGY', 'fossil-'],
+    [3, 'Declare that coal mining in Queensland should end by 2030.', 'Allman-Payne sets a 2030 end for coal', ['d', 4, { r: { IN: 1 } }, { s: { QLD: -1.4 }, r: { RUR: -1 }, m: -2 }], 'ENERGY', 'fossil-'],
     ['Public schools', 'Public schools are still short of the funding standard.', '', [
       E('Fund every public school to the full standard this term.', 'Allman-Payne fully funds public schools', { o: 0.5, pp: -5 }),
       E('Cut funding to the richest private schools.', 'Allman-Payne cuts elite private schools', { r: { OUT: 0.4, IN: -0.2 } }),
@@ -516,7 +516,7 @@
       plus: ['Inner-city darling', 'Housing choices land 25% harder for you; +3 Political Power a turn.'], pos: { tag: { HOUSING: 1.25 } },
       minus: ['Lost his own seat', 'Outer-suburban setbacks hit 30% harder.'], neg: { r: { OUT: 1.3 } } },
     [1, 'Launch in Melbourne with the Greens’ biggest-ever housing plan.', 'Bandt launches in Melbourne', { s: { VIC: 0.6 }, r: { IN: 1.2 }, m: 1 }, 'HOUSING'],
-    [3, 'Use the Press Club to call for a four-day week.', 'Bandt wants a four-day week', ['d', 3, { r: { IN: 1 }, m: 2 }, { r: { OUT: -1 }, o: -0.4, m: -2 }], 'IR'],
+    [3, 'Use the mid-campaign spotlight to call for a four-day week.', 'Bandt wants a four-day week', ['d', 3, { r: { IN: 1 }, m: 2 }, { r: { OUT: -1 }, o: -0.4, m: -2 }], 'IR'],
     ['Melbourne', 'You lost Melbourne in 2025, and you want it back.', '', [
       E('Door-knock every street in Melbourne yourself.', 'Bandt knocks on every door', { s: { VIC: 0.5 } }),
       E('Run on renters’ rights.', 'Bandt runs on renting', { r: { IN: 0.6 } }),
@@ -528,7 +528,7 @@
   LD({ ...T, id: 'monique_ryan', name: 'Monique Ryan', mates: ['Zoe Daniel'], deb: 1, pp: 2, unityDrift: -1,
       plus: ['Doctor in the House', '+1 on health checks; health choices land 30% harder for you.'], debTag: { HEALTH: 1 }, pos: { tag: { HEALTH: 1.3 } },
       minus: ['Abrasive', 'Unity drifts down 1 a turn.'] },
-    [3, 'Give the Press Club a doctor’s case for climate action.', 'Ryan makes the medical case on climate', { r: { IN: 1.2 } }, 'HEALTH'],
+    [3, 'Use the mid-campaign spotlight to make a doctor’s case for climate action.', 'Ryan makes the medical case on climate', { r: { IN: 1.2 } }, 'HEALTH'],
     [4, 'Debate the moderator on the questions themselves.', 'Ryan argues with the moderator', ['d', 3, { m: 2 }, { o: -0.6, m: -2 }]],
     ['Kooyong', 'Josh Frydenberg’s old seat is the Liberals’ number-one target.', '', [
       E('Run on climate and integrity.', 'Ryan runs on climate', { r: { IN: 0.6 } }),
@@ -538,7 +538,7 @@
 
   LD({ ...T, cb: true, id: 'malcolm_turnbull', name: 'Malcolm Turnbull', mates: ['Kerryn Phelps'], deb: 2, pp: 5, unityDrift: -1,
       plus: ['Household name', 'Debate skill 2; +5 Political Power a turn.'], minus: ['Knifed before', 'Unity drifts down 1 a turn.'] },
-    [3, 'Give the Press Club a speech on innovation and the republic.', 'Turnbull’s innovation speech', { r: { IN: 1.4 }, m: 1 }],
+    [3, 'Turn the mid-campaign spotlight into a pitch on innovation and the republic.', 'Turnbull’s innovation pitch', { r: { IN: 1.4 }, m: 1 }],
     [1, 'Launch with a harbourside reception at your own home.', 'Turnbull launches at home', ['m', 3, { r: { IN: 0.6 } }, { r: { OUT: -1, PROV: -0.8 }, m: -2 }]],
     ['The republic', 'A republic group wants the teals to make a new referendum their price for support.', '', [
       E('Make a republic referendum your price.', 'Turnbull demands a republic vote', { r: { IN: 0.6 }, u: -3 }),
@@ -550,7 +550,7 @@
       plus: ['Grassroots army', 'Local campaigns cost 30% less; rural setbacks hit 30% softer.'], disc: { DEC_IND_LOCAL: 0.7 }, neg: { r: { RUR: 0.7 } },
       minus: ['Long gone', 'Debate skill 0.'] },
     [1, 'Launch at a kitchen table in Wodonga with community groups from across the country.', 'McGowan’s kitchen-table launch', { r: { RUR: 1, PROV: 0.6 }, u: 4 }],
-    [3, 'Tell the Press Club independents should never back any government.', 'McGowan rules out backing anyone', ['d', 3, { r: { RUR: 0.8 } }, { o: -0.6, m: -2 }]],
+    [3, 'Declare that independents should never back any government.', 'McGowan rules out backing anyone', ['d', 3, { r: { RUR: 0.8 } }, { o: -0.6, m: -2 }]],
     ['Kitchen-table conversations', 'Hundreds of groups want to run listening sessions in their towns.', '', [
       E('Run a thousand kitchen-table meetings.', 'A thousand kitchen tables', { r: { RUR: 0.6, PROV: 0.4 }, pp: -5 }),
       E('Publish what you heard as a platform.', 'The teals publish a people’s platform', { o: 0.3 }),
@@ -561,7 +561,7 @@
       plus: ['Doctor in the House', 'Health choices land 30% harder for you; +2 Political Power a turn.'], pos: { tag: { HEALTH: 1.3 } },
       minus: ['Yesterday’s news', 'Setbacks outside New South Wales hit 20% harder.'], neg: { st: { VIC: 1.2, QLD: 1.2, WA: 1.2, SA: 1.2 } } },
     [1, 'Launch in Wentworth with a medical-research pledge.', 'Phelps launches in Wentworth', { r: { IN: 1 }, s: { NSW: 0.5 } }, 'HEALTH'],
-    [3, 'Promise a national pill-testing program at the Press Club.', 'Phelps backs pill testing', ['d', 3, { r: { IN: 1 } }, { r: { OUT: -0.8 }, o: -0.5, m: -2 }], 'HEALTH'],
+    [3, 'Use the mid-campaign spotlight to promise a national pill-testing program.', 'Phelps backs pill testing', ['d', 3, { r: { IN: 1 } }, { r: { OUT: -0.8 }, o: -0.5, m: -2 }], 'HEALTH'],
     ['The by-election spirit', 'You won Wentworth at a by-election once. The teals want that energy again.', '', [
       E('Run a short, sharp by-election-style blitz in three seats.', 'Phelps runs a blitz', { s: { NSW: 0.6 } }),
       E('Recruit doctors as candidates.', 'Phelps recruits doctors', { r: { IN: 0.5 } }),

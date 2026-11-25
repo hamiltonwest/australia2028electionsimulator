@@ -65,7 +65,7 @@ window.CAMPAIGN_ACH = (() => {
     ['BOTH_HOUSES', 'Control of Both Houses', 'The Senate', '', 'Win a House majority while your side wins 41 or more of the 76 Senate seats, a firmer grip than the Howard government’s after the 2004 election.', 0, (st, r) => !!r && S(r, st.party) >= 76 && !!r.sen && r.sen.side >= 41],
     ['GREEN_SENATE', 'The Senate Is Green', 'The Senate', '', 'As the Greens, win 13 or more Senate seats.', 0, (st, r) => st.party === 'GRN' && !!r && !!r.sen && r.sen.GRN >= 13],
     ['GREENSLIDE', 'Greenslide', 'New sides', '', 'As the Greens, win six or more House seats. Brisbane voters coined “Greenslide” in 2022, when the party won three seats there.', 0, (st, r) => st.party === 'GRN' && S(r, 'GRN') >= 6],
-    ['TEAL_TSUNAMI', 'The Teal Tsunami', 'New sides', '', 'As the teals, win 13 or more seats.', 0, (st, r) => st.party === 'IND' && S(r, 'IND') >= 13],
+    ['TEAL_TSUNAMI', 'The Teal Tsunami', 'New sides', '', 'As the teals, win 7 or more seats.', 0, (st, r) => st.party === 'IND' && S(r, 'IND') >= 7],
     ['FEEDING_THE_WORM', 'Feeding the Worm', 'Campaign craft', '', 'Win all three exchanges in the leaders’ debate. For years Nine’s audience “worm” tracked every line live.', 0, st => st.debWins === 3],
     ['THE_LONG_SILENCE', 'The Long Silence', 'Campaign craft', '', 'Let the clock run out on a doorstop. Tony Abbott’s silent nodding through a 2011 television interview became one of the most replayed clips in Australian politics.', 1, st => (st.doors || {}).t >= 1],
     ['QUICK_ON_YOUR_FEET', 'Quick on Your Feet', 'Campaign craft', '', 'Answer three doorstops in one campaign, every one in time.', 0, st => (st.doors || {}).n >= 3 && !(st.doors || {}).t],
@@ -85,8 +85,8 @@ window.CAMPAIGN_ACH = (() => {
     ['OUT_THOUGHT', 'Out-Thought', 'Campaign craft', '', 'Win a debate exchange after ignoring a tip-off that turned out to be wrong.', 1, st => (st.log || []).some(e => e.deb && e.deb.win && st.deb && st.deb.tell[e.deb.n - 1] !== e.deb.theirs && e.deb.mine !== st.deb.tell[e.deb.n - 1])]
   ];
   // how a run earned each one, in a sentence (shown when an achievement is opened on the verdict screen)
-  const PN = { ALP: 'Labor', LNP: 'the Coalition', ONP: 'One Nation', GRN: 'the Greens', IND: 'the teals' };
-  const seats = (st, r) => `${PN[st.party]} won ${S(r, st.party)} seats`;
+  const PN = { ALP: 'Labor', LNP: 'the Coalition', ONP: 'One Nation', GRN: 'the Greens', IND: 'the teals', KAP: 'Katter’s Australian Party' };
+  const seats = (st, r) => `${PN[st.party] || st.party} won ${S(r, st.party)} seats`;
   const W = {
     FIFTY_SEVEN_PERCENT_2PP: (st, r) => `Labor v Coalition two-party: ${r.tpp.toFixed(1)}–${(100 - r.tpp).toFixed(1)}.`,
     ONE_NATION_OFFICIAL_OPPOSITION: (st, r) => `One Nation ${S(r, 'ONP')} seats to the Coalition’s ${S(r, 'LNP')}; first preferences ${r.nat.ONP.toFixed(1)}% to ${r.nat.LNP.toFixed(1)}%.`,

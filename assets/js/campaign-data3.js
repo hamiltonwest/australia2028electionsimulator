@@ -21,8 +21,8 @@
   );
   // win conditions, set against where each side starts: the Greens on no House seats in the baseline projection, the teals on about eight
   C.tiers.GRN = [['Greenslide', r => r.seats.GRN >= 6], ['A real bloc', r => r.seats.GRN >= 4], ['Back in the House', r => r.seats.GRN >= 2], ['Clinging on', () => true]];   // 4–5 seats is a good night; 6+ a Greenslide
-  C.tiers.IND = [['The teal tsunami', r => r.seats.IND >= 13], ['A record crossbench', r => r.seats.IND >= 10], ['Holding ground', r => r.seats.IND >= 7 || (r.hung && r.seats.IND >= 4)], ['The teal retreat', () => true]];
-  C.TIERNOTE = { GRN: 'Starting from no House seats', IND: 'Starting from about eight crossbench seats' };
+  C.tiers.IND = [['The teal tsunami', r => r.seats.IND >= 7], ['A record crossbench', r => r.seats.IND >= 6], ['Holding ground', r => r.seats.IND >= 4 || (r.hung && r.seats.IND >= 3)], ['The teal retreat', () => true]];
+  C.TIERNOTE = { GRN: 'Starting from no House seats', IND: 'Success means 6–7+ crossbench seats' };
 
   const card = (id, party, tag, t, q, opts) => ({ id, party, tag, t, q, opts });
   C.cards.push(
@@ -184,7 +184,7 @@
 (() => {
   const C = window.CAMPAIGN_DATA; if (!C) return;
   const LO = [
-    { mile: 3, only: 'david_shoebridge', x: 'Make the Press Club speech a renters’ manifesto: a freeze, a cap and a national renters’ commissioner.', tag: 'HOUSING', e: { r: { IN: { GRN: 1.6 }, OUT: { GRN: 0.5 } }, m: 1 }, h: 'Shoebridge’s renters’ manifesto' },
+    { mile: 3, only: 'david_shoebridge', x: 'Turn the mid-campaign showcase into a renters’ manifesto: a freeze, a cap and a national renters’ commissioner.', tag: 'HOUSING', e: { r: { IN: { GRN: 1.6 }, OUT: { GRN: 0.5 } }, m: 1 }, h: 'Shoebridge’s renters’ manifesto' },
     { mile: 4, only: 'david_shoebridge', cursed: true, x: 'Open the debate by calling for an end to negative gearing, the tax cuts and private-school funding, all at once.', st: 'tax+', rng: { k: 'd', min: 3, ok: { o: 0.6, m: 2 }, no: { o: -0.8, r: { OUT: -1 }, m: -2 } }, h: 'Shoebridge goes for everything at once' },
     { mile: 1, only: 'zali_steggall', x: 'Launch on Manly beach with every sitting teal: a movement, not a party.', e: { r: { IN: { IND: 1.4 } }, m: 2, u: 3 }, h: 'The teals launch together on Manly beach' },
     { mile: 5, only: 'zali_steggall', cursed: true, x: 'Announce on election eve which side you would back in a hung parliament.', rng: { k: 'm', min: 2, ok: { r: { IN: { IND: 0.8 } }, m: 2 }, no: { r: { IN: { IND: -1.2 } }, m: -3 } }, h: 'Steggall picks a side on election eve' },
@@ -241,7 +241,7 @@
     B4_78: 'Joyce’s dams or Hanson’s flat tax', B4_79: 'Managing 150 grassroots candidates', B4_80: 'Rural Coalition seats or Labor’s outer suburbs?'
   };
   // and in the text of those cards: “and” for “&”, money written out
-  const tidy = s => typeof s !== 'string' ? s : s.replace(/ & /g, ' and ').replace(/&/g, ' and ').replace(/\$(\d+(?:\.\d+)?)B\b/g, '$$$1 billion').replace(/\$(\d+(?:\.\d+)?)M\b/g, '$$$1 million').replace(/(\d+(?:\.\d+)?)M IDs/g, '$1 million IDs').replace(/\s{2,}/g, ' ');
+  const tidy = s => typeof s !== 'string' ? s : s.replace(/\bR&D\b/g, 'research and development').replace(/ & /g, ' and ').replace(/&/g, ' and ').replace(/\$(\d+(?:\.\d+)?)B\b/g, '$$$1 billion').replace(/\$(\d+(?:\.\d+)?)M\b/g, '$$$1 million').replace(/(\d+(?:\.\d+)?)M IDs/g, '$1 million IDs').replace(/\s{2,}/g, ' ');
   C.cards.forEach(c => { const m = c.id.match(/^CAMP_(B[234]_\d+)$/); if (!m) return; if (T[m[1]]) c.t = T[m[1]]; c.q = tidy(c.q); c.opts.forEach(o => { if (o.only) return; o.x = tidy(o.x); o.h = tidy(o.h); }); });
 })();
 // ---- no @ signs anywhere in card text

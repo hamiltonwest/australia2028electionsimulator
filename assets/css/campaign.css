@@ -179,10 +179,15 @@ body.cmp-open{overflow:hidden}
 .cmp-fighead{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;margin-bottom:8px}
 .cmp-fighead strong{font:600 15px var(--body)}
 .cmp-fighead small{font:italic 13px var(--body);color:var(--muted);flex-basis:100%}
-.cmp-seatnums{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-bottom:1px solid var(--rule);margin-bottom:8px}
-.sn{display:flex;flex-direction:column-reverse;justify-content:flex-end;padding:2px 8px 6px;border-left:1px solid var(--line)}
+.cmp-seatnums{display:grid;grid-template-columns:repeat(var(--cols,5),minmax(0,1fr));border-bottom:1px solid var(--rule);margin-bottom:8px}
+.sn{display:flex;flex-direction:column-reverse;justify-content:flex-end;min-width:0;padding:2px 8px 6px;border-left:1px solid var(--line)}
 .sn:first-child{border-left:0;padding-left:0}
-.sn small{font:600 10px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink);order:3}
+.sn small{font:600 10px/1.2 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink);white-space:nowrap;order:3}
+.cmp-seatnums.n6 .sn{padding:2px 6px 6px}.cmp-seatnums.n6 .sn:first-child{padding-left:0}
+.cmp-seatnums.n6 .sn small{font-size:9.5px;letter-spacing:.04em}
+.cmp-right .cmp-seatnums.n6 .sn{padding:2px 5px 6px}
+.cmp-right .cmp-seatnums.n6 .sn small .lf{display:none}
+.cmp-right .cmp-seatnums.n6 .sn small .ls{display:inline}
 .sn b{font:900 30px/1 var(--display);color:var(--pc);order:2}
 .sn em{font:600 11px var(--mono);font-style:normal;order:1}.sn em.up{color:var(--grn)}.sn em.dn{color:var(--alp)}
 .sn.me small{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
@@ -487,7 +492,8 @@ body.cmp-lock{padding-bottom:100px}
 .cs-grp.scen{flex-basis:auto}.cmp .cs-sel{font:600 13px var(--mono);color:var(--ink);background:var(--panel);border:1px solid var(--ink);min-height:40px;padding:6px 30px 6px 12px;border-radius:0;max-width:100%}
 .rc-dot.dn{fill:var(--ink)}.rc-dot.up{fill:var(--grn)}
 .sn small .ls{display:none}
-@media (max-width:520px){.sn small .lf{display:none}.sn small .ls{display:inline}.cmp-seatnums .sn{min-width:0;padding:2px 6px 6px}}
+@media (max-width:640px){.cmp-seatnums.n6 .sn small .lf{display:none}.cmp-seatnums.n6 .sn small .ls{display:inline}}
+@media (max-width:520px){.sn small .lf{display:none}.sn small .ls{display:inline}.cmp-seatnums .sn{min-width:0;padding:2px 5px 6px}}
 /* tips: the top bar explained, and seat names on the map */
 .cmp-tip{position:fixed;z-index:200;background:var(--ink);color:var(--bg);padding:9px 12px 10px;font:14px/1.4 var(--body);box-shadow:4px 4px 0 var(--accent);pointer-events:none;max-width:320px}
 .cmp-tip[hidden]{display:none}.cmp-tip b{display:block;font:800 16px/1.2 var(--display);margin-bottom:3px}
@@ -962,11 +968,11 @@ details.lo-col>summary strong::after{content:' +';font:400 18px var(--mono);colo
 @media (min-width:1500px){.cmp-pcols:not(.one){grid-template-columns:repeat(3,minmax(0,1fr))}.cmp-pcols.one .cmp-pcol,.cmp-pcols.one .lt-mg{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:640px){
   .cmp-pcols.one .cmp-pcol,.cmp-pcols.one .lt-mg{grid-template-columns:minmax(0,1fr)}
-  .cmp .lf-tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:0}
+  .cmp .lf-tabs{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;touch-action:pan-x;overscroll-behavior-x:contain;overscroll-behavior-y:none;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:0}
   .cmp .lf-tabs::-webkit-scrollbar{display:none}
-  .cmp .lf-tab{flex:none;white-space:nowrap;font-size:14.5px;padding:8px 9px}
+  .cmp .lf-tab{flex:none;white-space:nowrap;font-size:14.5px;padding:8px 9px;margin:0}
   .lf-q{flex:0 0 auto;width:100%}
-  .lf-chips{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
+  .lf-chips{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;touch-action:pan-x;overscroll-behavior-x:contain;overscroll-behavior-y:none;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
   .lf-chips::-webkit-scrollbar{display:none}
   .lf-chips .seg{flex:none;white-space:nowrap}
 }

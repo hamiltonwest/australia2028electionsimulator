@@ -74,20 +74,34 @@
     T.A['Bob Katter'] = T.A["Bob Katter|Katter's Australian"];
   }
 
-  // ---- Register historic PMs in APP.DATA.leaders for seat labels & sandbox compatibility
+  // ---- Register historic PMs in the sandbox party leader list (hidden by default; appear only when loaded into a sandbox run)
   if (window.APP && window.APP.DATA && Array.isArray(window.APP.DATA.leaders)) {
-    const addSandboxLdr = entry => {
-      if (!window.APP.DATA.leaders.some(x => x.name === entry.name && x.party === entry.party)) {
-        window.APP.DATA.leaders.push(entry);
-      }
-    };
-    addSandboxLdr({ party: 'Labor', name: 'Paul Keating', d: [0.4, -0.2, 0, -0.1, -0.1], sel: false, seat: 'Blaxland (NSW)', rk: 21 });
-    addSandboxLdr({ party: 'Coalition', name: 'John Howard', d: [-0.2, 0.5, 0, -0.2, -0.1], sel: false, seat: 'Bennelong (NSW)', rk: 21 });
-    addSandboxLdr({ party: 'Labor', name: 'Gough Whitlam', d: [0.5, -0.2, -0.2, -0.1, 0], sel: false, seat: 'Werriwa (NSW)', rk: 22 });
-    addSandboxLdr({ party: 'Coalition', name: 'Robert Menzies', d: [-0.3, 0.5, 0, -0.1, -0.1], sel: false, seat: 'Kooyong (Vic)', rk: 22 });
+    const vaultSandboxLeaders = [
+      { party: 'Labor', name: 'Paul Keating', d: [0.4, -0.2, 0, -0.1, -0.1], sel: false, seat: 'Blaxland (NSW)', rk: 21, vaultOnly: true },
+      { party: 'Coalition', name: 'John Howard', d: [-0.2, 0.5, 0, -0.2, -0.1], sel: false, seat: 'Bennelong (NSW)', rk: 21, vaultOnly: true },
+      { party: 'Labor', name: 'Gough Whitlam', d: [0.5, -0.2, -0.2, -0.1, 0], sel: false, seat: 'Werriwa (NSW)', rk: 22, vaultOnly: true },
+      { party: 'Coalition', name: 'Robert Menzies', d: [-0.3, 0.5, 0, -0.1, -0.1], sel: false, seat: 'Kooyong (Vic)', rk: 22, vaultOnly: true }
+    ];
+    if (typeof window.APP.registerVaultLeaders === 'function') {
+      window.APP.registerVaultLeaders(vaultSandboxLeaders);
+    } else {
+      vaultSandboxLeaders.forEach(entry => {
+        if (!window.APP.DATA.leaders.some(x => x.name === entry.name && x.party === entry.party)) {
+          window.APP.DATA.leaders.push(entry);
+        }
+      });
+    }
   }
 
-  // Vault Legends intentionally use archival monogram placeholders until official/sourced portraits are supplied.
+  // Ensure Vault Legend parliamentary portraits are registered on SIM.PHOTO if present.
+  if (window.SIM && window.SIM.PHOTO) {
+    Object.assign(window.SIM.PHOTO, {
+      'Paul Keating': 'assets/img/members/paul-keating.jpg',
+      'John Howard': 'assets/img/members/john-howard.jpg',
+      'Gough Whitlam': 'assets/img/members/gough-whitlam.jpg',
+      'Robert Menzies': 'assets/img/members/robert-menzies.jpg'
+    });
+  }
 
   // ---- Five Craft-Only Vault Legends (No. 001–005)
   const VAULT_LEADERS = [];
@@ -141,7 +155,7 @@
       minus: ['High-wire temper', 'Starts with 8 less unity (−1/turn); cost-of-living & rural hits hurt.']
     },
     [4, 'Turn the debate into a masterclass on productivity, superannuation and Australia’s place in Asia.', 'Keating turns the debate into an economic clinic', { o: 0.9, r: { IN: 0.7, OUT: 0.4 }, m: 2 }, 'ECONOMY'],
-    [3, 'Tell the Press Club that a tough slowdown is the recession Australia had to have.', 'Keating revives his most infamous line', ['d', 4, { o: 0.7, m: 3 }, { o: -1.3, r: { OUT: -1.1 }, m: -3 }], 'ECONOMY'],
+    [3, 'Use the mid-campaign spotlight to declare that a tough slowdown is the recession Australia had to have.', 'Keating revives his most infamous line', ['d', 4, { o: 0.7, m: 3 }, { o: -1.3, r: { OUT: -1.1 }, m: -3 }], 'ECONOMY'],
     ['The big picture', 'Business leaders want tax reform; the caucus wants a small target that protects marginals.', 'ECONOMY', [
       E('Unveil a bold productivity and super reform package.', 'Keating pitches the big picture', { o: 0.7, r: { IN: 0.6 }, u: -4, m: 2 }, 'tax+'),
       G('Challenge the opposition leader to a one-on-one economic debate.', 'Keating dares rivals to debate economics', 'd', 2, { o: 0.8, m: 2 }, { o: -0.5, u: -3 }),
@@ -165,7 +179,7 @@
   addVault(
     {
       id: 'john_howard', name: 'John Howard', party: 'LNP', inc: false, cb: true, again: true, votes0: 40,
-      mates: ['Angus Taylor', 'David Littleproud'], deb: 2, pp: 3, unityAdj: 6, unityDrift: 0.5,
+      mates: ['Peter Costello', 'Tim Fischer'], deb: 2, pp: 3, unityAdj: 6, unityDrift: 0.5,
       debTag: { ECONOMY: 1, NATIONAL_SECURITY: 1 }, pos: { tag: { ECONOMY: 1.25, NATIONAL_SECURITY: 1.25 } },
       pf: { on: 3 }, pfMinus: { ind: -3 }, neg: { r: { IN: 1.45 } },
       plus: ['Broad-church discipline', 'Debate 2; +3 PP/turn; +6 unity; ONP prefs +3; economy & security +25%.'],
@@ -196,7 +210,7 @@
   addVault(
     {
       id: 'gough_whitlam', name: 'Gough Whitlam', party: 'ALP', inc: false, cb: true, again: true, votes0: 34,
-      mates: ['Tanya Plibersek'], deb: 2, pp: 3, unityAdj: -6,
+      mates: ['Lance Barnard'], deb: 2, pp: 3, unityAdj: -6,
       debTag: { HEALTH: 1, HOUSING: 1 }, pos: { tag: { HEALTH: 1.3, HOUSING: 1.3 } },
       neg: { tag: { ECONOMY: 1.4, TAX: 1.35, COST_OF_LIVING: 1.3 } },
       plus: ['It’s Time wave', 'Debate skill 2; +3 PP/turn; health & housing choices land 30% harder.'],
@@ -227,15 +241,15 @@
   addVault(
     {
       id: 'robert_menzies', name: 'Robert Menzies', party: 'LNP', inc: false, cb: true, again: true, votes0: 38,
-      mates: ['Josh Frydenberg', 'David Littleproud'], deb: 2, pp: 2, unityAdj: 8, unityDrift: 0.5,
+      mates: ['Harold Holt', 'John McEwen'], deb: 2, pp: 2, unityAdj: 8, unityDrift: 0.5,
       debTag: { ECONOMY: 1, NATIONAL_SECURITY: 1 }, pf: { ind: 3 },
       neg: { tag: { HOUSING: 1.3, ENERGY: 1.3 } },
       plus: ['The Forgotten People', 'Debate 2; +8 unity (+0.5 drift); teal-seat prefs +3; +2 PP/turn.'],
       minus: ['Modern headwinds', 'Housing & energy setbacks hit 30% harder with younger voters.']
     },
-    [3, 'Deliver a National Press Club address for the Forgotten People: homeowners, savers and small enterprises.', 'Menzies invokes the Forgotten People', { r: { IN: 0.8, OUT: 0.9 }, u: 5, m: 2 }, 'ECONOMY'],
+    [3, 'Deliver a mid-campaign address for the Forgotten People: homeowners, savers and small enterprises.', 'Menzies invokes the Forgotten People', { r: { IN: 0.8, OUT: 0.9 }, u: 5, m: 2 }, 'ECONOMY'],
     [4, 'Treat a rowdy televised debate like a town-hall heckler and lecture the moderator on constitutional propriety.', 'Menzies spars with the debate moderator', ['d', 3, { o: 0.7, m: 2 }, { o: -1.1, r: { IN: -0.8 }, m: -2 }]],
-    ['Rebuilding the Liberal tent', 'Teals hold Kooyong and Goldstein while One Nation bites at regional flanks. You founded this party to unite the non-Labor side.', 'ECONOMY', [
+    ['Rebuilding the Liberal tent', 'Teals hold Kooyong and Bradfield while One Nation bites at regional flanks. You founded this party to unite the non-Labor side.', 'ECONOMY', [
       E('Pitch home ownership, university excellence and enterprise to reclaim the teal belt.', 'Menzies rebuilds the blue-ribbon heartland', { r: { IN: 1.1, OUT: 0.4 }, pf: { ind: 2 } }),
       E('Lock in a joint Liberal-Nationals stability charter for regional infrastructure.', 'Menzies cements Coalition stability', { r: { RUR: 0.8, PROV: 0.5 }, u: 6 }),
       G('Take to regional radio and suburban halls to rebuild middle-Australia trust.', 'Menzies tours middle Australia', 'd', 2, { o: 0.6, m: 2 }, { o: -0.4 })
@@ -284,32 +298,32 @@
   // ---- Bespoke KAP Campaign Deck (6 events exclusively for Bob Katter's majority run)
   const kapCard = (id, tag, t, q, opts) => ({ id, party: 'KAP', tag, t, q, opts });
   C.cards.push(
-    kapCard('KAP_BRADFIELD', 'ECONOMY', 'The Revised Bradfield Scheme', 'Your flagship nation-building dream: turn the northern rivers inland to irrigate drought-proof farmland and build hydro power.', [
+    kapCard('KAP_BRADFIELD', 'ECONOMY', 'The revised Bradfield Scheme', 'Your flagship nation-building dream: turn the northern rivers inland to irrigate drought-proof farmland and build hydro power.', [
       E('Commit $30 billion to build Bradfield, rail lines and northern hydro — no half measures.', 'Katter pledges full Bradfield Scheme build', { o: 1.8, s: { QLD: 2.8, NSW: 1.0 }, r: { RUR: 2.2, PROV: 1.6 }, m: 2, ledger: 14 }, 'spending+'),
-      G('Pitch Bradfield as a national food-security & cost-of-living breakthrough to suburban voters.', 'Katter sells Bradfield to the suburbs', 'd', 2, { o: 2.4, r: { OUT: 1.8, PROV: 1.2 }, m: 2 }, { o: -0.8, m: -1 }),
+      G('Pitch Bradfield as a national food-security and cost-of-living breakthrough to suburban voters.', 'Katter sells Bradfield to the suburbs', 'd', 2, { o: 2.4, r: { OUT: 1.8, PROV: 1.2 }, m: 2 }, { o: -0.8, m: -1 }),
       E('Start with a $5 billion Stage One irrigation corridor to keep costings tighter.', 'Katter scales Bradfield to Stage One', { o: 0.9, s: { QLD: 1.5 }, u: 3 })
     ]),
-    kapCard('KAP_SUPERMARKETS', 'COST_OF_LIVING', 'Busting the Supermarket Duopoly', 'Farmers are paid pennies while families in the suburbs pay record grocery bills. Both majors hesitate to force divestiture.', [
+    kapCard('KAP_SUPERMARKETS', 'COST_OF_LIVING', 'Busting the supermarket duopoly', 'Farmers are paid pennies while families in the suburbs pay record grocery bills. Both majors hesitate to force divestiture.', [
       E('Promise forced divestiture powers and a 20% market-share cap on supermarket chains.', 'Katter vows to smash supermarket duopoly', { o: 2.2, r: { OUT: 2.0, PROV: 1.6, RUR: 1.5 }, m: 2 }),
       G('Stage a live checkout price protest outside Parliament House with farmers and suburban families.', 'Katter’s trolley protest dominates evening news', 'm', 2, { o: 2.6, r: { OUT: 2.2, IN: 0.8 }, m: 3 }, { o: -0.9, m: -2 }),
       E('Propose a mandatory farm-gate pricing code enforced by the ACCC.', 'Katter backs farm-gate pricing code', { o: 1.1, r: { RUR: 1.4 }, u: 3 })
     ]),
-    kapCard('KAP_ETHANOL', 'ENERGY', 'Fuel Security & Ethanol Mandate', 'Petrol spikes past $2.30 a litre and refineries are scarce. You have fought for Australian-made ethanol and local refining for thirty years.', [
+    kapCard('KAP_ETHANOL', 'ENERGY', 'Fuel security and an ethanol mandate', 'Petrol spikes past $2.30 a litre and refineries are scarce. You have fought for Australian-made ethanol and local refining for thirty years.', [
       E('Mandate E10 Australian biofuels and underwrite two sovereign fuel refineries.', 'Katter backs sovereign refineries and ethanol', { o: 1.9, r: { OUT: 1.6, RUR: 2.0, PROV: 1.4 }, m: 1 }, 'fossil+'),
       E('Slash fuel excise in half and cap wholesale electricity for manufacturers.', 'Katter promises half-price fuel excise', { o: 2.1, r: { OUT: 1.8, RUR: 1.5 }, ledger: 10 }),
       E('Focus on coal and hydro baseload power to drive power bills down.', 'Katter pushes coal and hydro baseload', { o: 1.5, r: { RUR: 1.6, PROV: 1.2, IN: -0.7 } }, 'fossil+')
     ]),
-    kapCard('KAP_CANDIDATES', 'PREFS', 'Fielding 150 Candidates Nationwide', 'Going from one Queensland seat to a 76-seat majority requires credible local candidates in suburban Sydney, Melbourne, Perth and Adelaide.', [
+    kapCard('KAP_CANDIDATES', 'PREFS', 'Fielding 150 candidates nationwide', 'Going from one Queensland seat to a 76-seat majority requires credible local candidates in suburban Sydney, Melbourne, Perth and Adelaide.', [
       G('Recruit independent mayors, nurses, mechanics and ex-soldiers across all 150 seats.', 'KAP unveils grassroots 150-seat ticket', 'u', 65, { o: 2.6, r: { OUT: 2.0, PROV: 1.6, IN: 1.0 }, m: 2, pp: -10 }, { o: -0.9, u: -8, m: -2 }),
       E('Focus your best candidates on regional Australia and the outer mortgage belts.', 'KAP targets the bush and outer suburbs', { o: 1.8, r: { RUR: 2.0, OUT: 1.6, PROV: 1.4 } }),
       E('Strike preference swaps with disaffected independents and One Nation branches.', 'KAP brokers populist preference pact', { o: 1.4, n: { LNP: -1.0, ONP: -0.8 }, u: -4 })
     ]),
-    kapCard('KAP_TARIFFS', 'ECONOMY', 'Make It Here Again', 'Australian manufacturing is at historic lows. Economists warn tariffs raise prices; blue-collar towns cheer the fightback.', [
+    kapCard('KAP_TARIFFS', 'ECONOMY', 'Make it here again', 'Australian manufacturing is at historic lows. Economists warn tariffs raise prices; blue-collar towns cheer the fightback.', [
       E('Bring back strategic tariffs and a Commonwealth Development Bank for Australian factories.', 'Katter backs tariffs and a national development bank', { o: 2.0, r: { OUT: 1.8, PROV: 2.0, RUR: 1.4, IN: -0.5 }, m: 2 }),
       E('Mandate 75% Australian content on every federal rail, road and defence contract.', 'Katter demands 75% Australian-made contracts', { o: 1.7, r: { OUT: 1.5, PROV: 1.5 }, u: 4 }),
       E('Offer tax holidays to manufacturers relocating to regional hubs.', 'Katter pitches regional factory zones', { o: 1.2, r: { PROV: 1.4, RUR: 1.2 } })
     ]),
-    kapCard('KAP_NORTHQLD', 'COST_OF_LIVING', 'The Canberra Establishment Hits Back', 'Both Labor and the Coalition run coordinated ads warning a Katter government would spark economic chaos and wreck interest rates.', [
+    kapCard('KAP_NORTHQLD', 'COST_OF_LIVING', 'The Canberra establishment hits back', 'Both Labor and the Coalition run coordinated ads warning a Katter government would spark economic chaos and wreck interest rates.', [
       G('Go on national prime-time and brand both majors “two heads of the same Canberra beast”.', 'Katter’s prime-time blitz shakes both majors', 'd', 2, { o: 2.5, n: { ALP: -1.2, LNP: -1.2 }, m: 3 }, { o: -1.2, m: -2 }),
       E('Release a full Commonwealth Bank and resource-royalty funding sheet.', 'KAP answers critics with royalty costings', { o: 1.6, r: { OUT: 1.2, IN: 0.6 }, u: 4 }),
       E('Rally 10,000 supporters in Townsville and broadcast it nationwide.', 'Townsville mega-rally broadcasts nationwide', { s: { QLD: 3.0 }, o: 1.3, m: 2 })
@@ -384,25 +398,25 @@
     };
     addTL({
       id: 'paul_keating', name: 'Paul Keating', party: 'ALP', pn: 'Labor', cb: true, fresh: false, by: true, spill: true,
-      ph: '', score: 2.04, grade: 'A', typ: 'Majority government', top: 'Landslide re-election',
+      ph: 'assets/img/members/paul-keating.jpg', score: 2.04, grade: 'A', typ: 'Majority government', top: 'Landslide re-election',
       win: 62, fail: 12, seatsR: 78, seatsB: 103, rand: 1.55, best: 3, seatsBc: 103, seatsRc: 80,
       why: 'Vault Legend · Craft-only (500 Dust)\nSuccess means a majority, 76+ seats.\nMaster debater (skill 3) with volatile caucus unity.'
     });
     addTL({
       id: 'john_howard', name: 'John Howard', party: 'LNP', pn: 'Coalition', cb: true, fresh: false, by: true, spill: true,
-      ph: '', score: 1.82, grade: 'B', typ: 'Minority Coalition', top: 'Blue-ribbon wave',
+      ph: 'assets/img/members/john-howard.jpg', score: 1.82, grade: 'B', typ: 'Minority Coalition', top: 'Blue-ribbon wave',
       win: 42, fail: 16, seatsR: 66, seatsB: 96, rand: 1.24, best: 3, seatsBc: 96, seatsRc: 70,
       why: 'Vault Legend · Craft-only (500 Dust)\nSuccess means a majority, 76+ seats.\nDisciplined outer-suburban powerhouse with inner-city headwinds.'
     });
     addTL({
       id: 'gough_whitlam', name: 'Gough Whitlam', party: 'ALP', pn: 'Labor', cb: true, fresh: false, by: true, spill: true,
-      ph: '', score: 1.76, grade: 'B', typ: 'Majority government', top: 'Landslide re-election',
+      ph: 'assets/img/members/gough-whitlam.jpg', score: 1.76, grade: 'B', typ: 'Majority government', top: 'Landslide re-election',
       win: 48, fail: 18, seatsR: 74, seatsB: 104, rand: 1.28, best: 3, seatsBc: 104, seatsRc: 77,
       why: 'Vault Legend · Craft-only (500 Dust)\nSuccess means a majority, 76+ seats.\nHigh-ceiling social reformer exposed to inflation and costings attacks.'
     });
     addTL({
       id: 'robert_menzies', name: 'Robert Menzies', party: 'LNP', pn: 'Coalition', cb: true, fresh: false, by: true, spill: true,
-      ph: '', score: 1.72, grade: 'B', typ: 'Coalition recovery', top: 'Blue-ribbon wave',
+      ph: 'assets/img/members/robert-menzies.jpg', score: 1.72, grade: 'B', typ: 'Coalition recovery', top: 'Blue-ribbon wave',
       win: 38, fail: 18, seatsR: 64, seatsB: 94, rand: 1.18, best: 3, seatsBc: 94, seatsRc: 68,
       why: 'Vault Legend · Craft-only (500 Dust)\nSuccess means a majority, 76+ seats.\nUnrivalled caucus unity and teal-belt reach, tested by modern housing and energy battles.'
     });

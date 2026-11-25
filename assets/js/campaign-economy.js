@@ -137,46 +137,61 @@
     return (leaders || []).filter(l => l && !l.craftOnly);
   }
 
-  // Per-card duplicate probability in standard packs:
-  // 0% while below 33% of pack-eligible leaders owned; scales smoothly from 20% at 33% owned
-  // up to 30% as the set approaches completion; 100% once every pack-eligible leader is owned.
-  function packDupChance(ownedPackCount, totalPackCount) {
+  // Per-card duplicate probability for non-guaranteed slots in standard packs:
+  // 0% on the very first pack opened (openedCount === 0); after the first opened pack,
+  // scales from 20% up to 30% as the set fills; 100% once every pack-eligible leader is owned.
+  function packDupChance(ownedPackCount, totalPackCount, openedCount) {
     const total = Math.max(0, Number(totalPackCount) || 0);
     if (!total) return 0;
     const owned = Math.max(0, Math.min(total, Number(ownedPackCount) || 0));
     if (owned >= total) return 1;
+    if (openedCount != null && Number(openedCount) <= 0) return 0;
+    if (owned <= 0) return 0;
     const ratio = owned / total;
-    if (ratio < PACK_DUP_THRESHOLD) return 0;
-    const t = Math.min(1, (ratio - PACK_DUP_THRESHOLD) / (1 - PACK_DUP_THRESHOLD));
-    return +(PACK_DUP_MIN + (PACK_DUP_MAX - PACK_DUP_MIN) * t).toFixed(4);
+    return +(PACK_DUP_MIN + (PACK_DUP_MAX - PACK_DUP_MIN) * ratio).toFixed(4);
   }
 
-  // Draws `count` distinct leaders for a pack using rarity-weighted `pickOne(poolIds)` and
-  // the 20-30% duplicate chance once >=33% of the pack-eligible set is owned.
-  function drawPackLeaders(packPool, ownedMap, pickWeighted, rng, count) {
+  // Draws `count` distinct leaders for a pack using rarity-weighted `pickWeighted`.
+  // Pack #1 (`openedCount === 0`): all new leaders (no dupes while fresh leaders exist).
+  // Pack #2+ (`openedCount >= 1`): guarantees at least 1 duplicate per pack (when owned dupes exist),
+  // plus `dupChance` on remaining slots, then shuffles slot order.
+  function drawPackLeaders(packPool, ownedMap, pickWeighted, rng, count, openedCount) {
     const n = Math.max(1, Number(count) || 3);
+    const opened = Math.max(0, Number(openedCount) || 0);
     const owned = ownedMap || {};
     const rand = typeof rng === 'function' ? rng : Math.random;
     const poolIds = (packPool || []).map(x => (typeof x === 'string' ? x : x && x.id)).filter(Boolean);
     const fresh = poolIds.filter(id => !owned[id]);
     const dupes = poolIds.filter(id => !!owned[id]);
-    const dupChance = packDupChance(dupes.length, poolIds.length);
+    const dupChance = packDupChance(dupes.length, poolIds.length, opened);
     const out = [];
     const pick = typeof pickWeighted === 'function'
       ? (list => pickWeighted(list, 1)[0])
       : (list => list[Math.min(list.length - 1, Math.floor(rand() * list.length))]);
-
-    for (let i = 0; i < n; i++) {
-      if (!fresh.length && !dupes.length) break;
-      const wantDup = !fresh.length || (dupes.length > 0 && dupChance > 0 && rand() < dupChance);
-      const src = wantDup ? dupes : fresh;
+    const takeFrom = src => {
       const id = pick(src);
-      if (!id) break;
+      if (!id) return null;
       out.push(id);
       const idx = src.indexOf(id);
       if (idx >= 0) src.splice(idx, 1);
+      return id;
+    };
+
+    const guaranteedDup = opened >= 1 && dupes.length > 0;
+    if (guaranteedDup) takeFrom(dupes);
+
+    while (out.length < n && (fresh.length || dupes.length)) {
+      const wantDup = !fresh.length || (opened >= 1 && dupes.length > 0 && dupChance > 0 && rand() < dupChance);
+      const src = wantDup ? dupes : fresh;
+      if (!takeFrom(src)) break;
     }
-    return { ids: out, dupChance };
+
+    // Shuffle slot positions so the guaranteed duplicate does not always sit in slot 1.
+    for (let i = out.length - 1; i > 0; i--) {
+      const j = Math.floor(rand() * (i + 1));
+      const tmp = out[i]; out[i] = out[j]; out[j] = tmp;
+    }
+    return { ids: out, dupChance, guaranteedDup: guaranteedDup ? 1 : 0 };
   }
 
   // Computes exact Dust payout for opening a 3-card pack: +20 seal bonus + rarity-scaled duplicate dust.

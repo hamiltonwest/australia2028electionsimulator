@@ -132,7 +132,17 @@ window.CARD_ART = {
   'Allegra Spender': { src: 'assets/img/cards/allegra-spender.jpg', pos: '50% 22%',
     credit: 'Source: The Nightly, cropped' },
   'Zali Steggall': { src: 'assets/img/cards/zali-steggall.jpg', pos: '50% 22%',
-    credit: 'Source: The Fifth Estate, cropped' }
+    credit: 'Source: The Fifth Estate, cropped' },
+  'Bob Katter': { src: 'assets/img/cards/bob-katter.jpg', pos: '50% 18%',
+    credit: 'Source: ABC News (abc.net.au/news/2025-04-14/herding-katter-bob-katter/105175660), cropped' },
+  'Paul Keating': { src: 'assets/img/cards/paul-keating.jpg', pos: '50% 24%',
+    credit: 'Photo: Lorrie Graham, via The Saturday Paper (thesaturdaypaper.com.au/culture/2023/03/25/paul-keating-and-that-rolling-stone-cover), cropped' },
+  'John Howard': { src: 'assets/img/cards/john-howard.jpg', pos: '50% 24%',
+    credit: 'Source: The Australian (theaustralian.com.au/inquirer/john-howard-a-study-in-resilience/news-story/144abfff1e2eba75136137b2191103ec), cropped' },
+  'Robert Menzies': { src: 'assets/img/cards/robert-menzies.jpg', pos: '50% 36%',
+    credit: 'Photo: David Moore, National Portrait Gallery (portrait.gov.au/portraits/2001.117/robert-menzies-sydney), cropped' },
+  'Gough Whitlam': { src: 'assets/img/cards/gough-whitlam.jpg', pos: '44% 58%',
+    credit: 'National Archives of Australia, via National Museum of Australia (nma.gov.au/explore/features/prime-ministers/gough-whitlam), cropped' }
 };
 // Crop rule for new card art: 355:246-ish frame, head about a third of the height, top of the head about 10% down, face centred
 // (matching the Albanese crop), so every leader appears at the same scale.
