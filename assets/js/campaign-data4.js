@@ -87,7 +87,7 @@
       E('Extend the ban to chat in online games.', 'Wells extends the ban to gaming', { r: { OUT: 0.5, IN: -0.4 } }),
       E('Keep the ban as it is and fund enforcement.', 'Wells funds the social media ban', { o: 0.2 }),
       E('Pause it for a review.', 'Wells pauses the ban', { r: { IN: 0.4 }, n: { GRN: -0.3 }, u: -2 })]],
-    ['SUNSHINE_COAST_TO_LODGE', 'Lilley to the Lodge', 'As Anika Wells, win a Labor majority with 15 or more Queensland seats.', (st, r) => maj(st, r) && ST(r, 'QLD', 'ALP') >= 15, 'sun']);
+    ['SUNSHINE_COAST_TO_LODGE', 'Lilley to The Lodge', 'As Anika Wells, win a Labor majority with 15 or more Queensland seats.', (st, r) => maj(st, r) && ST(r, 'QLD', 'ALP') >= 15, 'sun']);
 
   LD({ id: 'madeleine_king', name: 'Madeleine King', party: 'ALP', inc: false, mates: ['Patrick Gorman'], deb: 1, pp: 3, unityAdj: -4,
       plus: ['Mates with the miners', 'Energy setbacks hit 25% softer; +3 Political Power a turn.'], minus: ['Eastern-seaboard blind spot', 'Setbacks in NSW and Victoria hit 25% harder.'],
@@ -119,7 +119,7 @@
       E('Give them the frontbench seats.', 'Conroy pays the Right', { u: 8, pp: -5 }),
       E('Make them earn it on the doors.', 'Conroy makes the factions earn it', { u: -3, r: { OUT: 0.4 } }),
       G('Do the deal in private and deny it in public.', 'A quiet factional deal', 'm', 1, { u: 6 }, { u: -6, m: -1 })]],
-    ['THE_NUMBERS_MAN', 'The Numbers Man', 'As Stephen Conroy, come back from outside parliament, win the spill on 60% or more, and form government.', (st, r) => st.votes >= 60 && won(st, r), 'abacus']);
+    ['THE_NUMBERS_MAN', 'The Numbers Man', 'As Stephen Conroy, come back from outside Parliament, win the spill on 60% or more, and form government.', (st, r) => st.votes >= 60 && won(st, r), 'abacus']);
 
   LD({ id: 'kristina_keneally', name: 'Kristina Keneally', party: 'ALP', inc: false, cb: true, votes0: 40, mates: ['Carmel Tebbutt'], deb: 2, pp: 0, unityAdj: -4,
       plus: ['Born campaigner', 'Debate skill 2.'], minus: ['Parachute candidate', 'Setbacks in NSW hit 25% harder; starts the spill on 40%.'], neg: { st: { NSW: 1.25 } } },
@@ -421,7 +421,7 @@
       E('Make it about bushfire rebuilding.', 'Barilaro runs on bushfire recovery', { s: { NSW: 0.4 }, r: { RUR: 0.5 } }),
       E('Promise a new hospital in Queanbeyan.', 'Barilaro promises a hospital', { s: { NSW: 0.5 }, pp: -5 }),
       G('Pick a fight with the Liberal candidate.', 'Barilaro picks a fight', 'm', 2, { r: { RUR: 0.8 } }, { u: -6 })]],
-    ['EDEN_MONARO_AT_LAST', 'Eden-Monaro, At Last', 'As John Barilaro, win Eden-Monaro and form government.', (st, r) => won(st, r) && r.leaderSeatWon === true, 'glove']);
+    ['EDEN_MONARO_AT_LAST', 'Eden-Monaro, at Last', 'As John Barilaro, win Eden-Monaro and form government.', (st, r) => won(st, r) && r.leaderSeatWon === true, 'glove']);
 
   // ================= One Nation =================
   LD({ id: 'cory_bernardi', name: 'Cory Bernardi', party: 'ONP', inc: false, cb: true, votes0: 36, mates: ['Malcolm Roberts'], deb: 1, pp: 3, unityAdj: -2, unityDrift: -1,

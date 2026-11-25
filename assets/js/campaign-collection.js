@@ -23,7 +23,7 @@ window.CAMPAIGN_COLL = (() => {
     NATIONAL_SECURITY: 'National security',
     TAX: 'Tax',
     MIGRATION: 'Migration',
-    CRISIS: 'Scandals & crises',
+    CRISIS: 'Scandals and crises',
     HEALTH: 'Health'
   };
 
@@ -250,8 +250,8 @@ window.CAMPAIGN_COLL = (() => {
       const finishLbl = p.owned && p.foilTier ? FOIL_LABEL[p.foilTier] : '';
       const footTxt = p.owned
         ? (finishLbl
-          ? `${finishLbl} · ${p.hof.runs ? `${p.hof.bestSeats} seats` : `${p.prog.a}/${p.prog.h} hon.`}`
-          : (p.hof.runs ? `${p.hof.bestSeats} best seats · ${p.prog.a}/${p.prog.h} hon.` : `Collected · ${p.prog.a}/${p.prog.h} hon.`))
+          ? `${finishLbl} · ${p.hof.runs ? `${p.hof.bestSeats} seats` : `${p.prog.a}/${p.prog.h} honours`}`
+          : (p.hof.runs ? `${p.hof.bestSeats} best seats · ${p.prog.a}/${p.prog.h} honours` : `Collected · ${p.prog.a}/${p.prog.h} honours`))
         : `${p.isVault ? 'Vault' : 'Craft'} · ${p.craftCost} Dust`;
       const pc = ctx.cardPC ? ctx.cardPC(p.L) : ctx.PC(p.party);
       return `<button type="button" class="bd-slot ${rarCls}${foilCls}${p.owned ? ' owned' : ' missing'}${active}" data-bopen="${p.id}" data-bq="${esc(p.searchQ)}" style="--pc:${pc}" aria-label="No. ${noStr} ${esc(p.name)}, ${esc(p.L.sb === 'Nationals' ? 'Nationals' : p.partyName)}, ${esc(p.rarLabel)}, ${p.owned ? (finishLbl || 'Collected') : `Craft for ${p.craftCost} Dust`}">
@@ -292,7 +292,7 @@ window.CAMPAIGN_COLL = (() => {
     const dossierHtml = state.bOpen ? renderDossier(profs, filtered, ctx) : '';
 
     return ctx.toolbar()
-      + ctx.mast('Campaign mode · Series one', 'Collection Binder', `Every leader trading card from No. 001 to No. ${totalPad}. Earn Card Dust from duplicate packs, campaigns and honours to craft missing leaders, unlock the five Vault Legends, or upgrade finishes to Platinum and Prism foil.`)
+      + ctx.mast('Campaign Mode · Series One', 'Collection Binder', `Every leader trading card from No. 001 to No. ${totalPad}. Earn Card Dust from duplicate packs, campaigns and honours to craft missing leaders, unlock the five Vault Legends, or upgrade finishes to Platinum and Prism foil.`)
       + `<div class="bd-topnav"><button type="button" class="cmp-link back" data-a="back">← Back to leaders</button><div class="bd-topacts"><button type="button" class="ghost" data-a="compare">Compare two leaders →</button>${ctx.packBtn()}</div></div>`
       + `<section class="bd-summary" aria-label="Collection overview">
           <div class="bd-sum-main">
@@ -327,7 +327,7 @@ window.CAMPAIGN_COLL = (() => {
               </button>`).join('')}</div>
             </div>
             <div class="bd-bk">
-              <div class="bd-bkh"><strong>By rarity &amp; next-pack odds</strong><small>${packOwnedCount < packPoolCount ? 'Chance in your next 3-card pack' : 'Pack pool complete · Dust packs active'}</small></div>
+              <div class="bd-bkh"><strong>By rarity and next-pack odds</strong><small>${packOwnedCount < packPoolCount ? 'Chance in your next 3-card pack' : 'Pack pool complete · Dust packs active'}</small></div>
               <div class="bd-bklist">${rarOdds.map(r => `<button type="button" class="bd-bkrow bd-rrow ${r.cls}${state.bRar === r.key ? ' on' : ''}" data-brar="${state.bRar === r.key ? 'all' : r.key}" aria-pressed="${state.bRar === r.key}">
                 <span class="bd-bkl"><i class="bd-rdiam ${r.cls}" aria-hidden="true"></i>${esc(r.label)}</span>
                 <span class="bd-bkbar"><i style="width:${r.total ? Math.round(r.owned / r.total * 100) : 0}%"></i></span>
@@ -357,9 +357,9 @@ window.CAMPAIGN_COLL = (() => {
             <label class="bd-search"><span class="sr">Search binder</span><input id="bdq" type="search" placeholder="Search name, seat, party, foil or #070…" autocomplete="off" value="${esc(state.bQ)}"></label>
             <label class="bd-sort"><span class="kick">Sort</span><select id="bdsort" class="cs-sel">
               <option value="no"${state.bSort === 'no' ? ' selected' : ''}>Card number (001–${totalPad})</option>
-              <option value="grade"${state.bSort === 'grade' ? ' selected' : ''}>Rarity &amp; tier grade</option>
+              <option value="grade"${state.bSort === 'grade' ? ' selected' : ''}>Rarity and tier grade</option>
               <option value="party"${state.bSort === 'party' ? ' selected' : ''}>Party</option>
-              <option value="mastery"${state.bSort === 'mastery' ? ' selected' : ''}>Mastery &amp; best score</option>
+              <option value="mastery"${state.bSort === 'mastery' ? ' selected' : ''}>Mastery and best score</option>
               <option value="recent"${state.bSort === 'recent' ? ' selected' : ''}>Recently collected</option>
             </select></label>
             ${(state.bStatus !== 'all' || state.bParty !== 'all' || state.bRar !== 'all' || state.bQ)
@@ -414,7 +414,7 @@ window.CAMPAIGN_COLL = (() => {
             </div>
             <div class="bd-fopt f1${p.foilTier === 1 ? ' active' : p.foilTier > 1 ? ' done' : ''}">
               <span class="bd-fsw plat" aria-hidden="true"></span>
-              <span class="bd-fmeta"><b>Platinum Brushed Chrome</b><small>Machined steel sheen &amp; chrome trim</small></span>
+              <span class="bd-fmeta"><b>Platinum Brushed Chrome</b><small>Machined steel sheen and chrome trim</small></span>
               ${p.foilTier >= 1
                 ? `<span class="bd-fstat num">${p.foilTier === 1 ? 'Active' : 'Unlocked'}</span>`
                 : `<button type="button" class="bd-fbtn" data-foil="${p.id}:1"${dust < cost1 ? ' disabled' : ''}>${dust < cost1 ? `Need ${cost1 - dust}` : `${cost1} Dust`}</button>`}
@@ -444,7 +444,7 @@ window.CAMPAIGN_COLL = (() => {
           </div>
         </div>
         <div class="bd-sh-body">
-          <div class="bd-sh-card">${cardHtml}<p class="bd-flipcap">Tap card to flip front &amp; back</p></div>
+          <div class="bd-sh-card">${cardHtml}<p class="bd-flipcap">Tap card to flip front and back</p></div>
           <div class="bd-sh-info">
             <div class="bd-dsec">
               <span class="kick">Collection status</span>
@@ -468,7 +468,7 @@ window.CAMPAIGN_COLL = (() => {
             <div class="bd-dsec">
               <span class="kick">Your campaign record</span>
               ${p.hof.runs ? `<dl class="bd-dl num">
-                <div><dt>Campaigns finished</dt><dd>${p.hof.runs} (${p.hof.wins} gov. win${p.hof.wins === 1 ? '' : 's'})</dd></div>
+                <div><dt>Campaigns finished</dt><dd>${p.hof.runs} (${p.hof.wins} government win${p.hof.wins === 1 ? '' : 's'})</dd></div>
                 <div><dt>Best result</dt><dd>${esc(p.hof.bestTier || 'Played')}</dd></div>
                 <div><dt>Best seats</dt><dd>${p.hof.bestSeats}</dd></div>
                 <div><dt>Best score</dt><dd><b>${p.hof.bestScore.toLocaleString()}</b></dd></div>
@@ -532,14 +532,14 @@ window.CAMPAIGN_COLL = (() => {
     const ppPerTurn = L.pp || 0;
     const debBase = L.deb != null ? L.deb : 0;
     const debTags = Object.entries(L.debTag || {}).map(([k, v]) => `${fmtSign(v, 0)} ${tagName(k)}`);
-    const startUnity = L.inc && L.unity ? `${L.unity}` : `60${L.unityAdj ? ` (${fmtSign(L.unityAdj, 0)} adj.)` : ''}`;
+    const startUnity = L.inc && L.unity ? `${L.unity}` : `60${L.unityAdj ? ` (${fmtSign(L.unityAdj, 0)} adjustment)` : ''}`;
     const unityExtra = [];
-    if (L.unityDrift) unityExtra.push(`${fmtSign(L.unityDrift, 0)}/turn drift`);
+    if (L.unityDrift) unityExtra.push(`${fmtSign(L.unityDrift, 0)} a turn drift`);
     if (L.schism) unityExtra.push(`−${L.schism} if schism`);
     const pfList = [];
     const addPf = (o) => Object.entries(o || {}).forEach(([k, v]) => {
-      const lbl = k === 'grn' ? 'Greens→ALP' : k === 'on' ? 'ON→Coal.' : 'Teal prefs';
-      pfList.push(`${fmtSign(v, 0)}pt ${lbl}`);
+      const lbl = k === 'grn' ? 'Greens to Labor' : k === 'on' ? 'One Nation to Coalition' : 'teal-seat preferences';
+      pfList.push(`${fmtSign(v, 0)} pts ${lbl}`);
     });
     addPf(L.pf);
     addPf(L.pfMinus);
@@ -636,7 +636,7 @@ window.CAMPAIGN_COLL = (() => {
       : (p.isVault ? `Vault Legend · Craft for ${p.craftCost} Dust` : `Locked · Packs or ${p.craftCost} Dust`);
 
     return ctx.toolbar()
-      + ctx.mast('Campaign mode · Head-to-head', 'Compare Leaders', `Line up any two of the ${profs.length} leaders side by side across tier-list benchmarks, campaign mechanics, demographic vote reach, running mates and your personal record.`)
+      + ctx.mast('Campaign Mode · Head-to-head', 'Compare Leaders', `Line up any two of the ${profs.length} leaders side by side across tier-list benchmarks, campaign mechanics, demographic vote reach, running mates and your personal record.`)
       + `<div class="bd-topnav"><button type="button" class="cmp-link back" data-a="back">← Back to leaders</button><div class="bd-topacts"><button type="button" class="ghost" data-a="binder">Open Collection Binder →</button></div></div>`
       + `<section class="cp-picker" aria-label="Choose two leaders to compare">
           <div class="cp-pgrid">
@@ -677,7 +677,7 @@ window.CAMPAIGN_COLL = (() => {
           </div>
         </section>`
       + `<section class="cp-section" aria-labelledby="cp-h-bench">
-          <div class="cmp-fighead"><span class="fig">Fig. 1</span><strong id="cp-h-bench">Tier-list difficulty &amp; campaign benchmarks</strong><small>Measured across 1,200 simulated campaigns in the current 2028 scenario.</small></div>
+          <div class="cmp-fighead"><span class="fig">Fig. 1</span><strong id="cp-h-bench">Tier-list difficulty and campaign benchmarks</strong><small>Measured across 1,200 simulated campaigns in the current 2028 scenario.</small></div>
           <div class="cp-colhead">
             <span style="--pc:${pcOf(A)}"><i class="sw" style="background:${pcOf(A)}"></i>${esc(A.name)}</span>
             <span class="cp-chm">Metric</span>
@@ -693,10 +693,10 @@ window.CAMPAIGN_COLL = (() => {
           </div>
         </section>`
       + `<section class="cp-section" aria-labelledby="cp-h-mech">
-          <div class="cmp-fighead"><span class="fig">Fig. 2</span><strong id="cp-h-mech">Campaign route &amp; starting mechanics</strong><small>How each leader enters the race and what tools they start with.</small></div>
+          <div class="cmp-fighead"><span class="fig">Fig. 2</span><strong id="cp-h-mech">Campaign route and starting mechanics</strong><small>How each leader enters the race and what tools they start with.</small></div>
           <div class="cp-table">
             ${metricRow('Route to campaign', esc(A.routeShort), esc(B.routeShort), A.routeSteps, B.routeSteps, { lowerBetter: true })}
-            ${metricRow('Political Power / turn', `+${mA.ppPerTurn}${esc(mA.ppBonusNote)}`, `+${mB.ppPerTurn}${esc(mB.ppBonusNote)}`, mA.ppPerTurn, mB.ppPerTurn, { bar: true, max: 6 })}
+            ${metricRow('Political Power a turn', `+${mA.ppPerTurn}${esc(mA.ppBonusNote)}`, `+${mB.ppPerTurn}${esc(mB.ppBonusNote)}`, mA.ppPerTurn, mB.ppPerTurn, { bar: true, max: 6 })}
             ${metricRow('Debate skill', `${mA.debBase}${mA.debTags.length ? ` <small>${esc(mA.debTags.join(', '))}</small>` : ''}`, `${mB.debBase}${mB.debTags.length ? ` <small>${esc(mB.debTags.join(', '))}</small>` : ''}`, mA.debBase, mB.debBase, { bar: true, max: 3 })}
             ${metricRow('Starting caucus unity', esc(mA.startUnityText), esc(mB.startUnityText), mA.startUnityVal, mB.startUnityVal, { bar: true, max: 100 })}
             ${metricRow('Preference flows', esc(mA.pfText), esc(mB.pfText), null, null)}
@@ -704,14 +704,14 @@ window.CAMPAIGN_COLL = (() => {
           </div>
         </section>`
       + `<section class="cp-section" aria-labelledby="cp-h-perks">
-          <div class="cmp-fighead"><span class="fig">Fig. 3</span><strong id="cp-h-perks">Signature perks &amp; weaknesses</strong><small>Campaign-specific rules on each leader’s card.</small></div>
+          <div class="cmp-fighead"><span class="fig">Fig. 3</span><strong id="cp-h-perks">Signature perks and weaknesses</strong><small>Campaign-specific rules on each leader’s card.</small></div>
           <div class="cp-split">
             <div class="cp-box"><h4 style="--pc:${pcOf(A)}">${esc(A.name)}</h4>${perkBlock(A)}</div>
             <div class="cp-box"><h4 style="--pc:${pcOf(B)}">${esc(B.name)}</h4>${perkBlock(B)}</div>
           </div>
         </section>`
       + `<section class="cp-section" aria-labelledby="cp-h-reach">
-          <div class="cmp-fighead"><span class="fig">Fig. 4</span><strong id="cp-h-reach">Sandbox vote reach &amp; character traits</strong><small>Net national vote swing plus every state and Census demographic modifier (points per SD).</small></div>
+          <div class="cmp-fighead"><span class="fig">Fig. 4</span><strong id="cp-h-reach">Sandbox vote reach and character traits</strong><small>Net national vote swing plus every state and Census demographic modifier (points per SD).</small></div>
           <div class="cp-table">
             ${metricRow('Net national vote effect', `<b>${fmtSign(A.netNat, 2)} pts</b>`, `<b>${fmtSign(B.netNat, 2)} pts</b>`, A.netNat, B.netNat)}
             ${allDemKeys.map(k => {
@@ -729,17 +729,17 @@ window.CAMPAIGN_COLL = (() => {
           </div>
         </section>`
       + `<section class="cp-section" aria-labelledby="cp-h-ticket">
-          <div class="cmp-fighead"><span class="fig">Fig. 5</span><strong id="cp-h-ticket">The ticket &amp; your personal record</strong><small>Running mates and your own saved Hall of Fame history in this browser.</small></div>
+          <div class="cmp-fighead"><span class="fig">Fig. 5</span><strong id="cp-h-ticket">The ticket and your personal record</strong><small>Running mates and your own saved Hall of Fame history in this browser.</small></div>
           <div class="cp-split">
             <div class="cp-box"><h4 style="--pc:${pcOf(A)}">${esc(A.name)}’s ticket</h4>${matesBlock(A)}</div>
             <div class="cp-box"><h4 style="--pc:${pcOf(B)}">${esc(B.name)}’s ticket</h4>${matesBlock(B)}</div>
           </div>
           <div class="cp-table cp-rec-table">
             ${metricRow('Collection status', esc(statusLine(A)), esc(statusLine(B)), null, null)}
-            ${metricRow('Your runs & wins', `${A.hof.runs} run${A.hof.runs === 1 ? '' : 's'} · ${A.hof.wins} win${A.hof.wins === 1 ? '' : 's'}`, `${B.hof.runs} run${B.hof.runs === 1 ? '' : 's'} · ${B.hof.wins} win${B.hof.wins === 1 ? '' : 's'}`, A.hof.wins, B.hof.wins)}
+            ${metricRow('Your runs and wins', `${A.hof.runs} run${A.hof.runs === 1 ? '' : 's'} · ${A.hof.wins} win${A.hof.wins === 1 ? '' : 's'}`, `${B.hof.runs} run${B.hof.runs === 1 ? '' : 's'} · ${B.hof.wins} win${B.hof.wins === 1 ? '' : 's'}`, A.hof.wins, B.hof.wins)}
             ${metricRow('Your best seats', A.hof.runs ? `${A.hof.bestSeats}` : '—', B.hof.runs ? `${B.hof.bestSeats}` : '—', A.hof.bestSeats, B.hof.bestSeats)}
             ${metricRow('Your best score', A.hof.runs ? `<b>${A.hof.bestScore.toLocaleString()}</b>` : '—', B.hof.runs ? `<b>${B.hof.bestScore.toLocaleString()}</b>` : '—', A.hof.bestScore, B.hof.bestScore)}
-            ${metricRow('Honours & answers', `${A.prog.a}/${A.prog.h} hon. · ${A.prog.b}/${A.prog.o} ans.`, `${B.prog.a}/${B.prog.h} hon. · ${B.prog.b}/${B.prog.o} ans.`, A.prog.a + A.prog.b, B.prog.a + B.prog.b)}
+            ${metricRow('Honours and answers', `${A.prog.a}/${A.prog.h} honours · ${A.prog.b}/${A.prog.o} answers`, `${B.prog.a}/${B.prog.h} honours · ${B.prog.b}/${B.prog.o} answers`, A.prog.a + A.prog.b, B.prog.a + B.prog.b)}
           </div>
           <div class="cp-foot-acts">
             ${A.owned ? `<button type="button" class="bd-play" data-lead="${A.id}">Start campaign as ${esc(A.name)} →</button>` : `<button type="button" class="ghost" data-bjump="${A.id}">Craft ${esc(A.name)} in Binder (${A.craftCost} Dust)</button>`}

@@ -2385,7 +2385,7 @@ async function shareImage(o){
   {const dy=H-74;x.fillStyle=LINE;x.fillRect(48,dy-26,W-96,1.5);x.fillStyle=MUT;x.font=`italic 400 15px ${BODY}`;
     ctr(CM?`A campaign-mode result: ${CM.leader}'s campaign for ${CM.party}, counted with the same model as the sandbox. Percentages are each winner's simulated two-candidate-preferred share.`:`A simulation, not a prediction: the central forecast across ${nf(S.trials)} simulated elections with this page's settings. Percentages are each winner's simulated two-candidate-preferred share.`,W/2,dy);
     ctr(`XYZ News and its reporters are fictional, and the story contains no real quotes. Not affiliated with or endorsed by the Parliament of Australia, the AEC or any party.`,W/2,dy+22);
-    ctr(`Boundaries: AEC. Census: ABS 2021. Official portraits: AUSPIC / DPS, © Commonwealth of Australia, CC BY-NC-ND 4.0. Other photos: Wikimedia Commons. electionsimulator2028.au`,W/2,dy+44);}
+    ctr(`Boundaries: AEC. Census: ABS 2021. Official portraits: AUSPIC / DPS, © Commonwealth of Australia, CC BY-NC-ND 4.0. Other portraits: Wikimedia Commons and attributed sources. electionsimulator2028.au`,W/2,dy+44);}
   const url=cv.toDataURL('image/png');
   const ov=document.createElement('div');ov.className='shareimg';ov.innerHTML=`<img src="${url}" alt="Result card"><p>Long-press (phone) or right-click (computer) the image to save it.</p><div class="btns"><button type="button" id="shsave" class="ghost" style="border-color:#fff;color:#fff" hidden>Save image</button>${CM&&CM.text?'<button type="button" id="shcopy" class="ghost" style="border-color:#fff;color:#fff">Copy the result as text</button>':''}<button type="button" id="shclose">Close</button></div>`;
   if(CM)ov.style.zIndex='400';
@@ -2605,7 +2605,7 @@ function how(){
   <h3 class="art">Factions and new leaders</h3>
   <p>Labor and Liberal MPs and senators are tagged with the faction they are reported to belong to; the Nationals have no formal factions, so they are grouped by state branch. If a leader loses their seat or their party loses badly, the party room picks a new leader from its surviving frontbench (the cabinet for Labor, the shadow cabinet for the Coalition), most often from the largest faction but not always. If the whole frontbench is gone, the field opens up to the backbench. Parties without factions turn to their most senior figure left.</p>
   <h3 class="art">Limits</h3>
-  <p>It can't know about candidates who haven't been chosen, local campaigns or future boundary changes, and the effects of leaders and events are judgement calls. Treat it as a guide to what could happen, not a prediction.</p>`;
+  <p>It cannot know about candidates who have not yet been chosen, local campaigns or future boundary changes, and the effects of leaders and events are judgement calls. Treat it as a guide to what could happen, not a prediction.</p>`;
 }
 // one-line descriptions under each control
 const DESC={s0:"Moves Labor's national first-preference vote; each seat moves in proportion to Labor's existing vote there.",
@@ -2652,7 +2652,7 @@ $('how').insertAdjacentHTML('beforeend',`<h3 class="art">Checked against 2025</h
   <ul>
   <li><b>Polls move together.</b> Each run shares a national polling error across seats, but real polling misses can be bigger and more lopsided than any one run allows (2019 is the reminder).</li>
   <li><b>Preference flows are estimates.</b> They are fitted to 2025 and vary by seat type, but a party's voters can behave very differently when it becomes a contender, as One Nation now is.</li>
-  <li><b>New parties have no history.</b> Community Strong and any party standing in new seats start from judgement-based figures, not results.</li>
+  <li><b>New parties have no history.</b> Community Strong Australia and any party standing in new seats start from judgement-based figures, not results.</li>
   <li><b>Candidates matter and are not modelled.</b> Retirements, scandals and star recruits can move a seat by many points.</li>
   <li><b>The Coalition is one vote.</b> Liberal, National, LNP and CLP seats are shown separately, but the model treats the Coalition vote as a single bloc unless you split it.</li>
   <li><b>The Senate is simpler than the real count.</b> It counts parties, not individual candidates, and uses estimated flows. It reproduces all 40 seats won in 2025, but only after a one-point calibration in New South Wales; Lidia Thorpe's and Tammy Tyrrell's starting votes are judgement, as neither was on the 2025 ballot.</li>

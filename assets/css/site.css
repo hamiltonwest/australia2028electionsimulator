@@ -998,3 +998,30 @@ button.tl-g,button.tl-g:hover,button.tl-g:focus{background:var(--gc)!important;c
 .tl-g.g-lplate .lp-l{width:72%;height:72%;fill:#111;display:block}
 .tl-disc{max-width:62ch;margin:10px auto 0;padding:8px 12px;border-left:3px solid var(--accent,#9b1c1c);font:14px/1.45 var(--body);color:var(--muted);text-align:left}
 .tl-disc b{color:var(--ink)}
+/* ---- about and credits page */
+.about-toc{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font:600 11px/1 var(--mono);letter-spacing:.11em;text-transform:uppercase}
+.about-toc a{padding:7px 11px;border:1px solid var(--line);color:var(--ink);text-decoration:none;background:color-mix(in srgb,var(--panel) 65%,transparent);transition:border-color .2s}
+.about-toc a:hover{border-color:var(--ink)}
+.about-lead{font:400 clamp(17px,2vw,19.5px)/1.58 var(--body);max-width:66ch;margin:0 0 18px;color:var(--ink)}
+.about-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:16px 0 20px}
+.about-card{padding:16px 18px;border:1px solid var(--line);border-top:3px solid var(--ink);background:var(--panel);display:flex;flex-direction:column;gap:8px}
+.about-card.camp{border-top-color:var(--accent)}
+.about-card .ac-k{font:700 10.5px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.about-card h2{font:800 22px/1.15 var(--display);margin:0;color:var(--ink)}
+.about-card p{margin:0;font:15px/1.55 var(--body);color:var(--ink)}
+.about-card .ac-go{margin-top:auto;padding-top:6px;font:600 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);text-decoration:underline;text-underline-offset:4px}
+.about-note{margin:16px 0 22px;padding:13px 16px;border:1px solid var(--line);border-left:4px solid var(--accent);background:color-mix(in srgb,var(--panel) 78%,transparent);font:14.5px/1.55 var(--body);color:var(--ink);max-width:74ch}
+.about-note b{color:var(--ink)}
+.about-sec{margin-top:28px;padding-top:16px;border-top:1px solid var(--line)}
+.about-sec h2.art{font:800 24px/1.15 var(--display);margin:0 0 10px;color:var(--ink)}
+.about-sec p,.about-sec li{max-width:72ch;line-height:1.58}
+.about-sec ul{padding-left:20px;margin:8px 0 14px}
+.about-sec li+li{margin-top:7px}
+.credlist{border-top:1px solid var(--line);padding:4px 0}
+.credlist:last-of-type{border-bottom:1px solid var(--line)}
+.credlist summary{padding:8px 2px;margin:0;color:var(--ink)}
+.credlist summary:hover{color:var(--accent)}
+.credlist .tbl{margin:4px 0 12px}
+.credlist td,.credlist th{overflow-wrap:anywhere}
+@media (max-width:720px){.about-grid{grid-template-columns:1fr}}
+

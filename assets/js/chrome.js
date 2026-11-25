@@ -40,7 +40,7 @@
   const foot = () => `<footer class="sitefoot"><div class="sf-top"><a class="tb-mark" href="index.html#home" data-nav="home">Australia <b>2028</b></a>`
     + `<nav class="sf-nav" aria-label="Site"><a href="index.html#sim" data-nav="sandbox">Sandbox</a><a href="index.html#campaign" data-nav="campaign">Campaign</a><a href="tier-list.html">Tier list</a><a href="how-it-works.html">How it works</a><a href="data.html">Polls &amp; data</a><a href="about.html">About</a></nav></div>`
     + `<p><b>Australia 2028 Election Simulator</b> is an independent, non-commercial hobby project. It is not affiliated with or endorsed by the Parliament of Australia, the Australian Electoral Commission, any party or any media organisation. XYZ News and its reporters are fictional, and every result shown is a simulation, not a prediction.</p>`
-    + `<p class="credit">Official portraits of Members and Senators: &copy; Commonwealth of Australia, AUSPIC / Department of Parliamentary Services, from the <a href="https://www.aph.gov.au/Senators_and_Members/Members/Members_Photos">Parliament of Australia website</a>, used under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" rel="license">CC BY-NC-ND 4.0</a> and shown without changes. Other photos: Wikimedia Commons. <a href="about.html#photo-credits">Full photo credits</a>.</p></footer>`;
+    + `<p class="credit">Official portraits of Members and Senators: &copy; Commonwealth of Australia, AUSPIC / Department of Parliamentary Services, from the <a href="https://www.aph.gov.au/Senators_and_Members/Members/Members_Photos">Parliament of Australia website</a>, used under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" rel="license">CC BY-NC-ND 4.0</a> and shown without changes. Other portraits and trading-card art: Wikimedia Commons and attributed editorial and archival sources. <a href="about.html#photo-credits">Full photo credits</a>.</p></footer>`;
   // the footer, the same everywhere: in place of <div data-footer>, or at the end of an overlay
   function mountFoot(el, where) { if (!el) return null; const t = document.createElement('div'); t.innerHTML = foot(); const f = t.firstElementChild;
     if (where === 'replace') el.replaceWith(f); else el.appendChild(f); return f; }
@@ -56,7 +56,7 @@
     fp: 'First preferences: the number 1 votes each party receives, before any preferences are distributed.',
     prefs: 'When a candidate is eliminated, their ballots pass to each voter’s next choice. The model uses the flows from the 2025 election, adjusted by your settings.',
     swing: 'The change in a party’s vote since the 2025 election, in percentage points.',
-    mrp: 'MRP (multilevel regression and post-stratification): a large poll modelled down to each seat using its census profile. The model blends in DemosAU’s August–September 2026 seat estimates.',
+    mrp: 'MRP (multilevel regression and post-stratification): a large poll modelled down to each seat using its Census profile. The model blends in DemosAU’s August–September 2026 seat estimates.',
     quota: 'In a half-Senate election each state elects 6 senators, so a candidate needs one-seventh of the formal vote plus one (about 14.3%) to be elected outright.',
     crossbench: 'Members and senators outside the government and the main Opposition: minor parties and independents.',
     seatmap: 'Each electorate is coloured by its most likely winner. Paler shades mean the model is less sure. Select a seat for its detail, or replay results night to watch the count.',
@@ -78,7 +78,7 @@
     mode: 'Three ways to play\nFree campaign: any leader, any unlocked opening.\nToday’s challenge: one leader and one opening, drawn at random each day and the same for everyone.\nIronman: no exact polls, and leaving counts as a loss.',
     difficulty: 'Difficulty\nEasy: softens bad news and rival attacks.\nHard: sharpens them.\nScores are scaled to match.',
     opening: 'Where the campaign starts\nToday’s polls, or a different set of circumstances to fight from.\nMore openings unlock as you earn honours; the easy Honeymoon start is unlocked last.',
-    playas: 'Start a campaign straight away as one of these leaders. Every other leader is in campaign mode.',
+    playas: 'Start a campaign straight away as one of these leaders. All 70 leaders are available in Campaign Mode.',
     scenario: 'Open the sandbox already set to one of the prepared scenarios. You can change anything from there.',
     simnight: 'A single simulated election night: each seat’s winner is drawn from its chances in the model, so the result is different on every visit.'
   };

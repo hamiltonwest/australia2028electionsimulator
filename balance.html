@@ -30,7 +30,7 @@
 </style>
 </head>
 <body>
-<header class="bd-h"><div class="bd-k">Australia 2028 · campaign mode · not linked from the site</div><h1>Balance dashboard</h1>
+<header class="bd-h"><div class="bd-k">Australia 2028 · Campaign Mode · Internal balance tool</div><h1>Balance dashboard</h1>
 <p>Plays full campaigns with three strategies and reports the seats each leader ends on in the seat projection (no polling error). <b>Best</b> greedily picks the answer and decisions that most improve the projection one step ahead; <b>random</b> picks at random; <b>worst</b> picks the most damaging answer. Best and worst can see how each gamble would land, so they overstate the range a real player can reach. Your saved campaign, honours and collection in this browser are put back when it finishes.</p></header>
 <div class="bd-ctl">
   <label>Leaders<select id="bdlead" multiple size="7"></select></label>
@@ -72,7 +72,7 @@
     const C = W.CAMPAIGN_DATA, leaders = [...$('bdlead').selectedOptions].map(o => o.value), scens = $('bdscen').value === 'all' ? C.scenarios.map(s => s.id) : ['std'], N = Math.max(1, Math.min(20, +$('bdn').value || 3)), diff = $('bddiff').value;
     const keep = {}; KEYS.forEach(k => { keep[k] = W.localStorage.getItem(k); });
     btn.dataset.busy = 1; btn.textContent = 'Stop'; stop = false; $('bdbody').innerHTML = ''; const total = leaders.length * scens.length * 3 * N; let done = 0; const t0 = Date.now();
-    const PC = { ALP: 'var(--alp)', LNP: 'var(--coa)', ONP: 'var(--on)', GRN: 'var(--grn)', IND: 'var(--ind)' };
+    const PC = { ALP: 'var(--alp)', LNP: 'var(--coa)', ONP: 'var(--on)', GRN: 'var(--grn)', IND: 'var(--ind)', KAP: 'var(--kap)' };
     try {
       for (const id of leaders) for (const sc of scens) { if (stop) break; const L = C.leaders.find(l => l.id === id), row = {};
         for (const strat of ['best', 'rand', 'worst']) { row[strat] = []; for (let k = 0; k < N && !stop; k++) { row[strat].push(await runOne(id, strat, { scen: sc, diff })); done++; $('bdstat').textContent = `${done} of ${total} campaigns · ${Math.round((Date.now() - t0) / 1000)}s`; } }

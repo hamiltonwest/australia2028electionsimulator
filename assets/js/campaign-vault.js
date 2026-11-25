@@ -53,7 +53,7 @@
       vault_reformer: ['Economic Architect', 2, 'Floated the dollar, built super, and still dominates the economic argument.', 0.5, [['hiinc', 0.4], ['mort', 0.5]]],
       vault_arrogant: ['Acid Tongue', -1, 'Brilliantly quotable, occasionally alienates undecided suburban voters.', -0.3, [['farm', -0.5], ['old', -0.3]]],
       vault_battlers: ['Howard’s Battlers', 2, 'Speaks directly to outer-suburban mortgage belts and retirees.', 0.7, [['mort', 1.1], ['old', 0.7], ['fam', 0.5]]],
-      vault_discipline: ['Iron Cabinet Discipline', 2, 'Eleven years in the Lodge taught him how to hold a coalition together.', 0.5, [['chr', 0.5]]],
+      vault_discipline: ['Iron Cabinet Discipline', 2, 'Eleven years in The Lodge taught him how to hold a coalition together.', 0.5, [['chr', 0.5]]],
       vault_workchoices: ['Ghost of WorkChoices', -2, 'Unions and younger voters still remember the workplace laws.', -0.5, [['young', -0.8], ['deg', -0.6], ['lab', -0.4]]],
       vault_crash_through: ['Crash Through or Crash', 2, 'Sweeping vision that rallies Medicare defenders, renters and students.', 0.8, [['care', 0.9], ['young', 0.7], ['rent', 0.6]]],
       vault_medibank: ['Father of Medicare', 2, 'Universal healthcare and free education are written into his name.', 0.5, [['care', 0.8], ['lowinc', 0.6]]],
@@ -93,9 +93,9 @@
     }
   }
 
-  // Ensure Vault Legend parliamentary portraits are registered on SIM.PHOTO if present.
-  if (window.SIM && window.SIM.PHOTO) {
-    Object.assign(window.SIM.PHOTO, {
+  // Ensure Vault Legend parliamentary portraits are registered on SIM.PHOTOS if present.
+  if (window.SIM && window.SIM.PHOTOS) {
+    Object.assign(window.SIM.PHOTOS, {
       'Paul Keating': 'assets/img/members/paul-keating.jpg',
       'John Howard': 'assets/img/members/john-howard.jpg',
       'Gough Whitlam': 'assets/img/members/gough-whitlam.jpg',
@@ -151,8 +151,8 @@
       mates: ['Jim Chalmers'], deb: 3, pp: 2, unityAdj: -8, unityDrift: -1,
       debTag: { ECONOMY: 1, TAX: 1 }, pos: { tag: { ECONOMY: 1.3, TAX: 1.25 } },
       neg: { tag: { COST_OF_LIVING: 1.25 }, r: { RUR: 1.3 } },
-      plus: ['Placido Domingo', 'Debate skill 3; economy & tax +25–30%; +2 Political Power a turn.'],
-      minus: ['High-wire temper', 'Starts with 8 less unity (−1/turn); cost-of-living & rural hits hurt.']
+      plus: ['Plácido Domingo', 'Debate skill 3; economy and tax choices land 25–30% harder; +2 Political Power a turn.'],
+      minus: ['High-wire temper', 'Starts with 8 less unity (−1 a turn); cost-of-living and rural setbacks hit harder.']
     },
     [4, 'Turn the debate into a masterclass on productivity, superannuation and Australia’s place in Asia.', 'Keating turns the debate into an economic clinic', { o: 0.9, r: { IN: 0.7, OUT: 0.4 }, m: 2 }, 'ECONOMY'],
     [3, 'Use the mid-campaign spotlight to declare that a tough slowdown is the recession Australia had to have.', 'Keating revives his most infamous line', ['d', 4, { o: 0.7, m: 3 }, { o: -1.3, r: { OUT: -1.1 }, m: -3 }], 'ECONOMY'],
@@ -182,8 +182,8 @@
       mates: ['Peter Costello', 'Tim Fischer'], deb: 2, pp: 3, unityAdj: 6, unityDrift: 0.5,
       debTag: { ECONOMY: 1, NATIONAL_SECURITY: 1 }, pos: { tag: { ECONOMY: 1.25, NATIONAL_SECURITY: 1.25 } },
       pf: { on: 3 }, pfMinus: { ind: -3 }, neg: { r: { IN: 1.45 } },
-      plus: ['Broad-church discipline', 'Debate 2; +3 PP/turn; +6 unity; ONP prefs +3; economy & security +25%.'],
-      minus: ['Inner-city headwind', 'Inner-metro setbacks hit 45% harder; teal-seat prefs 3 pts weaker.']
+      plus: ['Broad-church discipline', 'Debate skill 2; +3 Political Power a turn; +6 unity; One Nation preferences 3 points stronger; economy and security choices land 25% harder.'],
+      minus: ['Inner-city headwind', 'Inner-metro setbacks hit 45% harder; teal-seat preferences 3 points weaker.']
     },
     [1, 'Launch in outer-suburban Sydney with a promise of lower interest rates, strong borders and family tax relief.', 'Howard rallies the outer-suburban battlers', { r: { OUT: 1.3, PROV: 0.5 }, m: 2 }, 'COST_OF_LIVING'],
     [2, 'Dust off a sweeping workplace deregulation overhaul in the middle of the costings launch.', 'Howard revives workplace deregulation', ['d', 3, { o: 0.6, r: { OUT: 0.5 } }, { o: -1.2, r: { OUT: -1.1 }, m: -3 }], 'IR'],
@@ -198,7 +198,7 @@
       E('Keep the focus squarely on the team and the future.', 'Howard puts the team forward', { u: 5, o: 0.2 })
     ]],
     [
-      'LAZARUS_WITH_A_TRIPLE_BYPASS', 'Lazarus With a Triple Bypass',
+      'LAZARUS_WITH_A_TRIPLE_BYPASS', 'Lazarus with a Triple Bypass',
       'As John Howard, win Bennelong, take the leadership, and deliver a Coalition majority.',
       (st, r) => !!st.by && st.by.res >= 50 && maj(st, r),
       '<path class="k" d="M4.5 12h4l2-5 3 10 2-5h4M12 4a8 8 0 1 1 0 16"/>',
@@ -213,8 +213,8 @@
       mates: ['Lance Barnard'], deb: 2, pp: 3, unityAdj: -6,
       debTag: { HEALTH: 1, HOUSING: 1 }, pos: { tag: { HEALTH: 1.3, HOUSING: 1.3 } },
       neg: { tag: { ECONOMY: 1.4, TAX: 1.35, COST_OF_LIVING: 1.3 } },
-      plus: ['It’s Time wave', 'Debate skill 2; +3 PP/turn; health & housing choices land 30% harder.'],
-      minus: ['Supply & inflation', 'Economy (×1.4), tax (×1.35) & living-cost (×1.3) hits sting; −6 unity.']
+      plus: ['It’s Time wave', 'Debate skill 2; +3 Political Power a turn; health and housing choices land 30% harder.'],
+      minus: ['Supply and inflation', 'Economy (40%), tax (35%) and cost-of-living (30%) setbacks hit harder; starts with 6 less unity.']
     },
     [1, 'Pack Blacktown Civic Centre and unveil a sweeping nation-building program for cities, health and universities.', 'Whitlam’s Blacktown rally electrifies the suburbs', { r: { OUT: 1.2, IN: 0.8 }, m: 3 }, 'HOUSING', 'spending+'],
     [2, 'Dismiss the Treasury costings warnings and promise to crash through with bold borrowing.', 'Whitlam vows to crash through on spending', ['m', 3, { o: 0.8, m: 3 }, { o: -1.4, m: -3, u: -6 }], 'ECONOMY', 'spending+'],
@@ -244,8 +244,8 @@
       mates: ['Harold Holt', 'John McEwen'], deb: 2, pp: 2, unityAdj: 8, unityDrift: 0.5,
       debTag: { ECONOMY: 1, NATIONAL_SECURITY: 1 }, pf: { ind: 3 },
       neg: { tag: { HOUSING: 1.3, ENERGY: 1.3 } },
-      plus: ['The Forgotten People', 'Debate 2; +8 unity (+0.5 drift); teal-seat prefs +3; +2 PP/turn.'],
-      minus: ['Modern headwinds', 'Housing & energy setbacks hit 30% harder with younger voters.']
+      plus: ['The Forgotten People', 'Debate skill 2; +8 unity (drifts up 0.5 a turn); teal-seat preferences 3 points stronger; +2 Political Power a turn.'],
+      minus: ['Modern headwinds', 'Housing and energy setbacks hit 30% harder with younger voters.']
     },
     [3, 'Deliver a mid-campaign address for the Forgotten People: homeowners, savers and small enterprises.', 'Menzies invokes the Forgotten People', { r: { IN: 0.8, OUT: 0.9 }, u: 5, m: 2 }, 'ECONOMY'],
     [4, 'Treat a rowdy televised debate like a town-hall heckler and lecture the moderator on constitutional propriety.', 'Menzies spars with the debate moderator', ['d', 3, { o: 0.7, m: 2 }, { o: -1.1, r: { IN: -0.8 }, m: -2 }]],
@@ -275,8 +275,8 @@
       mates: ['Robbie Katter'], deb: 1, pp: 4, unity: 76, unityDrift: -1,
       debTag: { ENERGY: 1, COST_OF_LIVING: 1 }, pos: { tag: { ENERGY: 1.3, COST_OF_LIVING: 1.25 } },
       neg: { tag: { CRISIS: 1.5 }, r: { IN: 1.4 } },
-      plus: ['Akubra juggernaut', '150-seat KAP field; +4 PP/turn; energy & cost-of-living +25–30%.'],
-      minus: ['1 seat to 76+', 'Majority goal (76+) from Kennedy; metro (×1.4) & crisis (×1.5) sting.']
+      plus: ['Akubra juggernaut', '150-seat KAP field; +4 Political Power a turn; energy and cost-of-living choices land 25–30% harder.'],
+      minus: ['1 seat to 76+', 'Majority goal (76+ seats) from Kennedy; inner-metro (40%) and scandal (50%) setbacks hit harder.']
     },
     [1, 'Launch in Mount Isa under an Akubra banner: unveil a 150-seat Katter’s Australian Party crusade to take Canberra.', 'Katter launches 150-seat crusade from Mount Isa', { o: 2.2, s: { QLD: 3.5 }, r: { RUR: 2.2, PROV: 1.6 }, m: 3 }, 'ECONOMY'],
     [4, 'Spend half your leaders’ debate time pivoting from tax brackets straight to crocodile attacks in North Queensland.', 'Katter pivots the national debate to crocodiles', ['m', 3, { o: 2.4, m: 3, s: { QLD: 2.5 } }, { o: -1.6, r: { IN: -1.8 }, m: -3 }]],
@@ -288,10 +288,10 @@
     null,
     [
       'KATTER_MAJORITY', 'A Thousand Blossoms',
-      'As Bob Katter, take Katter’s Australian Party from 1 seat (Kennedy) all the way to a 76-seat Majority Government.',
+      'As Bob Katter, take Katter’s Australian Party from 1 seat (Kennedy) all the way to a 76-seat majority government.',
       (st, r) => S(r, 'KAP') >= 76,
       '<path class="k" d="M3.5 15.5c3.5-1.5 13.5-1.5 17 0M6.5 14.5l1.5-6.5c2-1 6-1 8 0l1.5 6.5M8 10.5h8M12 4.5v2"/>',
-      (st, r) => `Katter’s Australian Party stunned Australia with ${S(r, 'KAP')} seats and Majority Government.`, true
+      (st, r) => `Katter’s Australian Party stunned Australia with ${S(r, 'KAP')} seats and a majority government.`, true
     ]
   );
 
@@ -334,7 +334,7 @@
   C.decisions.push(
     {
       id: 'DEC_KAP_NATIONAL_FIELD', n: '150-seat grassroots blitz', party: 'KAP', cost: 25, cd: 3, max: 4,
-      d: 'Flood outer suburbs and provincial towns with KAP volunteers and local candidates: big national & suburban lift.',
+      d: 'Flood outer suburbs and provincial towns with KAP volunteers and local candidates: big national and suburban lift.',
       e: { o: 2.4, r: { OUT: 1.8, PROV: 1.6 }, m: 1, sta: -6 }
     },
     {
@@ -343,7 +343,7 @@
       e: { o: 2.8, r: { RUR: 2.0, OUT: 1.4 }, s: { QLD: 2.0, NSW: 1.2, VIC: 1.0 }, m: 2 }
     },
     {
-      id: 'DEC_KAP_BUSH_BLITZ', n: 'Akubra convoy & preference drive', party: 'KAP', cost: 20, cd: 3, max: 3,
+      id: 'DEC_KAP_BUSH_BLITZ', n: 'Akubra convoy and preference drive', party: 'KAP', cost: 20, cd: 3, max: 3,
       d: 'Rally regional halls from Kennedy to Tasmania, stealing disaffected voters straight off the Coalition and One Nation.',
       e: { o: 1.8, n: { LNP: -1.2, ONP: -1.4 }, r: { RUR: 2.2 }, u: 4 }
     }
@@ -416,7 +416,7 @@
     });
     addTL({
       id: 'robert_menzies', name: 'Robert Menzies', party: 'LNP', pn: 'Coalition', cb: true, fresh: false, by: true, spill: true,
-      ph: 'assets/img/members/robert-menzies.jpg', score: 1.72, grade: 'B', typ: 'Coalition recovery', top: 'Blue-ribbon wave',
+      ph: 'assets/img/members/robert-menzies.jpg', score: 1.72, grade: 'B', typ: 'Minority Coalition', top: 'Blue-ribbon wave',
       win: 38, fail: 18, seatsR: 64, seatsB: 94, rand: 1.18, best: 3, seatsBc: 94, seatsRc: 68,
       why: 'Vault Legend · Craft-only (500 Dust)\nSuccess means a majority, 76+ seats.\nUnrivalled caucus unity and teal-belt reach, tested by modern housing and energy battles.'
     });
@@ -424,7 +424,7 @@
       id: 'bob_katter', name: 'Bob Katter', party: 'KAP', pn: "Katter's Australian Party", cb: false, fresh: false, by: false, spill: false,
       ph: 'assets/img/members/bob-katter.jpg', score: 0.42, grade: 'F', typ: 'Regional force', top: 'Majority government',
       win: 4, fail: 0, seatsR: 6, seatsB: 82, rand: 0.35, best: 2.67, seatsBc: 82, seatsRc: 6,
-      why: 'Vault Legend · Craft-only (500 Dust)\nExtreme challenge: form a 76-seat Majority Government starting from Kennedy alone.\nRequires disciplined use of KAP national field decisions, Bradfield momentum and debate wins.'
+      why: 'Vault Legend · Craft-only (500 Dust)\nExtreme challenge: form a 76-seat majority government starting from Kennedy alone.\nRequires disciplined use of KAP national field decisions, Bradfield momentum and debate wins.'
     });
   }
 })();

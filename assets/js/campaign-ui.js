@@ -204,7 +204,7 @@
     const route = (C.byElect || {})[L.id] ? `By-election in ${esc(C.byElect[L.id][0])}${L.inc ? ', then the campaign' : ', then the spill'}` : L.inc ? 'Straight to the campaign' : 'Five-question spill first';
     const art = (window.CARD_ART || {})[L.name], cred = art ? art.credit : (APP.phCred ? APP.phCred(L.name) : '');
     const isNat = L.sb === 'Nationals';
-    const logo = isNat ? null : { ALP: 'alp', LNP: 'lnp', GRN: 'grn', ONP: 'onp' }[L.party], RN = { A: 'Holo rare', B: 'Gold', C: 'Silver', D: 'Bronze', E: 'Common', F: 'Common', N: 'Common', V: 'Vault Legend' };
+    const logo = isNat ? null : { ALP: 'alp', LNP: 'lnp', GRN: 'grn', ONP: 'onp' }[L.party], RN = { A: 'Holo Rare', B: 'Gold', C: 'Silver', D: 'Bronze', E: 'Common', F: 'Common', N: 'Common', V: 'Vault Legend' };
     const rarLabel = isVault
       ? (foilTier === 2 ? 'Vault · Prism' : foilTier === 1 ? 'Vault · Platinum' : 'Vault Legend')
       : (foilTier === 2 ? 'Prism Edition' : foilTier === 1 ? 'Platinum Foil' : RN[rar]);
@@ -222,7 +222,7 @@
         : L.party === 'KAP'
           ? `<span class="tc-kap-crest" aria-hidden="true">KAP</span>`
           : `<b class="tc-plogo">${esc(C.PARTIES[L.party].n)}</b>`;
-    return `<div class="cmp-ltile tcard r-${frameRar}${vaultCls}${foilCls}${lockedCls}${noHoldCls}" data-lead="${L.id}" data-tags="${ldrTags(L)}${isOwned ? ' owned' : ''}" data-q="${q}" style="--pc:${cardPC(L)}" tabindex="0" role="button" aria-label="${esc(L.name)}, ${esc(isNat ? 'Nationals' : C.PARTIES[L.party].n)}${foilTier === 2 ? ', Parliament Prism foil' : foilTier === 1 ? ', Platinum Brushed Chrome foil' : ''}. ${opts.inModal ? 'Press to flip the card.' : `Press to flip the card; press and hold for three seconds to play as ${esc(surname(L.name))}.`}">
+    return `<div class="cmp-ltile tcard r-${frameRar}${vaultCls}${foilCls}${lockedCls}${noHoldCls}" data-lead="${L.id}" data-tags="${ldrTags(L)}${isOwned ? ' owned' : ''}" data-q="${q}" style="--pc:${cardPC(L)}" tabindex="0" role="button" aria-label="${esc(L.name)}, ${esc(isNat ? 'Nationals' : C.PARTIES[L.party].n)}${foilTier === 2 ? ', Parliament Prism foil' : foilTier === 1 ? ', Platinum Brushed Chrome foil' : ''}. ${opts.inModal ? 'Press to flip the card.' : `Press to flip the card; press and hold to play as ${esc(surname(L.name))}.`}">
       <div class="tc-3d"><div class="tc-flip">
       <section class="tc-face tc-front" aria-label="${esc(L.name)}, front of card">
         <header class="tc-top"><b class="lt-name">${esc(L.name)}</b>${g ? `${gradeTag(L, g)}` : ''}</header>
@@ -264,8 +264,8 @@
       const innG = [[null, ord(inn0.filter(L => L.sb !== 'Nationals'))], ['Nationals', ord(inn0.filter(L => L.sb === 'Nationals'))]].filter(g => g[1].length);
       const outG = [['Nationals', ord(out.filter(L => L.sb === 'Nationals'))], ['Comebacks', ord(out.filter(L => exMP(L) && L.sb !== 'Nationals'))], ['New candidates', ord(out.filter(L => !exMP(L) && L.sb !== 'Nationals'))]].filter(g => g[1].length);
       return `<section class="cmp-pcol" data-p="${p}" style="--pc:${PC(p)}"><h3><span>${P.n}</span><small>${p === 'ALP' ? 'Defending 94 seats' : p === 'LNP' ? 'From 2025’s low of 43' : p === 'ONP' ? 'Polling at record highs' : esc((C.TIERNOTE || {})[p] || '')}</small></h3>`
-        + `<h4 class="lt-grp lt-inp">In parliament</h4>` + innG.map(([h, g]) => (h ? `<h4 class="lt-grp">${h}</h4>` : '') + g.map(tile).join('')).join('')
-        + (out.length ? `<details class="lt-more lt-out"><summary><span class="lo-t">Out of parliament</span><span class="lo-n">${out.length} leader${out.length > 1 ? 's' : ''}</span><span class="lo-h">Would need a by-election to get in</span></summary><div class="lt-mg">${outG.map(([h, g]) => `<h4 class="lt-grp">${h}</h4>${g.map(tile).join('')}`).join('')}</div></details>` : '')
+        + `<h4 class="lt-grp lt-inp">In Parliament</h4>` + innG.map(([h, g]) => (h ? `<h4 class="lt-grp">${h}</h4>` : '') + g.map(tile).join('')).join('')
+        + (out.length ? `<details class="lt-more lt-out"><summary><span class="lo-t">Out of Parliament</span><span class="lo-n">${out.length} leader${out.length > 1 ? 's' : ''}</span><span class="lo-h">Would need a by-election to get in</span></summary><div class="lt-mg">${outG.map(([h, g]) => `<h4 class="lt-grp">${h}</h4>${g.map(tile).join('')}`).join('')}</div></details>` : '')
         + `</section>`; }).join('');
     return toolbar() + mast('Australia 2028 · The campaign', 'Choose your leader', 'Fight the 2028 federal election as Labor, the Coalition, One Nation, the Greens, the teal independents or Katter’s Australian Party — plus five craft-only Vault Legends. Twenty-five turns over five weeks: every answer moves the vote and the seat count updates as you go.')
       + (saved ? `<div class="cmp-resume"><span class="kick">Campaign in progress</span><span><b>${esc(E.ldrOf(saved).name)}</b>, ${saved.phase === 'BYELECTION' ? 'by-election question ' + saved.turn : saved.phase === 'SPILL' ? 'spill question ' + saved.turn : saved.phase === 'ENDED' ? 'finished' : 'turn ' + saved.turn + ' of ' + saved.T}.</span><button type="button" data-a="resume">Resume</button><button type="button" class="ghost" data-a="discard">Discard</button></div>` : '')
@@ -496,9 +496,9 @@
     const when = by ? `By-election · question ${st.turn} of 5` : sp ? `Spill · question ${st.turn} of 5` : `Week ${Math.min(5, Math.ceil(st.turn / wk))} of 5`, wide = window.innerWidth > 860;
     const lab = (full, short) => `<small><span class="lf">${full}</span><span class="ls" aria-hidden="true">${short}</span></small>`;
     const mom = Math.max(-10, Math.min(10, st.mom));
-    return `<div class="cmp-hud" style="--pc:${cardPC(L)}"><h2 id="cmp-title" class="sr" tabindex="-1">Campaign mode</h2>
+    return `<div class="cmp-hud" style="--pc:${cardPC(L)}"><h2 id="cmp-title" class="sr" tabindex="-1">Campaign Mode</h2>
       <div class="hud-who">${photo(L.name, 'hud-ph')}<span class="hw-t" data-tip="role" tabindex="0" aria-describedby="cmptip"><small class="kick">${E.role(st)} · ${when}</small><b>${esc(L.name)}</b></span>
-        <span class="hud-btns"><button type="button" class="hb" data-a="close" aria-label="Close campaign mode (your run is saved)">${ICON('close')}</button></span></div>
+        <span class="hud-btns"><button type="button" class="hb" data-a="close" aria-label="Close Campaign Mode (your run is saved)">${ICON('close')}</button></span></div>
       <div class="hud-stats">${by ? `<span class="hs" data-tip="bypoll" tabindex="0" aria-describedby="cmptip">${SX('votes', 'hud')}${lab('Your vote in ' + esc(st.by.seat), 'Seat')}<b class="num ${st.by.m >= 50 ? 'good' : 'warn'}">${st.by.m.toFixed(1)}%</b><i class="meter" role="meter" aria-label="Your two-candidate vote in the seat" aria-valuemin="30" aria-valuemax="70" aria-valuenow="${st.by.m}"><i style="width:${Math.max(0, Math.min(100, (st.by.m - 30) * 2.5))}%"></i><i class="tick" style="left:50%"></i></i></span>` : sp ? `<span class="hs" data-tip="votes" tabindex="0" aria-describedby="cmptip">${SX('votes', 'hud')}${lab('Caucus votes', 'Votes')}<b class="num ${st.votes >= 50 ? 'good' : 'warn'}">${Math.round(st.votes)}%</b><i class="meter" role="meter" aria-label="Caucus votes" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(st.votes)}"><i style="width:${st.votes}%"></i><i class="tick" style="left:50%"></i></i></span>`
         : `<span class="hs" data-tip="pp" tabindex="0" aria-describedby="cmptip">${SX('pp', 'hud')}${lab('Political Power', 'Power')}<b class="num">${st.pp}${trend('pp')}</b><em>+${E.ppGain(st)} a turn</em></span>`}
         <span class="hs" data-tip="unity" tabindex="0" aria-describedby="cmptip">${SX('unity', 'hud')}${lab('Caucus unity', 'Unity')}<b class="num ${st.unity < 20 ? 'crit' : st.unity < 40 ? 'warn' : st.unity >= 75 ? 'good' : ''}">${Math.round(st.unity)}${sp ? '' : trend('u')}</b><i class="meter u" role="meter" aria-label="Caucus unity" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(st.unity)}"><i style="width:${st.unity}%"></i><i class="tick" style="left:20%"></i><i class="tick" style="left:40%"></i><i class="tick" style="left:75%"></i></i></span>
@@ -1008,13 +1008,13 @@
   }
   function vHall() {
     const h = E.hall().filter(x => C.leaders.some(l => l.id === x.leader)), d = E.daily(), days = Object.keys(d).sort().reverse().slice(0, 7);
-    return toolbar() + mast('Campaign mode · Hall of fame', 'Your past campaigns', 'Saved in this browser only. Scores: 10 a seat, a bonus for your tier and honours, scaled by difficulty.') + `<button type="button" class="cmp-link back" data-a="back">← Back</button>`
+    return toolbar() + mast('Campaign Mode · Hall of Fame', 'Your past campaigns', 'Saved in this browser only. Scores: 10 a seat, a bonus for your tier and honours, scaled by difficulty.') + `<button type="button" class="cmp-link back" data-a="back">← Back</button>`
       + (() => { const by = {}; h.forEach(x => { if (x.ab) return; const o = by[x.leader] = by[x.leader] || { n: 0, k: 9, seats: 0, score: 0, gov: 0 }; o.n++; o.k = Math.min(o.k, x.k); o.seats = Math.max(o.seats, x.seats || 0); o.score = Math.max(o.score, x.score || 0); if (x.gov) o.gov++; });
           const rows = C.leaders.filter(L => by[L.id]).sort((a, b) => by[a.id].k - by[b.id].k || by[b.id].score - by[a.id].score), MR = ['I · top tier', 'II · second tier', 'III · third tier'];
           return rows.length ? `<section class="ach-cat"><div class="cmp-fighead"><strong>Leader mastery</strong><small>${rows.length} of ${C.leaders.length} leaders played</small></div><table class="cmp-hof mastery"><thead><tr><th scope="col">Leader</th><th scope="col">Best tier</th><th scope="col" class="num">Runs</th><th scope="col" class="num">Wins</th><th scope="col" class="num">Best seats</th><th scope="col" class="num">Best score</th></tr></thead><tbody>${rows.map(L => { const o = by[L.id];
             return `<tr style="--pc:${PC(L.party)}"><th scope="row"><i class="mq-dot" aria-hidden="true"></i>${esc(L.name)}</th><td><span class="lt-rib m${Math.min(3, o.k)}" aria-hidden="true">${o.k <= 2 ? ['I', 'II', 'III'][o.k] : '·'}</span> ${o.k <= 2 ? MR[o.k].split(' · ')[1] : 'played'}</td><td class="num">${o.n}</td><td class="num">${o.gov}</td><td class="num">${o.seats}</td><td class="num"><b>${o.score}</b></td></tr>`; }).join('')}</tbody></table></section>` : ''; })()
       + (days.length ? `<section class="ach-cat"><div class="cmp-fighead"><strong>Daily challenge bests</strong></div><table class="cmp-hof"><tbody>${days.map(k => `<tr><th scope="row">${k}</th><td>${esc((C.leaders.find(l => l.id === d[k].leader) || {}).name || '')}</td><td class="num">${d[k].seats} seats</td><td class="num"><b>${d[k].score}</b></td></tr>`).join('')}</tbody></table></section>` : '')
-      + `<section class="ach-cat"><div class="cmp-fighead"><strong>Every campaign</strong><small>${h.length} played</small></div>${h.length ? `<table class="cmp-hof"><thead><tr><th scope="col">Date</th><th scope="col">Leader</th><th scope="col">Result</th><th scope="col" class="num">Seats</th><th scope="col" class="num">Score</th></tr></thead><tbody>${h.map(x => `<tr><th scope="row">${new Date(x.at).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' })}${x.daily ? ' <em class="tagp">daily</em>' : ''}${x.diff && x.diff !== 'std' ? ` <em class="tagp">${E.DIFF[x.diff].n.toLowerCase()}</em>` : ''}${x.scen && x.scen !== 'std' && E.scenOf(x.scen) ? ` <em class="tagp">${esc(E.scenOf(x.scen).n.toLowerCase())}</em>` : ''}${x.iron ? ' <em class="tagp iron">ironman</em>' : ''}</th><td><i class="sw" style="background:${PC(x.party)}"></i>${esc((C.leaders.find(l => l.id === x.leader) || {}).name || '')}</td><td>${esc(x.tier)}</td><td class="num">${x.seats}</td><td class="num"><b>${x.score}</b></td></tr>`).join('')}</tbody></table>` : '<p class="cmp-note">No campaigns finished yet.</p>'}</section>` + profilePanel();
+      + `<section class="ach-cat"><div class="cmp-fighead"><strong>Every campaign</strong><small>${h.length} played</small></div>${h.length ? `<table class="cmp-hof"><thead><tr><th scope="col">Date</th><th scope="col">Leader</th><th scope="col">Result</th><th scope="col" class="num">Seats</th><th scope="col" class="num">Score</th></tr></thead><tbody>${h.map(x => `<tr><th scope="row">${new Date(x.at).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' })}${x.daily ? ' <em class="tagp">daily</em>' : ''}${x.diff && x.diff !== 'std' ? ` <em class="tagp">${E.DIFF[x.diff].n.toLowerCase()}</em>` : ''}${x.scen && x.scen !== 'std' && E.scenOf(x.scen) ? ` <em class="tagp">${esc(E.scenOf(x.scen).n.toLowerCase())}</em>` : ''}${x.iron ? ' <em class="tagp iron">Ironman</em>' : ''}</th><td><i class="sw" style="background:${PC(x.party)}"></i>${esc((C.leaders.find(l => l.id === x.leader) || {}).name || '')}</td><td>${esc(x.tier)}</td><td class="num">${x.seats}</td><td class="num"><b>${x.score}</b></td></tr>`).join('')}</tbody></table>` : '<p class="cmp-note">No campaigns finished yet.</p>'}</section>` + profilePanel();
   }
   function vAch() {
     const g0 = A.get(), keep = a => (achF === 'all' || (achF === 'got' ? !!g0[a.id] : achF === 'not' ? !g0[a.id] : achF === 'hard' ? a.hard : true)) && (!achL || a.leader === achL), shown = A.list.filter(keep);
@@ -1023,7 +1023,7 @@
     const filt = `<div class="ach-filter" role="group" aria-label="Filter honours">${[['all', 'All'], ['got', 'Earned'], ['not', 'Not earned'], ['hard', 'Hard']].map(([k, n]) => `<button type="button" class="seg${achF === k ? ' on' : ''}" data-af="${k}" aria-pressed="${achF === k}">${n}</button>`).join('')}
       <label class="af-l"><span class="sr">Leader</span><select class="cs-sel" id="achl"><option value="">Any leader</option>${ldrs.map(L => `<option value="${L.id}"${achL === L.id ? ' selected' : ''}>${esc(L.name)}</option>`).join('')}</select></label><small class="af-n">${shown.length} of ${A.list.length} shown</small></div>`;
     const rm = A.rim();
-    return toolbar() + mast('Campaign mode · Honours', `${achCount()} of ${A.list.length} earned`, 'Saved in this browser only. Tap any honour to see what it takes, and how you earned it.') + `<button type="button" class="cmp-link back" data-a="back">← Back</button>`
+    return toolbar() + mast('Campaign Mode · Honours', `${achCount()} of ${A.list.length} earned`, 'Saved in this browser only. Tap any honour to see what it takes, and how you earned it.') + `<button type="button" class="cmp-link back" data-a="back">← Back</button>`
       + `<div class="rim-bar"><span class="medal ${rm.cls}"><b class="mq rim-n${String(rm.pts >= 1000 ? (rm.pts / 1000).toFixed(1) + 'k' : rm.pts).length}">${rm.pts >= 1000 ? (rm.pts / 1000).toFixed(rm.pts >= 10000 ? 0 : 1) + 'k' : rm.pts}</b></span><span><b>${rm.pts} points · ${esc(rm.n)}</b><small>Honours are worth 10 points, hard ones 25. ${rm.next ? `${rm.next.at - rm.pts} more for the ${esc(rm.next.n.toLowerCase())}.` : 'Every rim unlocked.'}</small></span><i class="meter"><i style="width:${Math.min(100, rm.pts / rm.max * 100)}%"></i>${A.RIMS.slice(1).map(r => `<i class="tick" style="left:${r[0] / rm.max * 100}%"></i>`).join('')}</i></div>`
       + filt + (shown.length ? '' : '<p class="cmp-note">No honours match this filter.</p>')
       + cats.map((c, k) => { const items = shown.filter(a => a.cat === c), det = items.find(a => a.id === achOpen), part = items[0].part, prev = k ? shown.find(a => a.cat === cats[k - 1]).part : null;
@@ -1163,7 +1163,7 @@
   let cheatsOpen = false;
   const CHEATS = [
     ['PackRippers', 'Unlocks every leader pack so you can open all remaining packs (duplicates convert cleanly into Card Dust).'],
-    ['DustVault', 'Credits +1,500 Card Dust immediately so you can craft Vault Legends and test Platinum Brushed Chrome & Parliament Prism foils.'],
+    ['DustVault', 'Credits +1,500 Card Dust immediately so you can craft Vault Legends and test Platinum Brushed Chrome and Parliament Prism foils.'],
     ['CheatMachine', 'Unlocks everything: all honours, all 70 leaders (including Vault Legends), +5,000 Card Dust, every opening and every leader-only answer.'],
     ['ResetProfile', 'Clears all honours, Hall of Fame runs, daily results, leader-only answers, Card Dust, foils, unlocked cards and any saved run back to a fresh start.']
   ];
@@ -1188,7 +1188,7 @@
     if (!B) { note.textContent = 'Leaderboards aren’t available here.'; return; }
     const stt = await B.status(); let rows; try { rows = await B.rows(); } catch (e) { rows = null; }
     if (!$('lblist') || lbKey() !== key) return;
-    if (!rows) { note.innerHTML = stt === 'offline' ? 'Leaderboards need you to be signed in to Claude while you play. Your own best runs are in the <button type="button" class="cmp-link" data-a="hall">Hall of fame</button>.' : 'The leaderboard couldn’t be reached just now. Try again in a moment.'; return; }
+    if (!rows) { note.innerHTML = stt === 'offline' ? 'Online leaderboards are not available in this edition. Your own best runs are saved in the <button type="button" class="cmp-link" data-a="hall">Hall of Fame</button>.' : 'The leaderboard couldn’t be reached just now. Try again in a moment.'; return; }
     const ent = rows.map(r => ({ id: r.id, me: r.me, b: r.boards[key] })).filter(x => x.b).sort((a, b) => b.b.s - a.b.s).slice(0, 50);
     const nm = await B.names(ent.map(x => x.id)); if (!$('lblist') || lbKey() !== key) return;
     note.innerHTML = (ent.length ? `${ent.length} player${ent.length === 1 ? '' : 's'} on this board.` : 'Nobody is on this board yet: finish a campaign to be first.') + (stt === 'readonly' ? ' <em>You can see the boards, but this account can’t post to them.</em>' : stt === 'noid' ? ' <em>Posting scores isn’t switched on for this page yet.</em>' : '');
@@ -1271,14 +1271,14 @@
       ? 'All Series One collected · Dust Pack'
       : opened === 0
         ? 'First pack · all new leaders + Dust'
-        : 'At least 1 duplicate per pack · dupes convert to Dust';
+        : 'At least 1 duplicate per pack · duplicates convert to Dust';
     const packDust = EC ? EC.computePackDust(ids, c0.owned, rarOf) : { sealDust: 20, dupDust: 0, totalDust: 20, perCard: ids.map(id => ({ id, rar: rarOf(id), isDup: !!c0.owned[id], dust: 0 })) };
     const isNew = id => !c0.owned[id], RO = 'NABCDEF', best = ids.map(rarOf).sort((a, b) => RO.indexOf(a) - RO.indexOf(b)).find(g => g !== 'N') || 'N';
     const ov = document.createElement('div'); ov.className = 'pk-ov pk3 r-' + best; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-label', 'Open a leader pack');
     ov.innerHTML = `<div class="pk-stage"><div class="pk-slot"><span class="pk-glow" aria-hidden="true"></span><span class="pk-rays" aria-hidden="true"></span>
       <div class="pk-pack" role="button" tabindex="0" aria-label="Tear open the pack"><span class="pk-light" aria-hidden="true"></span>
         <span class="pk-body"><span class="pk-foil" aria-hidden="true"></span><span class="pk-seam l"></span><span class="pk-seam r"></span><span class="pk-crimp b" aria-hidden="true"></span><span class="pk-perf" aria-hidden="true"></span>
-          <span class="pk-brand"><small>Australia</small><b>2028</b><em>Series one</em></span>
+          <span class="pk-brand"><small>Australia</small><b>2028</b><em>Series One</em></span>
           <span class="pk-emb" aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" class="e1"/><circle cx="60" cy="60" r="44" class="e2"/><path class="e3" d="M60 22l9.4 19 21 3-15.2 14.8 3.6 20.9L60 69.8 41.2 79.7l3.6-20.9L29.6 44l21-3z"/></svg></span>
           <span class="pk-title"><b>Leader Pack</b><em>Three leaders · +Dust</em></span>
           <span class="pk-odds">${oddsText}<br>Pack ${opened + 1} of ${totalPacks()}</span></span>
@@ -1359,7 +1359,7 @@
     const done = () => { if (ov.classList.contains('revealed')) return; ov.classList.add('revealed'); try { if (navigator.vibrate) navigator.vibrate(best === 'A' ? [20, 40, 20, 40, 60] : 20); } catch (e) {}
       const nm = id => (C.leaders.find(L => L.id === id) || {}).name || id, nNew = ids.filter(isNew).length, bal = coll().dust || 0;
       const dustDetail = packDust.dupDust ? `+${packDust.sealDust} pack seal + ${packDust.dupDust} duplicates` : `+${packDust.sealDust} pack seal bonus`;
-      ov.querySelector('.pk-msg').innerHTML = `<b>${nNew === 3 ? 'Three new leaders!' : nNew ? nNew + ' new leader' + (nNew === 1 ? '' : 's') : 'Dust Pack Converted'}</b>${ids.map(nm).map(esc).join(' · ')}<span class="pk-dust-sum num"><b>+${packDust.totalDust} Card Dust</b> <em>(${dustDetail} · balance ${bal.toLocaleString()})</em></span><small>Tap a card to flip it · hold to play · craft &amp; upgrade foils in the Binder</small>`;
+      ov.querySelector('.pk-msg').innerHTML = `<b>${nNew === 3 ? 'Three new leaders!' : nNew ? nNew + ' new leader' + (nNew === 1 ? '' : 's') : 'Dust Pack Converted'}</b>${ids.map(nm).map(esc).join(' · ')}<span class="pk-dust-sum num"><b>+${packDust.totalDust} Card Dust</b> <em>(${dustDetail} · balance ${bal.toLocaleString()})</em></span><small>Tap a card to flip it · hold to play · craft and upgrade foils in the Binder</small>`;
       const left = packsLeft(), ag = ov.querySelector('.pk-again'); if (ag) { if (left) ag.innerHTML = `${ICON('star')} Open another (${left} left)`; else ag.remove(); }
       ov.querySelector('.pk-acts').hidden = false; const sk = ov.querySelector('.pk-skip'); if (sk) sk.remove(); syncNav(curCard); };
     const open = () => { if (ov.classList.contains('torn')) return; ov.classList.add('torn'); claim(); sfx('page'); ov.querySelector('.pk-msg').textContent = 'Pulling your cards…';
