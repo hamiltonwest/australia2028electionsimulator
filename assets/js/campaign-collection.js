@@ -10,8 +10,9 @@ window.CAMPAIGN_COLL = (() => {
     { key: 'D', label: 'Bronze', grades: ['D'], cls: 'r-D' },
     { key: 'EF', label: 'Common', grades: ['E', 'F', 'N'], cls: 'r-E' }
   ];
-  const RAR_NAME = { A: 'Holo Rare', B: 'Gold', C: 'Silver', D: 'Bronze', E: 'Common', F: 'Common', N: 'Common' };
-  const RAR_ORDER = { A: 0, B: 1, C: 2, D: 3, E: 4, F: 5, N: 6 };
+  const RAR_NAME = { A: 'Holo Rare', B: 'Gold', C: 'Silver', D: 'Bronze', E: 'Common', F: 'Common', N: 'Common', V: 'Vault Legend' };
+  const RAR_ORDER = { V: -1, A: 0, B: 1, C: 2, D: 3, E: 4, F: 5, N: 6 };
+  const FOIL_LABEL = ['Standard', 'Platinum Foil', 'Prism Edition'];
   const GRADE_DESC = { A: 'Strongest pick', B: 'Strong', C: 'Fair', D: 'Tough', E: 'Hard', F: 'Hardest', N: 'Unrated' };
   const MR_LABEL = ['Tier I reached', 'Tier II reached', 'Tier III reached', 'Played'];
   const TAG_LABELS = {
@@ -27,9 +28,9 @@ window.CAMPAIGN_COLL = (() => {
   };
 
   const state = {
-    bStatus: 'all', // all | owned | missing | mastered
-    bParty: 'all',  // all | ALP | LNP | ONP | GRN | IND
-    bRar: 'all',    // all | A | B | C | D | EF
+    bStatus: 'all', // all | owned | missing | mastered | vault | foils
+    bParty: 'all',  // all | ALP | LNP | ONP | GRN | IND | KAP
+    bRar: 'all',    // all | A | B | C | D | EF | V
     bSort: 'no',    // no | grade | party | mastery | recent
     bQ: '',
     bOpen: null,    // leader id shown in Binder dossier modal
@@ -92,13 +93,18 @@ window.CAMPAIGN_COLL = (() => {
   }
 
   function buildProfile(L, ctx, hMap, mast, cData) {
-    const C = ctx.C, P = C.PARTIES[L.party];
-    const no = C.leaders.indexOf(L) + 1;
+    const C = ctx.C, P = C.PARTIES[L.party], EC = ctx.EC;
+    const no = ctx.cardNo ? ctx.cardNo(L) : (C.leaders.indexOf(L) + 1);
     const tl = ((window.TIERLIST || {}).leaders || []).find(x => x.id === L.id) || null;
     const rar = tl ? tl.grade : 'N';
-    const rarBucket = rarBucketOf(rar);
+    const isVault = !!L.craftOnly;
+    const rarBucket = isVault ? 'V' : rarBucketOf(rar);
+    const rarLabel = isVault ? 'Vault Legend' : RAR_NAME[rar];
     const ownedAt = (cData.owned || {})[L.id] || 0;
     const owned = !!ownedAt;
+    const craftedAt = (cData.crafted || {})[L.id] || 0;
+    const foilTier = EC ? EC.foilTierOf(cData, L.id) : 0;
+    const craftCost = EC ? EC.craftCost(L, rar) : (isVault ? 500 : 80);
     const seat = ((ctx.APP.DATA.leaders.find(x => x.name === L.name && x.party === (L.sb || P.ldr)) || {}).seat || '').replace(' (candidate)', ' (running)');
     const fac = (L.party === 'ALP' || (L.party === 'LNP' && L.sb !== 'Nationals')) && ctx.facOf(L.name) ? ctx.facOf(L.name) : '';
     const byInfo = (C.byElect || {})[L.id] || null;
@@ -119,10 +125,10 @@ window.CAMPAIGN_COLL = (() => {
     const hof = hMap[L.id] || { runs: 0, wins: 0, bestK: 9, bestTier: '', bestSeats: 0, bestScore: 0, lastAt: 0 };
     const prog = ctx.ldrProg(L);
     const mk = mast[L.id];
-    const searchQ = (L.name + ' ' + seat + ' ' + P.n + (L.sb ? ' ' + L.sb : '') + ' ' + fac + ' ' + (byInfo ? byInfo[0] : '') + ' ' + RAR_NAME[rar] + ' no.' + String(no).padStart(3, '0')).toLowerCase();
+    const searchQ = (L.name + ' ' + seat + ' ' + P.n + (L.sb ? ' ' + L.sb : '') + ' ' + fac + ' ' + (byInfo ? byInfo[0] : '') + ' ' + rarLabel + ' ' + RAR_NAME[rar] + (isVault ? ' vault legend craft' : '') + (foilTier === 1 ? ' platinum chrome foil' : foilTier === 2 ? ' prism foil edition' : '') + ' no.' + String(no).padStart(3, '0')).toLowerCase();
     return {
-      L, id: L.id, name: L.name, party: L.party, partyName: P.n, no, tl, rar, rarBucket,
-      owned, ownedAt, seat, fac, byInfo, routeShort, routeSteps, art, ph,
+      L, id: L.id, name: L.name, party: L.party, partyName: P.n, no, tl, rar, isVault, rarBucket, rarLabel,
+      owned, ownedAt, craftedAt, foilTier, craftCost, seat, fac, byInfo, routeShort, routeSteps, art, ph,
       traits, netNat, demMap, hof, prog, mk, searchQ
     };
   }
@@ -132,16 +138,16 @@ window.CAMPAIGN_COLL = (() => {
     return ctx.C.leaders.map(L => buildProfile(L, ctx, hMap, mast, cData));
   }
 
-  // Exact remaining pack pull odds based on PACKW and uncollected leaders (mirrors openPack())
+  // Exact remaining pack pull odds based on PACKW and uncollected pack-eligible leaders (excludes craft-only Vault Legends)
   function calcPackOdds(profs) {
-    const fresh = profs.filter(p => !p.owned);
-    const pool = fresh.length ? fresh : profs;
+    const packPool = profs.filter(p => !p.isVault);
+    const fresh = packPool.filter(p => !p.owned);
+    const pool = fresh.length ? fresh : packPool;
     const totalW = pool.reduce((a, p) => a + (PACKW[p.rar] || 3), 0);
     return RAR_GROUPS.map(g => {
       const items = pool.filter(p => g.grades.includes(p.rar));
       const w = items.reduce((a, p) => a + (PACKW[p.rar] || 3), 0);
       const single = totalW ? w / totalW : 0;
-      // Probability of getting at least one of this rarity in a 3-card pack (exact without-replacement approx using pool weights)
       let pNone = 1;
       if (pool.length <= 3) {
         pNone = items.length ? 0 : 1;
@@ -161,8 +167,8 @@ window.CAMPAIGN_COLL = (() => {
       return {
         ...g,
         remaining: fresh.filter(p => g.grades.includes(p.rar)).length,
-        owned: profs.filter(p => p.owned && g.grades.includes(p.rar)).length,
-        total: profs.filter(p => g.grades.includes(p.rar)).length,
+        owned: packPool.filter(p => p.owned && g.grades.includes(p.rar)).length,
+        total: packPool.filter(p => g.grades.includes(p.rar)).length,
         singlePct: single * 100,
         packPct: inPack * 100
       };
@@ -175,15 +181,18 @@ window.CAMPAIGN_COLL = (() => {
       if (state.bStatus === 'owned' && !p.owned) return false;
       if (state.bStatus === 'missing' && p.owned) return false;
       if (state.bStatus === 'mastered' && p.mk == null) return false;
+      if (state.bStatus === 'vault' && !p.isVault) return false;
+      if (state.bStatus === 'foils' && !(p.owned && p.foilTier > 0)) return false;
       if (state.bParty !== 'all' && p.party !== state.bParty) return false;
       if (state.bRar !== 'all' && p.rarBucket !== state.bRar) return false;
       if (q && !p.searchQ.includes(q)) return false;
       return true;
     });
-    const partyOrd = ['ALP', 'LNP', 'ONP', 'GRN', 'IND'];
+    const partyOrd = ['ALP', 'LNP', 'ONP', 'GRN', 'IND', 'KAP'];
     list = list.slice().sort((a, b) => {
       if (state.bSort === 'grade') {
-        const gd = (RAR_ORDER[a.rar] ?? 9) - (RAR_ORDER[b.rar] ?? 9);
+        const ra = a.isVault ? 'V' : a.rar, rb = b.isVault ? 'V' : b.rar;
+        const gd = (RAR_ORDER[ra] ?? 9) - (RAR_ORDER[rb] ?? 9);
         return gd || ((b.tl ? b.tl.score : -9) - (a.tl ? a.tl.score : -9)) || a.no - b.no;
       }
       if (state.bSort === 'party') {
@@ -203,10 +212,20 @@ window.CAMPAIGN_COLL = (() => {
 
   // ---- COLLECTION BINDER RENDERER
   function renderBinder(ctx) {
-    const esc = ctx.esc, C = ctx.C, profs = allProfiles(ctx);
+    const esc = ctx.esc, C = ctx.C, EC = ctx.EC, profs = allProfiles(ctx), cData = ctx.coll();
     const total = profs.length;
+    const totalPad = String(total).padStart(3, '0');
     const ownedCount = profs.filter(p => p.owned).length;
     const masteredCount = profs.filter(p => p.mk != null).length;
+    const foilCount = profs.filter(p => p.owned && p.foilTier > 0).length;
+    const vaultProfs = profs.filter(p => p.isVault).sort((a, b) => a.no - b.no);
+    const vaultRange = vaultProfs.length
+      ? `${String(vaultProfs[0].no).padStart(3, '0')}–${String(vaultProfs[vaultProfs.length - 1].no).padStart(3, '0')}`
+      : `001–005`;
+    const vaultOwned = vaultProfs.filter(p => p.owned).length;
+    const packPoolCount = total - vaultProfs.length;
+    const packOwnedCount = profs.filter(p => !p.isVault && p.owned).length;
+    const dust = cData.dust || 0;
     const pct = Math.round(ownedCount / total * 100);
     const leftPacks = ctx.packsLeft(), nextAt = ctx.nextPackAt();
     const rarOdds = calcPackOdds(profs);
@@ -215,38 +234,73 @@ window.CAMPAIGN_COLL = (() => {
     const partyStats = Object.entries(C.PARTIES).map(([k, P]) => {
       const items = profs.filter(p => p.party === k);
       const got = items.filter(p => p.owned).length;
-      return { key: k, name: P.n, got, total: items.length, pct: Math.round(got / items.length * 100) };
+      return { key: k, name: P.n, got, total: items.length, pct: items.length ? Math.round(got / items.length * 100) : 0 };
     });
 
     const binderSlot = p => {
       const noStr = String(p.no).padStart(3, '0');
+      const inits = nm => String(nm || '').trim().split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('') || '?';
       const img = p.ph && !/^data:/.test(p.ph)
         ? `<img src="${esc(p.ph)}" alt="" loading="lazy"${p.art && p.art.pos ? ` style="object-position:${esc(p.art.pos)}"` : ''}>`
-        : `<span class="bds-init" aria-hidden="true">${esc(p.name[0])}</span>`;
+        : `<span class="bds-init" aria-hidden="true">${esc(inits(p.name))}</span>`;
       const rib = p.mk != null ? `<i class="bds-rib m${Math.min(3, p.mk)}" title="${MR_LABEL[Math.min(3, p.mk)]}">${p.mk <= 2 ? ['I', 'II', 'III'][p.mk] : '·'}</i>` : '';
       const active = state.bOpen === p.id ? ' on' : '';
-      return `<button type="button" class="bd-slot r-${p.rar}${p.owned ? ' owned' : ' missing'}${active}" data-bopen="${p.id}" data-bq="${esc(p.searchQ)}" style="--pc:${ctx.PC(p.party)}" aria-label="No. ${noStr} ${esc(p.name)}, ${esc(p.partyName)}, ${RAR_NAME[p.rar]}, ${p.owned ? 'Collected' : 'Not yet collected'}">
+      const rarCls = p.isVault ? 'r-V is-vault' : `r-${p.rar}`;
+      const foilCls = p.owned && p.foilTier ? ` foil-${p.foilTier}` : '';
+      const finishLbl = p.owned && p.foilTier ? FOIL_LABEL[p.foilTier] : '';
+      const footTxt = p.owned
+        ? (finishLbl
+          ? `${finishLbl} · ${p.hof.runs ? `${p.hof.bestSeats} seats` : `${p.prog.a}/${p.prog.h} hon.`}`
+          : (p.hof.runs ? `${p.hof.bestSeats} best seats · ${p.prog.a}/${p.prog.h} hon.` : `Collected · ${p.prog.a}/${p.prog.h} hon.`))
+        : `${p.isVault ? 'Vault' : 'Craft'} · ${p.craftCost} Dust`;
+      const pc = ctx.cardPC ? ctx.cardPC(p.L) : ctx.PC(p.party);
+      return `<button type="button" class="bd-slot ${rarCls}${foilCls}${p.owned ? ' owned' : ' missing'}${active}" data-bopen="${p.id}" data-bq="${esc(p.searchQ)}" style="--pc:${pc}" aria-label="No. ${noStr} ${esc(p.name)}, ${esc(p.L.sb === 'Nationals' ? 'Nationals' : p.partyName)}, ${esc(p.rarLabel)}, ${p.owned ? (finishLbl || 'Collected') : `Craft for ${p.craftCost} Dust`}">
         <span class="bds-in">
           <span class="bds-top"><span class="bds-no num">#${noStr}</span><span class="bds-g g-${p.rar}">${p.id === 'mark_latham' ? 'L' : p.rar}</span></span>
-          <span class="bds-art">${img}${!p.owned ? '<span class="bds-veil" aria-hidden="true"><span>Locked</span></span>' : ''}${rib}</span>
-          <span class="bds-meta"><b>${esc(p.name)}</b><small>${esc(p.partyName)} · ${RAR_NAME[p.rar]}</small></span>
-          <span class="bds-foot num">${p.owned
-            ? (p.hof.runs ? `${p.hof.bestSeats} best seats · ${p.prog.a}/${p.prog.h} hon.` : `Collected · ${p.prog.a}/${p.prog.h} hon.`)
-            : 'In leader packs'}</span>
+          <span class="bds-art">${img}${!p.owned ? `<span class="bds-veil${p.isVault ? ' vlt' : ''}" aria-hidden="true"><span>${p.isVault ? 'Vault · ' + p.craftCost : 'Locked'}</span></span>` : ''}${rib}</span>
+          <span class="bds-meta"><b>${esc(p.name)}</b><small>${esc(p.L.sb === 'Nationals' ? 'Nationals' : p.partyName)} · ${esc(p.rarLabel)}</small></span>
+          <span class="bds-foot num${p.owned && p.foilTier ? ' f' + p.foilTier : ''}">${esc(footTxt)}</span>
         </span>
       </button>`;
     };
 
+    const vaultCard = p => {
+      const noStr = String(p.no).padStart(3, '0');
+      const img = p.ph && !/^data:/.test(p.ph)
+        ? `<img src="${esc(p.ph)}" alt="" loading="lazy"${p.art && p.art.pos ? ` style="object-position:${esc(p.art.pos)}"` : ''}>`
+        : `<span class="bdv-init">${esc(String(p.name || '').trim().split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('') || '?')}</span>`;
+      const canCraft = !p.owned && dust >= p.craftCost;
+      const statusText = p.owned
+        ? (p.foilTier ? FOIL_LABEL[p.foilTier] : 'Collected')
+        : (canCraft ? `Ready · ${p.craftCost} Dust` : `Craft · ${p.craftCost} Dust`);
+      const roleShort = p.party === 'KAP' ? 'KAP · Majority Run' : `${p.partyName} · By-election + Spill`;
+      const pc = ctx.cardPC ? ctx.cardPC(p.L) : ctx.PC(p.party);
+      return `<button type="button" class="bdv-card${p.owned ? ' owned' : ' locked'}${canCraft ? ' ready' : ''}${p.owned && p.foilTier ? ' foil-' + p.foilTier : ''}" data-bopen="${p.id}" style="--pc:${pc}">
+        <span class="bdv-art">${img}<span class="bdv-no num">#${noStr}</span></span>
+        <span class="bdv-info">
+          <b>${esc(p.name)}</b>
+          <small>${esc(roleShort)}</small>
+          <em class="bdv-tag num${p.owned && p.foilTier ? ' f' + p.foilTier : ''}">${esc(statusText)}</em>
+        </span>
+      </button>`;
+    };
+
+    const rarFilterName = state.bRar === 'V'
+      ? 'Vault Legend'
+      : ((RAR_GROUPS.find(x => x.key === state.bRar) || {}).label || '');
+
     const dossierHtml = state.bOpen ? renderDossier(profs, filtered, ctx) : '';
 
     return ctx.toolbar()
-      + ctx.mast('Campaign mode · Series one', 'Collection Binder', 'Every leader trading card from No. 001 to No. 065. Track your progress by party and rarity, inspect any card’s dossier, or jump straight into a head-to-head comparison.')
+      + ctx.mast('Campaign mode · Series one', 'Collection Binder', `Every leader trading card from No. 001 to No. ${totalPad}. Earn Card Dust from duplicate packs, campaigns and honours to craft missing leaders, unlock the five Vault Legends, or upgrade finishes to Platinum and Prism foil.`)
       + `<div class="bd-topnav"><button type="button" class="cmp-link back" data-a="back">← Back to leaders</button><div class="bd-topacts"><button type="button" class="ghost" data-a="compare">Compare two leaders →</button>${ctx.packBtn()}</div></div>`
       + `<section class="bd-summary" aria-label="Collection overview">
           <div class="bd-sum-main">
             <div class="bd-sum-head">
               <div><span class="kick">Album completion</span><h3 class="bd-big num">${ownedCount}<span>/${total}</span> <small>${pct}% collected</small></h3></div>
               <div class="bd-sum-kpis num">
+                <span class="kpi-dust"><b>${dust.toLocaleString()}</b><small>Card Dust</small></span>
+                <span><b>${foilCount}</b><small>Foils</small></span>
                 <span><b>${masteredCount}</b><small>Played</small></span>
                 <span><b>${total - ownedCount}</b><small>Missing</small></span>
                 <span><b>${leftPacks}</b><small>Packs ready</small></span>
@@ -254,10 +308,14 @@ window.CAMPAIGN_COLL = (() => {
             </div>
             <div class="bd-meter" role="progressbar" aria-valuenow="${ownedCount}" aria-valuemin="0" aria-valuemax="${total}" aria-label="${ownedCount} of ${total} leaders collected"><i style="width:${pct}%"></i></div>
             <p class="bd-packnote">${leftPacks > 0
-              ? `You have <b>${leftPacks} leader pack${leftPacks === 1 ? '' : 's'}</b> ready to tear open (3 cards per pack, uncollected leaders first).`
+              ? (packOwnedCount >= packPoolCount
+                ? `You have <b>${leftPacks} pack${leftPacks === 1 ? '' : 's'}</b> ready — every pack-pool leader is collected, so opening packs now converts all 3 cards straight into <b>Card Dust</b> (+20 pack-seal bonus).`
+                : (() => { const dc = EC && EC.packDupChance ? EC.packDupChance(packOwnedCount, packPoolCount) : 0; return dc > 0
+                  ? `You have <b>${leftPacks} leader pack${leftPacks === 1 ? '' : 's'}</b> ready (3 cards per pack · ~${Math.round(dc * 100)}% duplicate chance per card, converting dupes into Card Dust).`
+                  : `You have <b>${leftPacks} leader pack${leftPacks === 1 ? '' : 's'}</b> ready (3 cards per pack — duplicate-free until 33% of Series One is collected, then 20–30% dupes for Card Dust).`; })())
               : nextAt != null
-                ? `Next pack unlocks at <b>${nextAt} honour${nextAt === 1 ? '' : 's'}</b> — you currently have ${ctx.achCount()}.`
-                : 'Every Series One leader card has been collected.'}</p>
+                ? `Next pack unlocks at <b>${nextAt} honour${nextAt === 1 ? '' : 's'}</b> — you currently have ${ctx.achCount()}. You also earn Card Dust from completed campaigns (+30/+50) and honours (+15).`
+                : 'Every pack milestone has been reached. Continue earning Card Dust from completed campaigns to finish crafting and foil upgrades.'}</p>
           </div>
           <div class="bd-breakdowns">
             <div class="bd-bk">
@@ -269,26 +327,37 @@ window.CAMPAIGN_COLL = (() => {
               </button>`).join('')}</div>
             </div>
             <div class="bd-bk">
-              <div class="bd-bkh"><strong>By rarity &amp; next-pack odds</strong><small>${ownedCount < total ? 'Chance in your next 3-card pack' : 'Complete set'}</small></div>
+              <div class="bd-bkh"><strong>By rarity &amp; next-pack odds</strong><small>${packOwnedCount < packPoolCount ? 'Chance in your next 3-card pack' : 'Pack pool complete · Dust packs active'}</small></div>
               <div class="bd-bklist">${rarOdds.map(r => `<button type="button" class="bd-bkrow bd-rrow ${r.cls}${state.bRar === r.key ? ' on' : ''}" data-brar="${state.bRar === r.key ? 'all' : r.key}" aria-pressed="${state.bRar === r.key}">
                 <span class="bd-bkl"><i class="bd-rdiam ${r.cls}" aria-hidden="true"></i>${esc(r.label)}</span>
-                <span class="bd-bkbar"><i style="width:${Math.round(r.owned / r.total * 100)}%"></i></span>
-                <span class="bd-bkn num">${r.owned}/${r.total}${ownedCount < total ? ` <em>${r.remaining ? Math.round(r.packPct) + '%' : 'Done'}</em>` : ''}</span>
-              </button>`).join('')}</div>
+                <span class="bd-bkbar"><i style="width:${r.total ? Math.round(r.owned / r.total * 100) : 0}%"></i></span>
+                <span class="bd-bkn num">${r.owned}/${r.total}${packOwnedCount < packPoolCount ? ` <em>${r.remaining ? Math.round(r.packPct) + '%' : 'Done'}</em>` : ' <em>Dust</em>'}</span>
+              </button>`).join('')}<button type="button" class="bd-bkrow bd-rrow r-V${state.bRar === 'V' ? ' on' : ''}" data-brar="${state.bRar === 'V' ? 'all' : 'V'}" aria-pressed="${state.bRar === 'V'}">
+                <span class="bd-bkl"><i class="bd-rdiam r-V" aria-hidden="true"></i>Vault Legend</span>
+                <span class="bd-bkbar"><i style="width:${vaultProfs.length ? Math.round(vaultOwned / vaultProfs.length * 100) : 0}%"></i></span>
+                <span class="bd-bkn num">${vaultOwned}/${vaultProfs.length} <em>Craft-only</em></span>
+              </button></div>
             </div>
           </div>
         </section>`
+      + (vaultProfs.length ? `<section class="bd-vault" aria-label="Craft-only Vault Legends">
+          <div class="bdv-head">
+            <div><span class="kick">Archive edition · No. ${vaultRange}</span><h4>Craft-Only Vault Legends</h4></div>
+            <p>Never dropped in regular leader packs. Craft each iconic leader directly for <b>500 Card Dust</b> from their dossier.</p>
+          </div>
+          <div class="bdv-row">${vaultProfs.map(vaultCard).join('')}</div>
+        </section>` : '')
       + `<section class="bd-controls" aria-label="Filter and sort binder">
           <div class="bd-segs" role="group" aria-label="Collection status">
-            ${[['all', `All (${total})`], ['owned', `Collected (${ownedCount})`], ['missing', `Missing (${total - ownedCount})`], ['mastered', `Played (${masteredCount})`]].map(([k, lbl]) =>
+            ${[['all', `All (${total})`], ['owned', `Collected (${ownedCount})`], ['missing', `Missing (${total - ownedCount})`], ['vault', `Vault Legends (${vaultOwned}/${vaultProfs.length})`], ['foils', `Foils (${foilCount})`], ['mastered', `Played (${masteredCount})`]].map(([k, lbl]) =>
               `<button type="button" class="seg${state.bStatus === k ? ' on' : ''}" data-bstatus="${k}" aria-pressed="${state.bStatus === k}">${lbl}</button>`
             ).join('')}
           </div>
           <div class="bd-tools">
-            <label class="bd-search"><span class="sr">Search binder</span><input id="bdq" type="search" placeholder="Search name, seat, party or #001…" autocomplete="off" value="${esc(state.bQ)}"></label>
+            <label class="bd-search"><span class="sr">Search binder</span><input id="bdq" type="search" placeholder="Search name, seat, party, foil or #070…" autocomplete="off" value="${esc(state.bQ)}"></label>
             <label class="bd-sort"><span class="kick">Sort</span><select id="bdsort" class="cs-sel">
-              <option value="no"${state.bSort === 'no' ? ' selected' : ''}>Card number (001–065)</option>
-              <option value="grade"${state.bSort === 'grade' ? ' selected' : ''}>Tier grade (A–F)</option>
+              <option value="no"${state.bSort === 'no' ? ' selected' : ''}>Card number (001–${totalPad})</option>
+              <option value="grade"${state.bSort === 'grade' ? ' selected' : ''}>Rarity &amp; tier grade</option>
               <option value="party"${state.bSort === 'party' ? ' selected' : ''}>Party</option>
               <option value="mastery"${state.bSort === 'mastery' ? ' selected' : ''}>Mastery &amp; best score</option>
               <option value="recent"${state.bSort === 'recent' ? ' selected' : ''}>Recently collected</option>
@@ -296,7 +365,7 @@ window.CAMPAIGN_COLL = (() => {
             ${(state.bStatus !== 'all' || state.bParty !== 'all' || state.bRar !== 'all' || state.bQ)
               ? `<button type="button" class="cmp-link bd-clear" data-a="bclear">Clear filters</button>` : ''}
           </div>
-          <p class="bd-count cmp-note" id="bdcount" role="status">Showing <b class="num">${filtered.length}</b> of ${total} cards${state.bParty !== 'all' ? ' · ' + esc(C.PARTIES[state.bParty].n) : ''}${state.bRar !== 'all' ? ' · ' + esc((RAR_GROUPS.find(x => x.key === state.bRar) || {}).label || '') : ''}</p>
+          <p class="bd-count cmp-note" id="bdcount" role="status">Showing <b class="num">${filtered.length}</b> of ${total} cards${state.bParty !== 'all' ? ' · ' + esc(C.PARTIES[state.bParty].n) : ''}${state.bRar !== 'all' ? ' · ' + esc(rarFilterName) : ''}</p>
         </section>`
       + (filtered.length
         ? `<div class="bd-grid" id="bdgrid">${filtered.map(binderSlot).join('')}</div>`
@@ -305,7 +374,7 @@ window.CAMPAIGN_COLL = (() => {
   }
 
   function renderDossier(profs, filtered, ctx) {
-    const esc = ctx.esc;
+    const esc = ctx.esc, EC = ctx.EC, cData = ctx.coll(), dust = cData.dust || 0;
     const p = profs.find(x => x.id === state.bOpen);
     if (!p) return '';
     const navPool = filtered.some(x => x.id === p.id) ? filtered : profs;
@@ -317,11 +386,54 @@ window.CAMPAIGN_COLL = (() => {
     const tl = p.tl;
     const cardHtml = ctx.buildTCard(L, { inModal: true, hideCompareBtn: true });
 
+    const acqText = p.owned
+      ? (p.craftedAt ? `Crafted · ${fmtDate(p.craftedAt)}` : fmtDate(p.ownedAt))
+      : (p.isVault ? 'Craft-only Vault Legend (not in packs)' : `Leader packs or direct craft (${p.craftCost} Dust)`);
+
+    const craftShortfall = Math.max(0, p.craftCost - dust);
+    const cost1 = EC ? EC.foilUpgradeCost(p.foilTier, 1) : 120;
+    const cost2 = EC ? EC.foilUpgradeCost(p.foilTier, 2) : (p.foilTier === 1 ? 260 : 350);
+
+    const workshopHtml = !p.owned
+      ? `<div class="bd-dsec bd-craft">
+          <div class="bd-whead"><span class="kick">Direct Craft Workshop</span><span class="bd-dbal num">Balance: <b>${dust.toLocaleString()}</b> Dust</span></div>
+          <p class="bd-wcopy">${p.isVault
+            ? `Vault Legend No. ${noStr} never drops in regular packs. Craft ${esc(p.name)} directly with Card Dust to unlock their full 2028 campaign.`
+            : `Skip the pack odds and craft ${esc(p.name)} directly for <b>${p.craftCost} Card Dust</b>.`}</p>
+          <button type="button" class="bd-craft-btn${craftShortfall ? ' locked' : ''}" data-craft="${p.id}"${craftShortfall ? ' disabled' : ''}>${craftShortfall
+            ? `Need ${craftShortfall.toLocaleString()} more Dust (${p.craftCost} required)`
+            : `Craft ${esc(p.name)} for ${p.craftCost} Dust`}</button>
+        </div>`
+      : `<div class="bd-dsec bd-foil-studio">
+          <div class="bd-whead"><span class="kick">Card Finish Studio</span><span class="bd-dbal num">Balance: <b>${dust.toLocaleString()}</b> Dust</span></div>
+          <div class="bd-foil-grid">
+            <div class="bd-fopt${p.foilTier === 0 ? ' active' : ' done'}">
+              <span class="bd-fsw std" aria-hidden="true"></span>
+              <span class="bd-fmeta"><b>Standard</b><small>Archival print</small></span>
+              <span class="bd-fstat num">${p.foilTier === 0 ? 'Active' : 'Base'}</span>
+            </div>
+            <div class="bd-fopt f1${p.foilTier === 1 ? ' active' : p.foilTier > 1 ? ' done' : ''}">
+              <span class="bd-fsw plat" aria-hidden="true"></span>
+              <span class="bd-fmeta"><b>Platinum Brushed Chrome</b><small>Machined steel sheen &amp; chrome trim</small></span>
+              ${p.foilTier >= 1
+                ? `<span class="bd-fstat num">${p.foilTier === 1 ? 'Active' : 'Unlocked'}</span>`
+                : `<button type="button" class="bd-fbtn" data-foil="${p.id}:1"${dust < cost1 ? ' disabled' : ''}>${dust < cost1 ? `Need ${cost1 - dust}` : `${cost1} Dust`}</button>`}
+            </div>
+            <div class="bd-fopt f2${p.foilTier === 2 ? ' active' : ''}">
+              <span class="bd-fsw prism" aria-hidden="true"></span>
+              <span class="bd-fmeta"><b>Parliament Prism</b><small>Pearlescent spectrum refraction</small></span>
+              ${p.foilTier >= 2
+                ? `<span class="bd-fstat num">Active</span>`
+                : `<button type="button" class="bd-fbtn" data-foil="${p.id}:2"${dust < cost2 ? ' disabled' : ''}>${dust < cost2 ? `Need ${cost2 - dust}` : `${cost2} Dust`}</button>`}
+            </div>
+          </div>
+        </div>`;
+
     return `<div class="bd-modal" role="dialog" aria-modal="true" aria-labelledby="bdd-title" data-bdclose="bg">
-      <div class="bd-sheet" style="--pc:${ctx.PC(p.party)}">
+      <div class="bd-sheet" style="--pc:${ctx.cardPC ? ctx.cardPC(p.L) : ctx.PC(p.party)}">
         <div class="bd-sh-top">
           <div class="bd-sh-id">
-            <span class="kick">Card No. ${noStr}/${String(profs.length).padStart(3, '0')} · ${esc(RAR_NAME[p.rar])}</span>
+            <span class="kick">Card No. ${noStr}/${String(profs.length).padStart(3, '0')} · ${esc(p.rarLabel)}${p.owned && p.foilTier ? ' · ' + esc(FOIL_LABEL[p.foilTier]) : ''}</span>
             <h3 id="bdd-title">${esc(p.name)}</h3>
             <p class="bd-sh-sub">${esc(p.partyName)}${p.fac ? ' · ' + esc(p.fac) : ''}${p.seat ? ' · ' + esc(p.seat) : ''}</p>
           </div>
@@ -337,12 +449,13 @@ window.CAMPAIGN_COLL = (() => {
             <div class="bd-dsec">
               <span class="kick">Collection status</span>
               <dl class="bd-dl num">
-                <div><dt>Status</dt><dd>${p.owned ? 'Collected' : 'Not yet collected'}</dd></div>
-                <div><dt>Acquired</dt><dd>${p.owned ? esc(fmtDate(p.ownedAt)) : 'Available in leader packs'}</dd></div>
+                <div><dt>Status</dt><dd>${p.owned ? `Collected · ${esc(FOIL_LABEL[p.foilTier])}` : (p.isVault ? 'Locked · Vault Legend' : 'Not yet collected')}</dd></div>
+                <div><dt>Acquired</dt><dd>${esc(acqText)}</dd></div>
                 <div><dt>Honours</dt><dd>${p.prog.a}/${p.prog.h}</dd></div>
                 <div><dt>Leader-only answers</dt><dd>${p.prog.b}/${p.prog.o}</dd></div>
               </dl>
             </div>
+            ${workshopHtml}
             ${tl ? `<div class="bd-dsec">
               <span class="kick">Campaign benchmark (Tier ${tl.grade})</span>
               <dl class="bd-dl num">
@@ -364,7 +477,7 @@ window.CAMPAIGN_COLL = (() => {
             <div class="bd-sh-acts">
               ${p.owned
                 ? `<button type="button" class="bd-play" data-lead="${p.id}">Play campaign as ${esc(p.name.split(' ').slice(-1)[0])} →</button>`
-                : `<button type="button" class="bd-play locked" disabled>Collect in a pack to play</button>`}
+                : `<button type="button" class="bd-play locked" disabled>${p.isVault ? 'Craft with Dust to play' : 'Collect or craft to play'}</button>`}
               <button type="button" class="ghost" data-cmpfrom="${p.id}">Compare head-to-head</button>
             </div>
           </div>
@@ -403,10 +516,14 @@ window.CAMPAIGN_COLL = (() => {
   function leaderSelectOptions(profs, selectedId, ctx) {
     const esc = ctx.esc;
     return Object.entries(ctx.C.PARTIES).map(([pk, P]) => {
-      const ls = profs.filter(p => p.party === pk);
-      return `<optgroup label="${esc(P.n)}">${ls.map(p =>
-        `<option value="${p.id}"${p.id === selectedId ? ' selected' : ''}>#${String(p.no).padStart(2, '0')} ${esc(p.name)} (${p.rar}${p.owned ? '' : ' · locked'})</option>`
-      ).join('')}</optgroup>`;
+      const ls = profs.filter(p => p.party === pk).sort((a, b) => a.no - b.no);
+      return `<optgroup label="${esc(P.n)}">${ls.map(p => {
+        const tag = p.isVault ? 'Vault' : p.rar;
+        const suffix = p.owned
+          ? (p.foilTier === 2 ? ' · Prism' : p.foilTier === 1 ? ' · Platinum' : '')
+          : ' · locked';
+        return `<option value="${p.id}"${p.id === selectedId ? ' selected' : ''}>#${String(p.no).padStart(3, '0')} ${esc(p.name)} (${tag}${suffix})</option>`;
+      }).join('')}</optgroup>`;
     }).join('');
   }
 
@@ -452,7 +569,6 @@ window.CAMPAIGN_COLL = (() => {
     const B = profs.find(p => p.id === state.cmpB) || profs[1] || profs[0];
     const mA = formatMechanics(A), mB = formatMechanics(B);
 
-    // Helper for a clean editorial comparison metric row with directional edge indicator and proportional bar
     const metricRow = (label, valA, valB, numA, numB, opts) => {
       opts = opts || {};
       const lowerBetter = !!opts.lowerBetter;
@@ -461,20 +577,21 @@ window.CAMPAIGN_COLL = (() => {
       const wB = opts.bar ? Math.min(100, Math.max(0, Math.round((Math.max(0, numB || 0) / maxVal) * 100))) : 0;
       const winA = numA != null && numB != null && numA !== numB && (lowerBetter ? numA < numB : numA > numB);
       const winB = numA != null && numB != null && numA !== numB && (lowerBetter ? numB < numA : numB > numA);
+      const pcA = ctx.cardPC ? ctx.cardPC(A.L) : ctx.PC(A.party);
+      const pcB = ctx.cardPC ? ctx.cardPC(B.L) : ctx.PC(B.party);
       return `<div class="cp-row">
-        <div class="cp-cell left${winA ? ' win' : ''}" style="--pc:${ctx.PC(A.party)}">
+        <div class="cp-cell left${winA ? ' win' : ''}" style="--pc:${pcA}">
           <div class="cp-val num">${valA}${winA ? ' <em class="cp-edge" aria-label="Advantage">Edge</em>' : ''}</div>
           ${opts.bar ? `<span class="cp-bar left"><i style="width:${wA}%"></i></span>` : ''}
         </div>
         <div class="cp-lbl">${esc(label)}${opts.sub ? `<small>${esc(opts.sub)}</small>` : ''}</div>
-        <div class="cp-cell right${winB ? ' win' : ''}" style="--pc:${ctx.PC(B.party)}">
+        <div class="cp-cell right${winB ? ' win' : ''}" style="--pc:${pcB}">
           <div class="cp-val num">${winB ? '<em class="cp-edge" aria-label="Advantage">Edge</em> ' : ''}${valB}</div>
           ${opts.bar ? `<span class="cp-bar right"><i style="width:${wB}%"></i></span>` : ''}
         </div>
       </div>`;
     };
 
-    // Union of all state & demographic trait keys across A and B
     const allDemKeys = [...new Set([...Object.keys(A.demMap), ...Object.keys(B.demMap)])];
     allDemKeys.sort((k1, k2) => {
       const s1 = /^st:/.test(k1) ? 0 : 1, s2 = /^st:/.test(k2) ? 0 : 1;
@@ -484,26 +601,29 @@ window.CAMPAIGN_COLL = (() => {
       return m2 - m1;
     });
 
+    const pcOf = p => (ctx.cardPC ? ctx.cardPC(p.L) : ctx.PC(p.party));
     const miniHead = (p, side) => {
+      const init = p.name.split(/\s+/).filter(Boolean);
+      const two = init.length > 1 ? init[0][0] + init[init.length - 1][0] : p.name.slice(0, 2);
       const ph = p.ph && !/^data:/.test(p.ph)
         ? `<img class="cp-mph" src="${esc(p.ph)}" alt=""${p.art && p.art.pos ? ` style="object-position:${esc(p.art.pos)}"` : ''}>`
-        : `<span class="cp-mph cp-minit">${esc(p.name[0])}</span>`;
-      return `<div class="cp-mhead ${side}" style="--pc:${ctx.PC(p.party)}">
+        : `<span class="cp-mph cp-minit">${esc(two.toUpperCase())}</span>`;
+      return `<div class="cp-mhead ${side}" style="--pc:${pcOf(p)}">
         ${ph}
         <div class="cp-mtxt">
-          <span class="cp-mkick">#${String(p.no).padStart(3, '0')} · ${esc(p.partyName)}</span>
+          <span class="cp-mkick">#${String(p.no).padStart(3, '0')} · ${esc(p.L.sb === 'Nationals' ? 'Nationals' : p.partyName)}</span>
           <b>${esc(p.name)}</b>
-          <small>Grade ${p.rar} · ${RAR_NAME[p.rar]}${p.owned ? '' : ' · Locked'}</small>
+          <small>Grade ${p.rar} · ${esc(p.rarLabel)}${p.owned ? (p.foilTier ? ' · ' + esc(FOIL_LABEL[p.foilTier]) : '') : ' · Locked'}</small>
         </div>
       </div>`;
     };
 
-    const perkBlock = p => `<div class="cp-perks" style="--pc:${ctx.PC(p.party)}">
+    const perkBlock = p => `<div class="cp-perks" style="--pc:${pcOf(p)}">
       <p class="pk ${p.L.noGood ? 'bad' : 'good'}">${ctx.TM(p.L.noGood ? -1 : 1)}<span><b>${esc(p.L.plus[0])}</b> ${ctx.kw(esc(p.L.plus[1]))}</span></p>
       <p class="pk bad">${ctx.TM(-1)}<span><b>${esc(p.L.minus[0])}</b> ${ctx.kw(esc(p.L.minus[1]))}</span></p>
     </div>`;
 
-    const matesBlock = p => `<div class="cp-mates" style="--pc:${ctx.PC(p.party)}">${p.L.mates.map((m, i) =>
+    const matesBlock = p => `<div class="cp-mates" style="--pc:${pcOf(p)}">${p.L.mates.map((m, i) =>
       `<span class="cp-mate">${ctx.photo(m, 'mt-ph')}<span><i>${esc(ctx.mateRole(p.L, i, m))}</i><b>${esc(m)}</b></span></span>`
     ).join('')}</div>`;
 
@@ -511,17 +631,21 @@ window.CAMPAIGN_COLL = (() => {
       ? `<ul class="cp-tlist">${p.traits.map(t => `<li class="t${t.tier}">${ctx.TM(t.tier)}<span><b>${esc(t.n)}</b><small>${esc(t.d)}</small></span></li>`).join('')}</ul>`
       : `<p class="cmp-note">No sandbox character traits.</p>`;
 
+    const statusLine = p => p.owned
+      ? `Collected · ${FOIL_LABEL[p.foilTier]} (${p.craftedAt ? 'Crafted ' + fmtDate(p.craftedAt) : fmtDate(p.ownedAt)})`
+      : (p.isVault ? `Vault Legend · Craft for ${p.craftCost} Dust` : `Locked · Packs or ${p.craftCost} Dust`);
+
     return ctx.toolbar()
-      + ctx.mast('Campaign mode · Head-to-head', 'Compare Leaders', 'Line up any two of the 65 leaders side by side across tier-list benchmarks, campaign mechanics, demographic vote reach, running mates and your personal record.')
+      + ctx.mast('Campaign mode · Head-to-head', 'Compare Leaders', `Line up any two of the ${profs.length} leaders side by side across tier-list benchmarks, campaign mechanics, demographic vote reach, running mates and your personal record.`)
       + `<div class="bd-topnav"><button type="button" class="cmp-link back" data-a="back">← Back to leaders</button><div class="bd-topacts"><button type="button" class="ghost" data-a="binder">Open Collection Binder →</button></div></div>`
       + `<section class="cp-picker" aria-label="Choose two leaders to compare">
           <div class="cp-pgrid">
-            <label class="cp-selbox" style="--pc:${ctx.PC(A.party)}">
+            <label class="cp-selbox" style="--pc:${pcOf(A)}">
               <span class="kick">Leader A</span>
               <select id="cmpA" class="cs-sel" aria-label="Leader A">${leaderSelectOptions(profs, A.id, ctx)}</select>
             </label>
             <button type="button" class="cp-swap" data-a="cmpswap" title="Swap Leader A and Leader B" aria-label="Swap leaders">${ctx.ICON('flip')}<span>Swap</span></button>
-            <label class="cp-selbox" style="--pc:${ctx.PC(B.party)}">
+            <label class="cp-selbox" style="--pc:${pcOf(B)}">
               <span class="kick">Leader B</span>
               <select id="cmpB" class="cs-sel" aria-label="Leader B">${leaderSelectOptions(profs, B.id, ctx)}</select>
             </label>
@@ -539,7 +663,7 @@ window.CAMPAIGN_COLL = (() => {
             <div class="cp-slot-act">
               ${A.owned
                 ? `<button type="button" class="bd-play" data-lead="${A.id}">Play as ${esc(A.name.split(' ').slice(-1)[0])} →</button>`
-                : `<button type="button" class="ghost" data-bjump="${A.id}">View in Binder (Locked)</button>`}
+                : `<button type="button" class="ghost" data-bjump="${A.id}">Craft in Binder (${A.craftCost} Dust) →</button>`}
             </div>
           </div>
           <div class="cp-vs-col" aria-hidden="true"><span>VS</span></div>
@@ -548,16 +672,16 @@ window.CAMPAIGN_COLL = (() => {
             <div class="cp-slot-act">
               ${B.owned
                 ? `<button type="button" class="bd-play" data-lead="${B.id}">Play as ${esc(B.name.split(' ').slice(-1)[0])} →</button>`
-                : `<button type="button" class="ghost" data-bjump="${B.id}">View in Binder (Locked)</button>`}
+                : `<button type="button" class="ghost" data-bjump="${B.id}">Craft in Binder (${B.craftCost} Dust) →</button>`}
             </div>
           </div>
         </section>`
       + `<section class="cp-section" aria-labelledby="cp-h-bench">
           <div class="cmp-fighead"><span class="fig">Fig. 1</span><strong id="cp-h-bench">Tier-list difficulty &amp; campaign benchmarks</strong><small>Measured across 1,200 simulated campaigns in the current 2028 scenario.</small></div>
           <div class="cp-colhead">
-            <span style="--pc:${ctx.PC(A.party)}"><i class="sw" style="background:${ctx.PC(A.party)}"></i>${esc(A.name)}</span>
+            <span style="--pc:${pcOf(A)}"><i class="sw" style="background:${pcOf(A)}"></i>${esc(A.name)}</span>
             <span class="cp-chm">Metric</span>
-            <span style="--pc:${ctx.PC(B.party)}">${esc(B.name)}<i class="sw" style="background:${ctx.PC(B.party)}"></i></span>
+            <span style="--pc:${pcOf(B)}">${esc(B.name)}<i class="sw" style="background:${pcOf(B)}"></i></span>
           </div>
           <div class="cp-table">
             ${metricRow('Tier grade', `<b>${A.rar}</b> · ${GRADE_DESC[A.rar]}`, `<b>${B.rar}</b> · ${GRADE_DESC[B.rar]}`, A.tl ? A.tl.score : -9, B.tl ? B.tl.score : -9)}
@@ -582,8 +706,8 @@ window.CAMPAIGN_COLL = (() => {
       + `<section class="cp-section" aria-labelledby="cp-h-perks">
           <div class="cmp-fighead"><span class="fig">Fig. 3</span><strong id="cp-h-perks">Signature perks &amp; weaknesses</strong><small>Campaign-specific rules on each leader’s card.</small></div>
           <div class="cp-split">
-            <div class="cp-box"><h4 style="--pc:${ctx.PC(A.party)}">${esc(A.name)}</h4>${perkBlock(A)}</div>
-            <div class="cp-box"><h4 style="--pc:${ctx.PC(B.party)}">${esc(B.name)}</h4>${perkBlock(B)}</div>
+            <div class="cp-box"><h4 style="--pc:${pcOf(A)}">${esc(A.name)}</h4>${perkBlock(A)}</div>
+            <div class="cp-box"><h4 style="--pc:${pcOf(B)}">${esc(B.name)}</h4>${perkBlock(B)}</div>
           </div>
         </section>`
       + `<section class="cp-section" aria-labelledby="cp-h-reach">
@@ -600,26 +724,26 @@ window.CAMPAIGN_COLL = (() => {
             }).join('')}
           </div>
           <div class="cp-split cp-traits-split">
-            <div class="cp-box"><h4 style="--pc:${ctx.PC(A.party)}">${esc(A.name)}’s traits</h4>${traitsList(A)}</div>
-            <div class="cp-box"><h4 style="--pc:${ctx.PC(B.party)}">${esc(B.name)}’s traits</h4>${traitsList(B)}</div>
+            <div class="cp-box"><h4 style="--pc:${pcOf(A)}">${esc(A.name)}’s traits</h4>${traitsList(A)}</div>
+            <div class="cp-box"><h4 style="--pc:${pcOf(B)}">${esc(B.name)}’s traits</h4>${traitsList(B)}</div>
           </div>
         </section>`
       + `<section class="cp-section" aria-labelledby="cp-h-ticket">
           <div class="cmp-fighead"><span class="fig">Fig. 5</span><strong id="cp-h-ticket">The ticket &amp; your personal record</strong><small>Running mates and your own saved Hall of Fame history in this browser.</small></div>
           <div class="cp-split">
-            <div class="cp-box"><h4 style="--pc:${ctx.PC(A.party)}">${esc(A.name)}’s ticket</h4>${matesBlock(A)}</div>
-            <div class="cp-box"><h4 style="--pc:${ctx.PC(B.party)}">${esc(B.name)}’s ticket</h4>${matesBlock(B)}</div>
+            <div class="cp-box"><h4 style="--pc:${pcOf(A)}">${esc(A.name)}’s ticket</h4>${matesBlock(A)}</div>
+            <div class="cp-box"><h4 style="--pc:${pcOf(B)}">${esc(B.name)}’s ticket</h4>${matesBlock(B)}</div>
           </div>
           <div class="cp-table cp-rec-table">
-            ${metricRow('Collection status', A.owned ? `Collected (${esc(fmtDate(A.ownedAt))})` : 'Locked (find in packs)', B.owned ? `Collected (${esc(fmtDate(B.ownedAt))})` : 'Locked (find in packs)', null, null)}
+            ${metricRow('Collection status', esc(statusLine(A)), esc(statusLine(B)), null, null)}
             ${metricRow('Your runs & wins', `${A.hof.runs} run${A.hof.runs === 1 ? '' : 's'} · ${A.hof.wins} win${A.hof.wins === 1 ? '' : 's'}`, `${B.hof.runs} run${B.hof.runs === 1 ? '' : 's'} · ${B.hof.wins} win${B.hof.wins === 1 ? '' : 's'}`, A.hof.wins, B.hof.wins)}
             ${metricRow('Your best seats', A.hof.runs ? `${A.hof.bestSeats}` : '—', B.hof.runs ? `${B.hof.bestSeats}` : '—', A.hof.bestSeats, B.hof.bestSeats)}
             ${metricRow('Your best score', A.hof.runs ? `<b>${A.hof.bestScore.toLocaleString()}</b>` : '—', B.hof.runs ? `<b>${B.hof.bestScore.toLocaleString()}</b>` : '—', A.hof.bestScore, B.hof.bestScore)}
             ${metricRow('Honours & answers', `${A.prog.a}/${A.prog.h} hon. · ${A.prog.b}/${A.prog.o} ans.`, `${B.prog.a}/${B.prog.h} hon. · ${B.prog.b}/${B.prog.o} ans.`, A.prog.a + A.prog.b, B.prog.a + B.prog.b)}
           </div>
           <div class="cp-foot-acts">
-            ${A.owned ? `<button type="button" class="bd-play" data-lead="${A.id}">Start campaign as ${esc(A.name)} →</button>` : `<button type="button" class="ghost" data-bjump="${A.id}">Inspect ${esc(A.name)} in Binder</button>`}
-            ${B.owned ? `<button type="button" class="bd-play" data-lead="${B.id}">Start campaign as ${esc(B.name)} →</button>` : `<button type="button" class="ghost" data-bjump="${B.id}">Inspect ${esc(B.name)} in Binder</button>`}
+            ${A.owned ? `<button type="button" class="bd-play" data-lead="${A.id}">Start campaign as ${esc(A.name)} →</button>` : `<button type="button" class="ghost" data-bjump="${A.id}">Craft ${esc(A.name)} in Binder (${A.craftCost} Dust)</button>`}
+            ${B.owned ? `<button type="button" class="bd-play" data-lead="${B.id}">Start campaign as ${esc(B.name)} →</button>` : `<button type="button" class="ghost" data-bjump="${B.id}">Craft ${esc(B.name)} in Binder (${B.craftCost} Dust)</button>`}
           </div>
         </section>`;
   }
@@ -642,6 +766,17 @@ window.CAMPAIGN_COLL = (() => {
     if (b.dataset.bparty) { state.bParty = b.dataset.bparty; api.rerender(true); return true; }
     if (b.dataset.brar) { state.bRar = b.dataset.brar; api.rerender(true); return true; }
     if (b.dataset.bopen) { state.bOpen = b.dataset.bopen; api.rerender(true); return true; }
+    if (b.dataset.craft && ctx.craftLeader) {
+      const res = ctx.craftLeader(b.dataset.craft);
+      if (res && res.ok) api.rerender(true);
+      return true;
+    }
+    if (b.dataset.foil && ctx.upgradeFoil) {
+      const parts = b.dataset.foil.split(':');
+      const res = ctx.upgradeFoil(parts[0], +parts[1]);
+      if (res && res.ok) api.rerender(true);
+      return true;
+    }
     if (b.dataset.bjump) {
       state.bStatus = 'all'; state.bParty = 'all'; state.bRar = 'all'; state.bQ = '';
       state.bOpen = b.dataset.bjump;

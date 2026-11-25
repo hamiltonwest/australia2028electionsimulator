@@ -219,7 +219,7 @@ window.CAMPAIGN_ACH = (() => {
       ['The campaign', 'The national mood', ['INFLATION_SLAYER', 'YIMBY_IN_CHIEF', 'RESTORED_TRUST', 'CLEAN_SWEEP_SPIRITS']],
       ['The campaign', 'Collections and challenges', ['NO_SECOND_CHANCES', 'CURSED_AND_CROWNED', 'ONLY_YOU', 'THE_GRAND_TOUR', 'LEADERSHIP_MATERIAL', 'THE_FULL_BENCH', 'EVERY_FACE']]
     ];
-    const PARTY = [['ALP', 'Labor leaders'], ['LNP', 'Coalition leaders'], ['NAT', 'Nationals leaders'], ['ONP', 'One Nation leaders'], ['GRN', 'Greens leaders'], ['IND', 'Teal leaders']];
+    const PARTY = [['ALP', 'Labor leaders'], ['LNP', 'Coalition leaders'], ['NAT', 'Nationals leaders'], ['ONP', 'One Nation leaders'], ['GRN', 'Greens leaders'], ['IND', 'Teal leaders'], ['KAP', "Katter's Australian Party"]];
     const ls = D.leaders || [], li = id => { const k = ls.findIndex(l => l.id === id); return k < 0 ? 999 : (ls[k].more ? 100 : 0) + k; }, side = L => L.sb === 'Nationals' ? 'NAT' : L.party;
     const order = new Map(); let n = 0;
     SEC.forEach(([part, cat, ids]) => ids.forEach(id => { const a = list.find(x => x.id === id); if (a) { a.part = part; a.cat = cat; order.set(a, n++); } }));

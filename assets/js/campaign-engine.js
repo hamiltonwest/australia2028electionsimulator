@@ -9,7 +9,7 @@ window.CAMPAIGN = (() => {
   // Balance. Card and decision vote effects are scaled; spirit drifts are halved; the campaign's accumulated swings fade a little each
   // turn; and the rivals answer back: each card's average option is taken off your vote, so a choice only gains on balance if it beats
   // the typical answer. Good picks build a lead, bad picks dig a hole, and an average run lands near the starting polls.
-  const TUNE = Object.assign({ v: 0.85, dv: 0.25, d: 0.5, fade: 0.025, k: 1, mom: 0.03, onp: 1.7, ind: 0.65 }, window.CAMPAIGN_TUNE || {});
+  const TUNE = Object.assign({ v: 0.85, dv: 0.25, d: 0.5, fade: 0.025, k: 1, mom: 0.03, onp: 1.7, ind: 0.65, kap: 2.15 }, window.CAMPAIGN_TUNE || {});
   const VSCALE = TUNE.v, DSCALE = TUNE.d, FADE = TUNE.fade;
   // difficulty: how hard the rivals answer back, how far the polls can be wrong, how hard rivals respond to your milestones, Political Power
   const DIFF = { easy: { n: 'Easy', k: 0.6, pe: 0, rival: 0.5, pp: 1.3, score: 0.7 }, std: { n: 'Standard', k: 1, pe: 1, rival: 1, pp: 1, score: 1 }, hard: { n: 'Hard', k: 1.25, pe: 1.4, rival: 1.5, pp: 0.8, score: 1.35 } };
@@ -29,8 +29,12 @@ window.CAMPAIGN = (() => {
   const ldrOf = st => C.leaders.find(l => l.id === st.leader);
   const incOf = party => C.leaders.find(l => l.party === party && l.inc);
   const spirit = id => C.spirits[id];
-  let CSA = -2; const csa = () => { if (CSA === -2) CSA = window.APP ? window.APP.P.findIndex(p => p.ab === 'CSA') : -1; return CSA; };
-  const keyOf = g => { const N = window.APP.NATI; return g === 0 ? 'ALP' : (g === 1 || g === N) ? 'LNP' : g === 2 ? 'GRN' : g === 3 ? 'ONP' : (g === 4 || g === csa()) ? 'IND' : 'OTH'; };
+  let CSA = -2, KAPG = -2, KAPC = -2;
+  const csa = () => { if (CSA === -2) CSA = window.APP ? window.APP.P.findIndex(p => p.ab === 'CSA') : -1; return CSA; };
+  const kapG = () => { if (KAPG === -2) KAPG = window.APP && window.APP.P ? window.APP.P.findIndex(p => p.ab === 'KAP') : -1; return KAPG; };
+  const kapCol = () => { if (KAPC === -2) { const g = kapG(); KAPC = g >= 0 && window.APP && window.APP.DATA && window.APP.DATA.colG ? window.APP.DATA.colG.indexOf(g) : -1; } return KAPC; };
+  const grpOf = p => p === 'KAP' ? kapG() : GRP[p];
+  const keyOf = g => { const N = window.APP.NATI; return g === 0 ? 'ALP' : (g === 1 || g === N) ? 'LNP' : g === 2 ? 'GRN' : g === 3 ? 'ONP' : (g === 4 || g === csa()) ? 'IND' : (kapG() >= 0 && g === kapG()) ? 'KAP' : 'OTH'; };
   const sname = st => ldrOf(st).name.split(' ').slice(-1)[0];
   // your main opponent: Labor for the Greens, the Coalition for the teals, otherwise the biggest of the other majors
   function rivalOf(st) { if (st.party === 'GRN') return 'ALP'; if (st.party === 'IND') return 'LNP'; const s = (st.poll || st).seats || { ALP: 1, LNP: 1, ONP: 0 };
@@ -82,8 +86,8 @@ window.CAMPAIGN = (() => {
   }
   // ---- opening scenarios: a different starting position for replays. Vote shifts sit outside the campaign's own swings, so they do not fade
   const scenOf = id => (C.scenarios || []).find(x => x.id === id);
-  // today's challenge: one leader for everyone, drawn from the date (a different draw from the opening's)
-  function dailyLeader() { return C.leaders[(hash('es2028-leader-' + today()) >>> 0) % C.leaders.length]; }
+  // today's challenge: one leader for everyone, drawn from standard Series One leaders (excluding craft-only Vault Legends)
+  function dailyLeader() { const pool = C.leaders.filter(l => !l.craftOnly); return pool[(hash('es2028-leader-' + today()) >>> 0) % pool.length]; }
   function applyScen(st) { const sc = scenOf(st.scen); if (!sc || !sc.e) return; const e = sc.e;
     (e.sp || []).forEach(([from, to]) => { const k = st.spirits.indexOf(from); if (k >= 0) { if (to) st.spirits[k] = to; else st.spirits.splice(k, 1); } else if (to && !st.spirits.includes(to)) st.spirits.push(to); });
     Object.assign(st.scnFx.n, e.n || {}); Object.entries(e.r || {}).forEach(([k, o]) => { st.scnFx.r[k] = { ...o }; });
@@ -100,19 +104,25 @@ window.CAMPAIGN = (() => {
   function buildS(st, base, shift) {
     const APP = window.APP, L = ldrOf(st), x = clone(base || APP.BASE), P = C.PARTIES[st.party];
     const leads = (st.phase !== 'SPILL' && !(st.phase === 'BYELECTION' && !st.inc)) || st.spillWon;
+    if (st.party === 'KAP') x.cont = { ...(x.cont || {}), KAP: 2 };
     // a leader from another sandbox party (a Nationals leader running the Coalition campaign, a named teal) changes that party's leader
     if (L.sb) { if (leads) x.ldr[L.sb] = L.name; } else if (P.ldr && P.setLdr !== false) x.ldr[P.ldr] = leads ? L.name : incOf(st.party).name;
     if (x.ldr['Nationals'] === 'Barnaby Joyce' && x.ldr['One Nation'] === 'Barnaby Joyce') x.ldr['Nationals'] = 'Matt Canavan';
     APP.withS(x, () => APP.ldrCands());
-    const a = st.acc;
-    Object.entries(a.n).forEach(([p, v]) => { x.d[GRP[p]] = +(x.d[GRP[p]] + v).toFixed(3); });
-    if (shift) Object.entries(shift).forEach(([p, v]) => { if (GRP[p] != null) x.d[GRP[p]] = +(x.d[GRP[p]] + v).toFixed(3); });
+    const a = st.acc, kc = kapCol();
+    const pushDemo = (spec, p, amt) => {
+      if (!amt) return;
+      if (p === 'KAP') { if (kc >= 0) x.demo.push({ ...spec, col: kc, amt }); }
+      else if (GRP[p] != null) x.demo.push({ ...spec, party: GRP[p], amt });
+    };
+    Object.entries(a.n).forEach(([p, v]) => { const g = grpOf(p); if (g != null && g >= 0) x.d[g] = +((x.d[g] || 0) + v).toFixed(3); });
+    if (shift) Object.entries(shift).forEach(([p, v]) => { const g = grpOf(p); if (g != null && g >= 0) x.d[g] = +((x.d[g] || 0) + v).toFixed(3); });
     const sf = st.scnFx || { n: {}, r: {} };
-    Object.entries(sf.n).forEach(([p, v]) => { x.d[GRP[p]] = +(x.d[GRP[p]] + v).toFixed(3); });
-    Object.entries(sf.r).forEach(([k, o]) => Object.entries(o).forEach(([p, v]) => { x.demo.push({ rg: C.RG[k], party: GRP[p], amt: v }); }));
-    Object.entries(a.r).forEach(([k, o]) => Object.entries(o).forEach(([p, v]) => { if (v) x.demo.push({ rg: C.RG[k], party: GRP[p], amt: +v.toFixed(3) }); }));
-    Object.entries(a.s).forEach(([k, o]) => Object.entries(o).forEach(([p, v]) => { if (v) x.demo.push({ st: k, party: GRP[p], amt: +v.toFixed(3) }); }));
-    Object.entries(a.seat || {}).forEach(([n, o]) => { const i = APP.D.seats.findIndex(s => s.n === n); if (i >= 0) Object.entries(o).forEach(([p, v]) => { if (v) x.seatAdj.push({ i, g: GRP[p], amt: +v.toFixed(3) }); }); });
+    Object.entries(sf.n).forEach(([p, v]) => { const g = grpOf(p); if (g != null && g >= 0) x.d[g] = +((x.d[g] || 0) + v).toFixed(3); });
+    Object.entries(sf.r).forEach(([k, o]) => Object.entries(o).forEach(([p, v]) => { pushDemo({ rg: C.RG[k] }, p, v); }));
+    Object.entries(a.r).forEach(([k, o]) => Object.entries(o).forEach(([p, v]) => { if (v) pushDemo({ rg: C.RG[k] }, p, +v.toFixed(3)); }));
+    Object.entries(a.s).forEach(([k, o]) => Object.entries(o).forEach(([p, v]) => { if (v) pushDemo({ st: k }, p, +v.toFixed(3)); }));
+    Object.entries(a.seat || {}).forEach(([n, o]) => { const i = APP.D.seats.findIndex(s => s.n === n); if (i >= 0) Object.entries(o).forEach(([p, v]) => { const g = grpOf(p); if (v && g != null && g >= 0) x.seatAdj.push({ i, g, amt: +v.toFixed(3) }); }); });
     // preference flows: campaign shifts, spirits and the leader's perk; static spirit effects count relative to the starting set
     const pf = { ...a.pf }, sgn = (ids, w) => ids.forEach(id => { const s = spirit(id); if (s && s.pf) Object.entries(s.pf).forEach(([k, v]) => pf[k] = (pf[k] || 0) + w * v); });
     sgn(st.spirits, 1); sgn(C.startSpirits, -1);
@@ -126,8 +136,8 @@ window.CAMPAIGN = (() => {
     x.preset = 'Campaign mode'; x.campaign = { leader: st.leader, party: st.party };
     return x;
   }
-  function seatsBy(central) { const c = { ALP: 0, LNP: 0, GRN: 0, ONP: 0, IND: 0, OTH: 0 }; central.forEach(w => { c[keyOf(w)]++; }); return c; }
-  function natBy(nat) { const N = window.APP.NATI, k = csa(); return { ALP: nat[0], LNP: nat[1] + (N >= 0 ? nat[N] : 0), GRN: nat[2], ONP: nat[3], IND: nat[4] + (k >= 0 ? nat[k] : 0) }; }
+  function seatsBy(central) { const c = { ALP: 0, LNP: 0, GRN: 0, ONP: 0, IND: 0, KAP: 0, OTH: 0 }; central.forEach(w => { c[keyOf(w)]++; }); return c; }
+  function natBy(nat) { const N = window.APP.NATI, k = csa(), kg = kapG(); return { ALP: nat[0], LNP: nat[1] + (N >= 0 ? nat[N] : 0), GRN: nat[2], ONP: nat[3], IND: nat[4] + (k >= 0 ? nat[k] : 0), KAP: kg >= 0 ? (nat[kg] || 0) : 0 }; }
   function project(st, shift) { const r = window.APP.project(buildS(st, null, shift)); return { central: r.central, seats: seatsBy(r.central), nat: natBy(r.nat), margin: r.margin }; }
   // ---- seats to watch: three close seats for your party, one you hold, one you are chasing and the next closest, each with its own local poll
   const mineG = (st, g) => keyOf(g) === st.party;
@@ -143,18 +153,19 @@ window.CAMPAIGN = (() => {
 
   // ---- polling: what the campaign sees is never the truth. A hidden systematic miss for the run, a house lean for each pollster,
   // and sampling noise. Herding shrinks the leans and noise, so the polls agree, and are all wrong together.
-  const PERR = { ALP: 1.8, LNP: 1.8, ONP: 2.4, GRN: 1, IND: 1 };
+  const PERR = { ALP: 1.8, LNP: 1.8, ONP: 2.4, GRN: 1, IND: 1, KAP: 2.0 };
   function drawErr(st, sd) { const o = {}; Object.entries(PERR).forEach(([p, s]) => { o[p] = +(gauss(st) * s * sd).toFixed(2); }); return o; }
   function capErr(st) { for (let k = 0; k < 6; k++) { const p = project(st, st.pe), bad = ['ALP', 'LNP', 'ONP'].some(q => Math.abs(p.seats[q] - st.seats[q]) > 15); if (!bad) return; Object.keys(st.pe).forEach(q => { st.pe[q] = +(st.pe[q] * 0.7).toFixed(2); }); } }
   function runPolls(st, fresh) {
     const herd = st.spirits.includes('POLL_HERDING'), before = st.poll ? st.poll.seats[st.party] : null;
+    const pkeys = st.party === 'KAP' ? ['ALP', 'LNP', 'ONP', 'GRN', 'KAP'] : ['ALP', 'LNP', 'ONP', 'GRN'];
     if (fresh || !st.pubs) { const ps = C.pollsters.slice(); for (let i = ps.length - 1; i > 0; i--) { const j = Math.floor(rnd(st) * (i + 1)); [ps[i], ps[j]] = [ps[j], ps[i]]; }
-      st.pubs = ps.slice(0, 2 + (rnd(st) < 0.5 ? 1 : 0)).map(p => { const sh = {}; ['ALP', 'LNP', 'ONP', 'GRN'].forEach(q => { sh[q] = +((p.lean[q] || 0) * (herd ? 0.3 : 1) + gauss(st) * p.moe * (herd ? 0.35 : 1) * 0.5).toFixed(2); }); return { n: p.n, note: p.note, sh }; });
-      st.inSh = {}; ['ALP', 'LNP', 'ONP', 'GRN'].forEach(q => { st.inSh[q] = +(gauss(st) * 0.25).toFixed(2); }); }
+      st.pubs = ps.slice(0, 2 + (rnd(st) < 0.5 ? 1 : 0)).map(p => { const sh = {}; pkeys.forEach(q => { sh[q] = +((p.lean[q] || 0) * (herd ? 0.3 : 1) + gauss(st) * p.moe * (herd ? 0.35 : 1) * 0.5).toFixed(2); }); return { n: p.n, note: p.note, sh }; });
+      st.inSh = {}; pkeys.forEach(q => { st.inSh[q] = +(gauss(st) * 0.25).toFixed(2); }); }
     const tot = q => (st.pe[q] || 0);
     st.polls = st.pubs.map(p => { const sh = {}; Object.keys(p.sh).forEach(q => { sh[q] = tot(q) + p.sh[q]; }); const r = project(st, sh); return { n: p.n, note: p.note, seats: r.seats, nat: r.nat }; });
     if (st.internal >= st.turn) { const sh = {}; Object.keys(st.inSh).forEach(q => { sh[q] = tot(q) * 0.3 + st.inSh[q]; }); const r = project(st, sh); st.polls.push({ n: 'Your internal polling', internal: true, seats: r.seats, nat: r.nat }); }
-    const avg = {}; ['ALP', 'LNP', 'ONP', 'GRN'].forEach(q => { avg[q] = tot(q) + st.pubs.reduce((a, p) => a + p.sh[q], 0) / st.pubs.length; });
+    const avg = {}; pkeys.forEach(q => { avg[q] = tot(q) + st.pubs.reduce((a, p) => a + (p.sh[q] || 0), 0) / st.pubs.length; });
     st.poll = project(st, avg); seatPolls(st, fresh);
     return before == null ? 0 : st.poll.seats[st.party] - before;
   }
@@ -217,7 +228,7 @@ window.CAMPAIGN = (() => {
     if (st && /^DEB[123]$/.test(id) && st.deb) return debCard(st, +id[3]); if (st && id === 'DOOR') return doorCard(st);
     return id === 'REVOLT' ? REVOLT : id === 'QUIET' ? QUIET : special(id) || C.cards.find(c => c.id === id) || C.spill.find(c => c.id === id); }
   // your job: Labor governs; the Coalition is the Opposition; One Nation sits on the crossbench
-  function role(st) { return st.phase === 'BYELECTION' ? 'Candidate' : st.phase === 'SPILL' && !st.spillWon ? 'Challenger' : st.party === 'ALP' ? 'Prime Minister' : st.party === 'LNP' ? 'Opposition Leader' : 'Crossbench leader'; }
+  function role(st) { return st.phase === 'BYELECTION' ? 'Candidate' : st.phase === 'SPILL' && !st.spillWon ? 'Challenger' : st.party === 'ALP' ? 'Prime Minister' : st.party === 'LNP' ? 'Opposition Leader' : st.party === 'KAP' ? 'KAP leader' : 'Crossbench leader'; }
   // out of government you can only promise: shared cards' government actions read as promises for the Opposition and crossbench
   const ACTS = new Set(['commit', 'fund', 'guarantee', 'enforce', 'expand', 'ban', 'freeze', 'cut', 'halt', 'repeal', 'restore', 'abolish', 'lift', 'build', 'inject', 'open', 'underwrite', 'introduce', 'mandate', 'extend', 'co-fund', 'phase', 'scrap', 'exempt', 'tie', 'allow', 'deny', 'double', 'triple', 'reinstate', 'proceed', 'protect', 'uphold', 'lower', 'complete', 'redirect', 'block', 'raise', 'halve', 'wipe', 'boost', 'establish', 'accelerate', 'fast-track', 'cap', 'impose', 'lock', 'enshrine', 'legislate', 'tighten', 'curb', 'offer', 'pair', 'convert', 'subsidise', 'audit', 'match', 'maintain', 'keep', 'hold', 'focus', 'prioritise', 'emphasise', 'invest', 'tax', 'regulate', 'expand']);
   function promiseFor(party, x, c) { if (party === 'ALP' || c.party || !/^CAMP_/.test(c.id) || c.mile === 1) return x; const w = x.split(' '), v = w[0].toLowerCase();
@@ -270,7 +281,7 @@ window.CAMPAIGN = (() => {
     ctx = ctx || {}; const out = [], own = st.party, a = st.acc, bk = 1 - banked(st), dim = ctx.dim || 1;
     const scale = () => (ctx.decision ? TUNE.dv * dim : VSCALE) * bk;
     const vote = (scope, key, p, v) => { const rg = scope === 'r' ? key : null, sa = scope === 's' ? key : null;
-      const amt = v * scale() * (p === 'ONP' && own === 'ONP' ? TUNE.onp : p === 'IND' && own === 'IND' ? TUNE.ind : 1) * (p === own ? (ldrOf(st).damp || 1) : 1) * (p === own && v < 0 && st.bank ? Math.max(0.3, 1 - banked(st) - st.bank) / Math.max(0.3, 1 - banked(st)) : 1) * multFor(st, ctx, p, v, rg, sa);   // insurgents swing harder, both ways; teal seats are elastic, so less
+      const amt = v * scale() * (p === 'ONP' && own === 'ONP' ? TUNE.onp : p === 'IND' && own === 'IND' ? TUNE.ind : p === 'KAP' && own === 'KAP' ? TUNE.kap : 1) * (p === own ? (ldrOf(st).damp || 1) : 1) * (p === own && v < 0 && st.bank ? Math.max(0.3, 1 - banked(st) - st.bank) / Math.max(0.3, 1 - banked(st)) : 1) * multFor(st, ctx, p, v, rg, sa);   // insurgents swing harder, both ways; teal seats are elastic, so less
       if (scope === 'n') addPty(a.n, p, amt); else { const o = a[scope][key] = a[scope][key] || {}; addPty(o, p, amt); }
       out.push([(scope === 'n' ? 'National' : scope === 'r' ? RGL[key] : scope === 'seat' ? key : key) + ' · ' + C.PARTIES_N(p), amt, p === own ? amt > 0 : amt < 0, 'v']); };
     if (e.o) vote('n', null, own, e.o);
@@ -303,7 +314,7 @@ window.CAMPAIGN = (() => {
   }
   const RGL = { IN: 'Inner metro', OUT: 'Outer metro', PROV: 'Provincial', RUR: 'Rural' };
   const PFL = { grn: 'Greens preferences to Labor', on: 'One Nation preferences to the Coalition', ind: 'Teal-seat preferences to you' };
-  C.PARTIES_N = p => ({ ALP: 'Labor', LNP: 'Coalition', ONP: 'One Nation', GRN: 'Greens', IND: 'Independents' })[p] || p;
+  C.PARTIES_N = p => ({ ALP: 'Labor', LNP: 'Coalition', ONP: 'One Nation', GRN: 'Greens', IND: 'Independents', KAP: "Katter's Australian Party" })[p] || p;
   const pfGood = (k, own, v) => k === 'ind' ? v > 0 : k === 'grn' ? (own === 'ALP' ? v > 0 : v < 0) : (own === 'LNP' ? v > 0 : v < 0);
   function spGood(st, from, to) { const a = tierFor(st, from), b = to ? tierFor(st, to) : 0; return to ? b >= a : a < 0; }
   // how a spirit sits for the side you are playing: the national mood helps one side and hurts another
@@ -420,7 +431,7 @@ window.CAMPAIGN = (() => {
     const p1 = camp ? project(st).seats[st.party] : null; let p2 = p1;
     if (st.phase === 'CAMPAIGN' && !interrupt && c.id !== 'QUIET') {
       const ws = c.opts.filter(x => !x.cost || st.pp >= x.cost).map(x => optWorth(st, x, x.tag || c.tag)), mean = ws.reduce((a, b) => a + b, 0) / ws.length;
-      const back = -TUNE.k * dOf(st).k * mean * VSCALE * (1 - banked(st)) * (st.party === 'ONP' ? TUNE.onp : 1); if (back) { addPty(st.acc.n, st.party, back); if (Math.abs(back) >= 0.02) fx.push(['Rivals answer back', back, back > 0, 'v']); }
+      const back = -TUNE.k * dOf(st).k * mean * VSCALE * (1 - banked(st)) * (st.party === 'ONP' ? TUNE.onp : st.party === 'KAP' ? 1.15 : 1); if (back) { addPty(st.acc.n, st.party, back); if (Math.abs(back) >= 0.02) fx.push(['Rivals answer back', back, back > 0, 'v']); }
       p2 = project(st).seats[st.party]; }
     if (!interrupt && c.id !== 'QUIET') { st.used.push(c.id); st.lastTag = c.tag || null; const k = TOPIC[c.id];
       if (k) { st.topics = st.topics || {}; const u = st.topics[k] = st.topics[k] || { n: 0, last: -99 }; u.n++; u.last = st.turn; } }
@@ -528,13 +539,13 @@ window.CAMPAIGN = (() => {
       Object.entries(x.st || {}).forEach(([iss, [pl, mi]]) => { const v = st.stances[iss]; if (v === '+') sc += pl; else if (v === '-') sc += mi; });
       Object.entries(x.flags || {}).forEach(([f, v]) => { if (st.flags.includes(f)) sc += v; });
       if (x.nats && st.nats != null && st.nats >= x.nats) sc += 1;
-      if (x.lead) { const sp = (st.poll || st).seats, top = ['ALP', 'LNP', 'ONP', 'GRN', 'IND'].sort((a, b) => sp[b] - sp[a])[0]; if (top === st.party) sc += x.lead + (st.mom > 0 ? 1 : 0); }
+      if (x.lead) { const sp = (st.poll || st).seats, top = ['ALP', 'LNP', 'ONP', 'GRN', 'IND', 'KAP'].sort((a, b) => (sp[b] || 0) - (sp[a] || 0))[0]; if (top === st.party) sc += x.lead + (st.mom > 0 ? 1 : 0); }
       if (sc >= 2) { got.push(x.id); out.fx.push(...apply(st, x.fx, {})); out.notes.push(`${x.n} endorses you.`); out.endorse.push(x.n); } }); }
   // weekly targets: one goal a week, judged on the Friday; meeting it is worth Political Power and a point of momentum
   function targetDue(st) { if (!st.needTarget || st.phase !== 'CAMPAIGN' || !st.poll) return; st.needTarget = 0;
     const big = ['ALP', 'LNP', 'ONP'].includes(st.party), ks = ['seats', 'vote']; if (st.mom < 3) ks.push('mom'); if (st.unity < 75) ks.push('unity');
     const k = pick(st, ks), w = Math.min(5, Math.ceil(st.turn / (st.T / 5)));
-    const v = k === 'seats' ? st.poll.seats[st.party] + (big ? 3 : 1) : k === 'vote' ? +(st.poll.nat[st.party] + 0.5).toFixed(1) : k === 'mom' ? 3 : Math.max(50, Math.round(st.unity) - 5);
+    const v = k === 'seats' ? (st.poll.seats[st.party] || 0) + (big ? 3 : st.party === 'KAP' ? 2 : 1) : k === 'vote' ? +((st.poll.nat[st.party] || 0) + 0.5).toFixed(1) : k === 'mom' ? 3 : Math.max(50, Math.round(st.unity) - 5);
     st.target = { w, k, v }; }
   function checkTarget(st, notes) { const t = st.target; if (!t) return;
     const cur = t.k === 'seats' ? st.poll.seats[st.party] : t.k === 'vote' ? +st.poll.nat[st.party].toFixed(1) : t.k === 'mom' ? st.mom : Math.round(st.unity), ok = cur >= t.v;
@@ -575,7 +586,7 @@ window.CAMPAIGN = (() => {
   // If you contend, you make offers; if you hold crossbench seats, you pick a side and a price; otherwise you watch.
   function blocKey(g) { const k = keyOf(g); if (k !== 'OTH') return k; const ab = window.APP.P[g].ab; return ab === 'KAP' || ab === 'XEN' ? ab : 'OTH'; }
   function negSetup(st) { const r = st.result, cnt = {}; (r.likely || []).forEach(g => { const k = blocKey(g); cnt[k] = (cnt[k] || 0) + 1; });
-    const [A, B] = ['ALP', 'LNP', 'ONP'].sort((p, q) => (cnt[q] || 0) - (cnt[p] || 0));
+    const [A, B] = ['ALP', 'LNP', 'ONP', 'KAP'].sort((p, q) => (cnt[q] || 0) - (cnt[p] || 0));
     const blocs = Object.keys(cnt).filter(k => k !== A && k !== B && cnt[k] > 0).map(k => { const b = C.blocs[k] || C.blocs.OTH, lean = { ...b.lean };
       if (k === 'IND' && (A === 'LNP' || B === 'LNP')) { const L = st.party === 'LNP' ? st.leader : 'angus_taylor'; lean.LNP = (lean.LNP || 0) + (['josh_frydenberg', 'tim_wilson'].includes(L) ? 0.2 : L === 'andrew_hastie' ? -0.15 : 0); }
       return { k, n: b.n, seats: cnt[k], lean: { [A]: lean[A] || 0, [B]: lean[B] || 0 }, ask: b.ask }; }).sort((a, b) => b.seats - a.seats);
@@ -602,7 +613,7 @@ window.CAMPAIGN = (() => {
   function settle(st, ch) { if (st.phase !== 'HUNG') return null; const out = negotiate(st, ch); finalize(st); return out; }
   function resultOf(st) {
     const APP = window.APP, R = APP.getR(), D = APP.D, key = keyOf;
-    const seats = { ALP: 0, LNP: 0, GRN: 0, ONP: 0, IND: 0, OTH: 0 }, stt = {}, rg = {};
+    const seats = { ALP: 0, LNP: 0, GRN: 0, ONP: 0, IND: 0, KAP: 0, OTH: 0 }, stt = {}, rg = {};
     Object.values(C.RG).forEach(k => rg[k] = { total: 0 });
     R.likely.forEach((g, i) => { const k = key(g), s = D.seats[i]; seats[k]++; (stt[s.st] = stt[s.st] || {})[k] = (stt[s.st][k] || 0) + 1; rg[s.rg].total++; rg[s.rg][k] = (rg[s.rg][k] || 0) + 1; });
     const L = ldrOf(st), seat = (APP.DATA.leaders.find(l => l.name === L.name && l.party === (L.sb || C.PARTIES[st.party].ldr)) || {}).seat || '';

@@ -925,6 +925,10 @@ function article(){
       const NLt=S.ldr['Nationals']||'Matt Canavan',ntt=c[NATI],inSt=/Senat/.test((DATA.leaders.find(l=>l.name===NLt&&l.party==='Nationals')||{}).seat||'');
       head=maj?'Nationals win government':'Nationals top the count';
       body=`A party founded more than a century ago to represent the bush has just rewritten Australian political history. Running separately from the Liberals after tearing up the Coalition agreement, the Nationals ${maj?'win majority government in their own right':'emerge as the largest party in the House'} with ${sN(ntt)}, sweeping regional Australia and picking off outer-suburban seats left behind by the Liberals. ${NLt} ${maj?'becomes the first Nationals Prime Minister since John McEwen in 1967–68, and the first ever elected to the office in their own right':'now has a claim to The Lodge no Nationals leader has held since John McEwen in 1967, if the Liberals and crossbench can be brought to the table'}.${inSt?` There is one catch: ${sur(NLt)} sits in the Senate and will need a House seat quickly.`:''}${fallTxt}`;
+    } else if(top===iKAP&&S.ldr["Katter's Australian"]==='Bob Katter'&&XT.KAT_BOB){
+      head=maj?'Bob Katter wins government':'Katter\'s Australian Party tops the count';
+      const secLine=a===0&&co===0?'Labor and the Coalition, which governed Australia since 1910, are both wiped out of the House.':`${cap(PN(sec))} ${sec===4||sec===1||sec===2?'are':'is'} next on ${sN(c[sec])}.`;
+      body=fillT(maj?XT.KAT_BOB.majLead:XT.KAT_BOB.minLead,{k:tn,n:nums(tn),secLine,wipe:fallTxt?' '+fallTxt.trim():''});
     } else if(top>=5){
       head=maj?`${P[top].n} wins government`:`${P[top].n} tops the count`;
       const ld0=ld(top), led=ld0&&ld0!=='—'&&!noL(top)&&!ld0.startsWith('Collective');
@@ -1216,12 +1220,16 @@ function article(){
     else if(gr>=2) extra+='¶'+fillT(XT.GRN_MID,{...pv(G),gr:nums(gr),n:senGr!=null?senGr:'its'});
     else if(gr===0&&DATA.current[2]>0) {}   // the Greens wipeout paragraph covers this
     else if(gr===1||gr<DATA.current[2]) extra+=pl(G,false);
-    const kapK=iKAP>=0?c[iKAP]:0,kenI=D.seats.findIndex(x=>x.n==='Kennedy'),kenHeld=kenI>=0&&R.likely[kenI]===iKAP,kapShow=iKAP>=0&&(!kenHeld||kapK>=2);
-    if(!kapShow){}
+    const kapK=iKAP>=0?c[iKAP]:0,kenI=D.seats.findIndex(x=>x.n==='Kennedy'),kenHeld=kenI>=0&&R.likely[kenI]===iKAP,isBobK=S.ldr["Katter's Australian"]==='Bob Katter'&&!!XT.KAT_BOB,kapShow=iKAP>=0&&(!kenHeld||kapK>=2||isBobK);
+    if(top===iKAP&&isBobK){extra+='¶'+fillT(maj?XT.KAT_BOB.maj:XT.KAT_BOB.min,{k:kapK,n:nums(kapK)});}
+    else if(!kapShow){}
+    else if(isBobK){const k=kapK;
+      if(k===1&&!kenHeld){const ks=D.seats[R.likely.findIndex(w=>w===iKAP)];extra+='¶'+fillT(XT.KAT_BOB.other,{seat:ks?ks.n:'another seat'});}
+      else if(k>=12)extra+='¶'+fillT(XT.KAT_BOB.big,{k,n:nums(k)});
+      else if(k>=2)extra+='¶'+fillT(XT.KAT_BOB.grow,{k,n:nums(k)});
+      else if(k===1)extra+='¶'+XT.KAT_BOB.hold;
+      else extra+='¶'+XT.KAT_BOB.zero;}
     else if(kapK===1){const ln=(S.ldr["Katter's Australian"]||'Robbie Katter')==='Bob Katter'?'Bob Katter':'Robbie Katter';const ks=D.seats[R.likely.findIndex(w=>w===iKAP)];extra+='¶'+`Kennedy falls after more than three decades in Katter hands, but ${ln}'s party survives in Canberra by winning ${ks?ks.n:'another seat'} instead. The family seat is gone; the party is not.`;}
-    else if(S.ldr["Katter's Australian"]==='Bob Katter'){const k=kapK;extra+='¶'+(k>=2?`Bob Katter, back in charge of the party he founded, turns a one-man band into a ${nums(k)}-member bloc. North Queensland has been telling Canberra it exists for decades; tonight it said it louder.`
-      :k===1?`Bob Katter holds Kennedy, as he has since 1993, and takes the party leadership back from his son without growing it. The Katter brand is still a family business.`
-      :`Kennedy falls, and with it the last Katter seat in Canberra. The party Bob Katter founded will go on in the Queensland parliament, but the federal chapter of the family saga has closed.`);}
     else if((S.ldr["Katter's Australian"]||'Robbie Katter')==='Robbie Katter'){const k=kapK;extra+='¶'+fillT(XT.KAT_ROBBIE[k>=2?'2':k===1?'1':'0'],{n:nums(k)});}
     let kmx='', csaKM=false;
     // kingmakers: in a hung parliament, any crossbench group whose seats decide whether a side reaches 76
@@ -1234,7 +1242,7 @@ function article(){
       const KM={GRN:n=>`With ${n} seat${pl2(n)}, the Greens hold real power in the House for the first time since Adam Bandt's lone vote helped keep Julia Gillard in office in 2010, and they will not hand it over cheaply.`,
         CSA:n=>{csaKM=true;return csaL.km(n);},
         IND:n=>`The ${n===1?'lone independent becomes':nums(n)+' independents, from the teal suburbs to the bush, become'} the most courted ${n===1?'MP':'MPs'} in the country.`,
-        KAP:n=>S.ldr["Katter's Australian"]==='Bob Katter'?`Bob Katter, in Parliament since 1993 and now leading his own party again, has seen this movie before: in 2010 he gave a forty-minute speech before choosing a side. Expect a longer one, a list of dams, and a price measured in north Queensland railway lines.`:`Katter's Australian Party, which drove a hard bargain in the 2010 hung parliament, is back at the table, and north Queensland will want its due.`,
+        KAP:n=>S.ldr["Katter's Australian"]==='Bob Katter'?(XT.KAT_BOB?fillT(n>=5?XT.KAT_BOB.kmBig:XT.KAT_BOB.km,{n:nums(n)}):`Bob Katter, in Parliament since 1993 and now leading his own party again, has seen this movie before: in 2010 he gave a forty-minute speech before choosing a side. Expect a longer one, a list of dams, and a price measured in north Queensland railway lines.`):`Katter's Australian Party, which drove a hard bargain in the 2010 hung parliament, is back at the table, and north Queensland will want its due.`,
         AFP:n=>`The Australian Federation Party has ${n===1?'a seat':nums(n)+' seats'} in the House and, for the first time, real leverage over who governs.`,
         XEN:n=>`Centre Alliance's single vote from Mayo could decide who governs: in a hung parliament, every seat is a kingdom.`};
       const gen=(j,n)=>`Few expected ${P[j].n} to win a seat at all. Now ${n===1?'its only MP':`its ${nums(n)} MPs`} may decide who governs.`;
