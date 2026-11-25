@@ -167,6 +167,26 @@ window.XYZT={
 "bad": "Mark McGowan's western magic fails to cross the Nullarbor: Labor drops to {a} seats as eastern-state marginals desert the government.",
 "rump": "Reduced to {a} seats, McGowan leads a shattered Labor rump in which almost the entire eastern-seaboard footprint has vanished."
 },
+"Paul Keating": {
+"good": [
+"Thirty-two years after losing to John Howard and retiring to Potts Point, Paul Keating is Prime Minister again. Returning through a Blaxland by-election, he carried Labor to {a} seats on an unapologetic campaign about productivity, superannuation and Asia, out-debating frontbenchers half his age without ever looking at a focus group. In the tally room he said it was sweeter than 1993, and few in the room bothered to argue.",
+"Paul Keating's return to Blaxland was supposed to be a sentimental detour. Instead, the former prime minister ran a blunt, big-picture campaign and delivered Labor a {a}-seat majority. The Opposition spent five weeks trying to make the contest about the 1990s; Keating spent it mocking their economic literacy and reminding older voters who built their super."
+],
+"mid": "Paul Keating is back in Parliament and Labor holds {a} seats, short of a majority. The man who once called the Senate 'unrepresentative swill' now has to sit across a table from the House crossbench and ask nicely for supply. Senior staff are already trying to keep him away from open microphones until a deal is signed.",
+"narrow": "Keating gets Labor to {a} seats, close enough to prove he can still dominate a television studio but not enough to stay in office. He spent half his concession speech reminding the incoming government that he built the superannuation system funding their retirements, and the other half critiquing their ties.",
+"bad": "Leaving Potts Point to rescue Labor did not work. On {a} seats, outer-suburban mortgage holders had little time for lectures on 1980s tariff reform or Asia-Pacific strategy. Keating heads back to Sydney and his French clocks after delivering a concession speech the press gallery will be quoting for years.",
+"rump": "Labor falls to {a} seats, and even Keating's tongue cannot talk a rump into a caucus. On his way out of the tally room he noted that at least the surviving parliamentary party could now fit comfortably around one decent dining table."
+},
+"Gough Whitlam": {
+"good": [
+"Fourteen years since he passed, Gough Whitlam walked back into Australian politics, won a Werriwa by-election as if he had never left, and led Labor to a {a}-seat majority. Nobody in Canberra has offered a satisfactory explanation, and Whitlam waved the question away on day one. Outer-suburban voters heard him talk about universal healthcare, free university and public housing, and decided they wanted the 1972 program after all.",
+"More than a decade since his passing did nothing to shrink Gough Whitlam's appetite for a big platform. Running out of Blacktown with zero patience for small-target politics, he pushed Labor to a {a}-seat majority and left the press gallery chasing a policy list twice as long as the last three budgets combined."
+],
+"mid": "Returning to life got Gough Whitlam the Labor leadership; turning {a} seats into a working majority with the 2028 crossbench is the harder job. He walked out of the tally room in high spirits, though aides have already reminded him to double-check the Senate numbers before announcing any new commissions.",
+"narrow": "Even Gough Whitlam returning for an impossible second act could only get Labor to {a} seats. The town halls were packed and the headlines were enormous, but Treasury costings scares bit hard in the outer suburbs during the final week. He left the stage quoting Cicero and telling reporters the program would outlive everyone in the room.",
+"bad": "Getting back on the electoral roll fourteen years after his passing turned out to be simpler than selling a 1970s spending agenda to inflation-weary voters. Reduced to {a} seats, Whitlam faces the second bitter exit of his career, though at least this time Yarralumla stayed out of it.",
+"rump": "Labor collapses to {a} seats, a wipeout not even Gough Whitlam's miraculous return could stop. With the outer suburbs gone and the costings fight lost, he looked over a tiny surviving caucus, offered the cameras one dry Latin quote, and left the tally room."
+},
 "_": {
 "good": "{Leader} leads Labor to majority government with {a} seats, securing a clear mandate.",
 "mid": "{Leader} keeps Labor in the hunt on {a} seats, turning to the crossbench to assemble a majority.",
@@ -350,6 +370,30 @@ window.XYZT={
 "mid": "Newman gets the Coalition to {co} seats on a hard-charging Queensland campaign, putting him within reach of The Lodge if One Nation deals.",
 "oppUp": "Newman does not win government, but his aggressive pitch wins back Queensland seats and lifts the Coalition to {co}.",
 "oppDown": "Newman's combative style revives memories of 2015 in Queensland, leaving the Coalition smaller on {co} seats."
+},
+"John Howard": {
+"goodN": [
+"Twenty-one years after losing Bennelong, John Howard has won his old Sydney seat back and returned the Coalition to government with {co} seats. He kept the campaign simple: interest rates, borders, family budgets, and the morning walk in his green-and-gold tracksuit. The mortgage belt came back, One Nation stalled in the bush, and Lazarus with a triple bypass has done it again.",
+"Most strategists assumed the old Howard Coalition had died out with the 2000s. Returning through Bennelong, John Howard proved otherwise, taking the Coalition to {co} seats on the same pitch that won him four straight elections: lower rates, tight borders, and cabinet discipline."
+],
+"goodB": "John Howard returns through Bennelong and delivers a {co}-seat Coalition landslide that feels lifted straight out of 1996. Labor is flattened across the outer suburbs, One Nation is pushed back in the regions, and a generation of younger Liberals just got a practical lesson in how the broad church used to work.",
+"mid": "John Howard is back in Bennelong and the Coalition sits on {co} seats, within reach of The Lodge. He spent eleven years holding his own party together; now he has to cut a deal with the crossbench without letting WorkChoices become the only word anyone remembers.",
+"oppUp": "John Howard will not return to Kirribilli House, but his comeback steadies the Coalition and lifts it to {co} seats. Outer-suburban voters still gave him a hearing, even if the inner-city teal seats stayed shut.",
+"oppDown": "Even John Howard could not turn the clock back everywhere. He returns to Bennelong, but inner-city voters stayed cold and younger voters had long memories on WorkChoices, leaving the Coalition smaller on {co} seats.",
+"bad": "Bringing back the Coalition's most successful modern prime minister could not patch over a split conservative vote. Stranded on {co} seats, squeezed in the regions and locked out of the cities, Howard gave a brisk, unsentimental concession and left the party room with no excuses left.",
+"rump": "The comeback ends on {co} seats. Even John Howard's discipline cannot hide a historic collapse, leaving the party he led to four consecutive victories wondering if the broad church still exists."
+},
+"Robert Menzies": {
+"goodN": [
+"Fifty years since his passing in Melbourne, Sir Robert Menzies returned to life, brushed off his double-breasted suit, reclaimed Kooyong, and won {co} seats. Nobody in the Liberal party room asked too many questions about how it happened. One long Press Club speech about the Forgotten People calmed the teal seats, steadied the suburbs, and put the party founder back in The Lodge.",
+"Half a century after he passed, Robert Menzies came back to fix the party he founded in 1944 and walked out with a {co}-seat majority. Union ads dragged up 'Pig Iron Bob' and radio hosts joked about the accent, yet small-business owners and leafy Melbourne electorates flocked back to Kooyong's most famous member."
+],
+"goodB": "Half a century since his passing in 1978 barely slowed Sir Robert Menzies down. After briefly asking an aide what a podcast was, he reclaimed Kooyong and swept the Coalition to a {co}-seat landslide, uniting the teal belt and the outer suburbs in the biggest conservative shock since 1949.",
+"mid": "Robert Menzies returned to public life fifty years after his passing and got the Liberal Party to {co} seats, close enough for a shot at The Lodge if the crossbench plays ball. Watching a 1950s prime minister lecture 2028 independents on constitutional convention should make for memorable television.",
+"oppUp": "Coming back to life was not quite enough for a majority, but Menzies wins back Kooyong and lifts the Coalition to {co} seats. The party he built in 1944 is standing upright again, even if voters under forty still look puzzled whenever he mentions thrift or the Crown.",
+"oppDown": "Even the party founder making an impossible return fifty years after he passed could not shift modern housing and energy politics. Port seats hammered the old 'Pig Iron Bob' history, younger voters switched off, and the Coalition slips back to {co} seats.",
+"bad": "Rebuilding the Liberal Party in 2028 proved harder than founding it in 1944, even for a leader returning half a century after his passing. Stranded on {co} seats after five weeks of attacks on housing, energy and his 1938 record, Menzies delivered a polished concession speech and looked quietly relieved he would never have to explain himself on TikTok again.",
+"rump": "Not even Sir Robert Menzies returning fifty years since his passing could halt a {co}-seat collapse. Looking over a handful of blue-ribbon survivors, the party founder folded his notes and remarked that he might have to start a third non-Labor party by Monday."
 },
 "_": {
 "goodN": "{Leader} leads the Coalition back to government with {co} seats, reclaiming enough suburban marginals to clear 76 and put the party back on the Treasury benches.",
@@ -644,6 +688,19 @@ window.XYZT={
 "2": "Robbie Katter, who took the federal leadership from his father and brought state-parliament discipline to the campaign, turns a one-seat family bastion into a {n}-member north Queensland bloc. Canberra has been put on notice.",
 "1": "Robbie Katter holds the family seat of Kennedy, keeping Katter's Australian Party in Canberra even if the north Queensland expansion fell just short.",
 "0": "Kennedy falls, and with it the Katter family's three-decade hold on north Queensland in Canberra. Robbie Katter's party survives in the Queensland parliament, but its federal voice is gone."
+},
+"KAT_BOB": {
+"majLead": "Bob Katter is going to be Prime Minister of Australia. Entering the campaign with Kennedy as its only federal seat, Katter's Australian Party has pulled off the strangest result since Federation, sweeping to {k} seats across regional towns and angry outer suburbs. {secLine}{wipe} Treasury officials in Canberra are reportedly pulling dusty Bradfield Scheme files out of the basement before morning.",
+"minLead": "In the strangest election night since Federation, Katter's Australian Party starts from Kennedy alone and finishes as the largest party in the House on {k} seats. {secLine}{wipe} Bob Katter has first claim on The Lodge, and anyone walking into negotiations should clear their afternoon: his first press conference has already covered ethanol mandates, Coles and Woolies, north Queensland dams and three separate crocodile stories.",
+"maj": "Thirty-five years after first winning Kennedy, Bob Katter marches {n} KAP MPs into Parliament with a majority to break up the supermarket duopoly, push ethanol mandates and turn the northern rivers inland. For decades both major parties treated him as a colourful north Queensland side-act; tonight they are sitting opposite him.",
+"min": "Bob Katter finishes at the head of {n} KAP members, short of 76 but holding the strongest hand in the chamber. In 2010 he kept the country waiting forty minutes with a single seat. Now he enters minority-government talks with an entire party room behind him and a shopping list measured in dams and freight rail.",
+"big": "Bob Katter has turned a one-man north Queensland seat into a {n}-seat national bloc. Running hard on supermarket break-ups, fuel security and the Bradfield Scheme, Katter's Australian Party tears strips off regional Queensland and outer-suburban electorates alike.",
+"grow": "Back leading the party he founded, Bob Katter expands out of Kennedy into a {n}-member bloc. Canberra spent decades chuckling at his doorstops on dams, ethanol and grocery chains; north Queensland just sent a few more Akubras south.",
+"hold": "Bob Katter holds Kennedy, as he has since 1993, keeping his seat on the crossbench even if the wider national push stalled at the electorate border.",
+"other": "In a strange twist, Kennedy finally falls after more than three decades in Katter hands, yet Bob Katter's party stays in Canberra by winning {seat} instead. The family seat is gone; the party is not.",
+"zero": "Kennedy falls, taking the last Katter seat in federal Parliament with it. After more than thirty years of booming doorstops and fierce north Queensland fights, Bob Katter's federal run ends, leaving the party to regroup in Brisbane.",
+"kmBig": "With {n} seats in a hung parliament, Bob Katter is no longer a lone crossbencher. In 2010 he held the country captive for forty minutes with one vote; with {n} MPs behind him, expect a list of dams, ethanol rules and supermarket break-ups longer than the Bruce Highway.",
+"km": "Bob Katter, in Parliament since 1993 and leading his own party again, has been here before. In 2010 he gave a forty-minute speech before picking a side; expect a longer one, a map of north Queensland, and a price measured in railway lines."
 },
 "SEAT": {
 "farrerLeyWin": "Ley also wins back Farrer by {m} points, reclaiming the Riverina seat she held for twenty-five years before resigning in February 2026—and giving the Liberal leader a seat in the House again.",

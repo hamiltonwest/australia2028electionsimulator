@@ -1,0 +1,15 @@
+{
+  "name": "australia-2028-election-simulator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Simulate the next Australian federal election seat by seat: change the polls, leaders and events, then watch the count come in on results night.",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "build": "node --check server.js",
+    "lint": "node --check server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

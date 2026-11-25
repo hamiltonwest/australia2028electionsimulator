@@ -29,7 +29,20 @@
     const seen = new Set(), hof = [].concat(get(KEYS.hof) || [], p.hof || []).filter(r => { const k = r.at + '|' + r.leader; if (seen.has(k)) return false; seen.add(k); return true; }).sort((a, b) => b.at - a.at).slice(0, 60); put(KEYS.hof, hof);
     const daily = Object.assign({}, p.daily || {}); Object.entries(get(KEYS.daily) || {}).forEach(([d, r]) => { if (!daily[d] || ((r || {}).score || 0) >= ((daily[d] || {}).score || 0)) daily[d] = r; }); put(KEYS.daily, daily);
     put(KEYS.lo, Object.assign({}, p.lo || {}, get(KEYS.lo) || {}));
-    if (p.cards) { const c = get(KEYS.cards) || { owned: {}, opened: 0 }; c.owned = Object.assign({}, p.cards.owned || {}, c.owned || {}); c.opened = Math.max(c.opened || 0, p.cards.opened || 0); if (p.cards.allPacks) c.allPacks = true; put(KEYS.cards, c); }
+    if (p.cards) {
+      const c = get(KEYS.cards) || { owned: {}, opened: 0, dust: 0, foil: {}, crafted: {} };
+      const merged = window.CAMPAIGN_ECON && window.CAMPAIGN_ECON.mergeCardProfiles
+        ? window.CAMPAIGN_ECON.mergeCardProfiles(c, p.cards)
+        : Object.assign({}, c, {
+            owned: Object.assign({}, p.cards.owned || {}, c.owned || {}),
+            opened: Math.max(c.opened || 0, p.cards.opened || 0),
+            dust: Math.max(Number(c.dust) || 0, Number(p.cards.dust) || 0),
+            crafted: Object.assign({}, p.cards.crafted || {}, c.crafted || {}),
+            foil: Object.assign({}, p.cards.foil || {}, c.foil || {}),
+            allPacks: !!(c.allPacks || p.cards.allPacks) || undefined
+          });
+      put(KEYS.cards, merged);
+    }
     return { honours: Object.keys(ach).length, runs: hof.length }; }
   async function download() { const day = new Date().toISOString().slice(0, 10), filename = `australia-2028-profile-${day}.txt`, data = 'Australia 2028 Election Simulator: campaign profile\nPaste this whole file (or the line below) into “Load a profile”.\n\n' + code() + '\n';
     const d = window.claude && window.claude.use ? await Promise.race([window.claude.use('downloads').catch(() => null), new Promise(r => setTimeout(() => r(null), 1500))]) : null;
